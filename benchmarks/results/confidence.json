@@ -1,0 +1,23 @@
+{
+  "total": {
+    "receipts": 626,
+    "rapidocr_alone_accuracy": 81.8,
+    "auto_accept_coverage": 60.7,
+    "auto_accept_precision": 90.3,
+    "oracle_either_engine": 85.0
+  },
+  "date": {
+    "receipts": 626,
+    "rapidocr_alone_accuracy": 82.6,
+    "auto_accept_coverage": 60.5,
+    "auto_accept_precision": 100.0,
+    "oracle_either_engine": 92.8
+  },
+  "company": {
+    "receipts": 626,
+    "rapidocr_alone_accuracy": 63.3,
+    "auto_accept_coverage": 45.2,
+    "auto_accept_precision": 83.7,
+    "oracle_either_engine": 66.9
+  }
+}

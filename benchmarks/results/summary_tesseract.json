@@ -1,0 +1,17 @@
+{
+  "receipts": 626,
+  "gold": {
+    "date": 99.7,
+    "total": 87.1,
+    "company_exact": 82.9,
+    "company_fuzzy": 84.3,
+    "date_and_total": 86.7
+  },
+  "ocr": {
+    "date": 70.8,
+    "total": 62.1,
+    "company_exact": 41.5,
+    "company_fuzzy": 61.3,
+    "date_and_total": 47.1
+  }
+}

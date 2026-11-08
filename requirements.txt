@@ -1,0 +1,4 @@
+# Core agent: Python 3.10+ standard library only.
+# Optional, for real scans (offline OCR):
+rapidocr_onnxruntime
+# System package for the second OCR engine: apt-get install -y tesseract-ocr

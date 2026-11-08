@@ -1,0 +1,7 @@
+out/
+__pycache__/
+*.pyc
+.env
+bench_out/
+sroie/
+PLAYBOOK.md
