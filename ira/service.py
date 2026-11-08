@@ -43,6 +43,7 @@ class Record:
     source: str                      # "sample" | "json" | "xml" | "pdf" | "scan"
     unconfirmed: set[str] = field(default_factory=set)  # OCR fields awaiting owner confirmation
     answered: dict[str, str] = field(default_factory=dict)
+    extractor: str | None = None     # "rules", "rules + AI", "rules (AI unavailable)"
 
     def issues(self) -> list[Issue]:
         issues = validate(self.invoice)
@@ -86,6 +87,7 @@ def serialize(rec: Record) -> dict:
     return {
         "id": rec.id,
         "source": rec.source,
+        "extractor": rec.extractor,
         "file": inv.source_file,
         "invoiceNumber": inv.invoice_number,
         "issueDate": inv.issue_date,
@@ -121,12 +123,13 @@ class Workspace:
             for rid, body in self._db.execute("SELECT id, body FROM invoices ORDER BY seq"):
                 d = json.loads(body)
                 self._records[rid] = Record(id=rid, invoice=invoice_from_dict(d["invoice"]), source=d["source"],
-                                            unconfirmed=set(d["unconfirmed"]), answered=d["answered"])
+                                            unconfirmed=set(d["unconfirmed"]), answered=d["answered"],
+                                            extractor=d.get("extractor"))
 
     def _save(self, rec: Record) -> None:  # call with the lock held
         if self._db is None:
             return
-        body = json.dumps({"invoice": invoice_to_dict(rec.invoice), "source": rec.source,
+        body = json.dumps({"invoice": invoice_to_dict(rec.invoice), "source": rec.source, "extractor": rec.extractor,
                            "unconfirmed": sorted(rec.unconfirmed), "answered": rec.answered})
         self._db.execute("INSERT INTO invoices (id, seq, body) VALUES (?, (SELECT COALESCE(MAX(seq), 0) + 1 "
                          "FROM invoices), ?) ON CONFLICT(id) DO UPDATE SET body = excluded.body", (rec.id, body))
@@ -147,7 +150,7 @@ class Workspace:
         with self._lock:
             for d in items:
                 rec = Record(id=uuid.uuid4().hex[:10], invoice=invoice_from_dict(d), source=source,
-                             unconfirmed=set(d.get("_unconfirmed", [])))
+                             unconfirmed=set(d.get("_unconfirmed", [])), extractor=d.get("_extractor"))
                 self._records[rec.id] = rec
                 self._save(rec)
                 out.append(serialize(rec))

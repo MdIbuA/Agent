@@ -1,0 +1,46 @@
+{
+ "documents": 20,
+ "scanned": false,
+ "rules": {
+  "invoice_number": 0.0,
+  "date": 100.0,
+  "due_date": 0.0,
+  "total": 50.0,
+  "company": 100.0,
+  "seller_trn": 0.0,
+  "buyer_trn": 0.0,
+  "buyer_name": 100.0,
+  "seller_address": 100.0,
+  "buyer_address": 100.0,
+  "lines": 100.0
+ },
+ "llm": {
+  "invoice_number": 100.0,
+  "date": 100.0,
+  "due_date": 100.0,
+  "total": 100.0,
+  "company": 100.0,
+  "seller_trn": 100.0,
+  "buyer_trn": 100.0,
+  "buyer_name": 100.0,
+  "seller_address": 100.0,
+  "buyer_address": 100.0,
+  "lines": 100.0
+ },
+ "hybrid": {
+  "invoice_number": 100.0,
+  "date": 100.0,
+  "due_date": 100.0,
+  "total": 100.0,
+  "company": 100.0,
+  "seller_trn": 100.0,
+  "buyer_trn": 100.0,
+  "buyer_name": 100.0,
+  "seller_address": 100.0,
+  "buyer_address": 100.0,
+  "lines": 100.0
+ },
+ "hybrid_auto_accepted_fields": 110,
+ "hybrid_auto_accept_precision_pct": 100.0,
+ "hybrid_auto_accept_coverage_pct": 55.0
+}

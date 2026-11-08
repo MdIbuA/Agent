@@ -20,6 +20,7 @@ export default function App() {
   const [query, setQuery] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
   const [theme, setTheme] = useState<Theme>(initialTheme);
+  const [ai, setAi] = useState<{ on: boolean; model: string | null }>({ on: false, model: null });
   const searchRef = useRef<HTMLInputElement>(null);
   const toast = useToast();
 
@@ -27,6 +28,10 @@ export default function App() {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem("qaid-theme", theme);
   }, [theme]);
+
+  useEffect(() => {
+    api.health().then((h) => setAi({ on: h.ai, model: h.aiModel })).catch(() => {});
+  }, []);
 
   useEffect(() => {
     api.list().then(setState).catch((e) => setError(e instanceof ApiError ? e.message : String(e)));
@@ -95,10 +100,19 @@ export default function App() {
           <a className="nav-item" href={api.exportUrl}><FileStack size={16} />ASP hand-off pack</a>
           <a className="nav-item" href="/docs" target="_blank" rel="noreferrer"><BookOpen size={16} />API docs</a>
         </nav>
-        <div className="sidebar-foot">
-          <strong><Lock size={12} style={{ verticalAlign: -1 }} /> Runs on your machine</strong>
-          Scans are read by local OCR. Invoices never leave this computer.
-        </div>
+        {/* Privacy notice must match reality: with AI assist on, unclear invoices go to Google. */}
+        {ai.on ? (
+          <div className="sidebar-foot sidebar-foot-ai">
+            <strong><Sparkles size={12} style={{ verticalAlign: -1 }} /> AI assist is on</strong>
+            Invoices the local reader can't fully read are sent to Google Gemini
+            {ai.model ? ` (${ai.model})` : ""}. Clear invoices stay on this computer.
+          </div>
+        ) : (
+          <div className="sidebar-foot">
+            <strong><Lock size={12} style={{ verticalAlign: -1 }} /> Runs on your machine</strong>
+            Scans are read by local OCR. Invoices never leave this computer.
+          </div>
+        )}
       </aside>
 
       <div className="main">
@@ -151,7 +165,7 @@ export default function App() {
               </button>
               <div className="trust">
                 <span><ShieldCheck size={14} />Deterministic VAT and TRN checks</span>
-                <span><Lock size={14} />Offline OCR, no cloud upload</span>
+                <span><Lock size={14} />{ai.on ? "Local OCR first, AI only when needed" : "Offline OCR, no cloud upload"}</span>
                 <span><FileStack size={14} />UBL 2.1 XML output</span>
               </div>
             </section>

@@ -60,16 +60,19 @@ Two independent OCR engines read every scan. Fields they agree on are auto-accep
 fields they disagree on become a confirmation question for the owner. See
 [BENCHMARK.md](BENCHMARK.md) for accuracy on 626 real scanned receipts.
 
-## With a free LLM tier (real files)
+## Optional AI assist (Gemini, free tier)
 
 ```bash
-export LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai   # or Groq/OpenRouter
-export LLM_API_KEY=...        # free key
-export LLM_MODEL=...          # a vision-capable model for photos
-python3 -m ira.agent path/to/invoices/ --llm --interactive
+export QAID_LLM=1                      # off by default: fully offline without it
+export LLM_API_KEY=...                 # Google AI Studio key (free tier)
+export LLM_MODEL=gemini-3.5-flash      # default; any OpenAI-compatible endpoint via LLM_BASE_URL
+python3 -m ira.server
 ```
 
-Use **synthetic invoices only** on free tiers (they may log data).
+Rules run first; the AI is consulted only when they miss a key field, and fields where rules
+and AI agree are accepted while disagreements are confirmed by the owner. On an unseen invoice
+layout the AI read 100% of fields where rules alone missed invoice numbers, TRNs and due dates
+(see BENCHMARK.md). With AI on, unclear invoices are sent to Google, and the UI says so.
 
 ## Layout
 
@@ -78,7 +81,7 @@ Use **synthetic invoices only** on free tiers (they may log data).
 | `ira/models.py` | Invoice data model (Decimal money) + lenient parsing of messy values |
 | `ira/validate.py` | Rule engine with stable codes, severities and owner-facing questions |
 | `ira/ubl.py` | UBL 2.1 XML generator (VAT grouped by rate) |
-| `ira/extract.py` | LLM extraction via any OpenAI-compatible endpoint |
+| `ira/extract.py` | AI extraction (Gemini / any OpenAI-compatible API) + rules/AI hybrid merge |
 | `ira/ubl_import.py` | Reads UBL / PINT AE invoices and credit notes (ERP output) |
 | `ira/codelists.py` | Official PINT AE code lists (currencies, units, payment means, credit reasons) |
 | `ira/ocr.py` | Free local OCR engines: RapidOCR (PP-OCR/ONNX, with deskew) and Tesseract |
@@ -90,6 +93,7 @@ Use **synthetic invoices only** on free tiers (they may log data).
 | `benchmarks/pint_ae_check.py` | Validates XML with the official OpenPeppol PINT AE Schematron |
 | `benchmarks/agreement.py` | Agent validator vs official rules: official examples + 120 mutants |
 | `benchmarks/uae_invoice_pdfs.py` | UAE tax-invoice PDFs (digital + scanned, held-out layouts) |
+| `benchmarks/llm_vs_rules.py` | Rules vs AI vs hybrid on an unseen layout |
 | `ira/agent.py` | Orchestrator, human-in-the-loop repair, readiness report |
 | `ira/service.py` | Workspace: stores invoices, applies owner answers, re-validates |
 | `ira/server.py` | FastAPI app: REST API + serves the built web UI |

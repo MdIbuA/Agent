@@ -75,6 +75,35 @@ labels tolerant of OCR I/l confusion, buyer block anchored on the buyer TRN when
 is lost, document titles cut from merged header rows. The 626-receipt benchmark below was
 re-run after these changes: no regression beyond one receipt (total 87.1% → 86.9%).
 
+## 2b. Rules vs AI vs hybrid on an unseen layout (`benchmarks/llm_vs_rules.py`)
+
+Held-out layout #3 (20 invoices), written for this comparison with unusual wording ("Our
+Invoice", "Dt.", TRN printed with dots, "Credit terms: payable before", "BALANCE (AED)") and
+a quotation-number distractor. Neither the rules nor the AI prompt were tuned on it.
+
+| Field | Digital: rules | Digital: AI (gemini-3.5-flash, text) | Scanned: rules (OCR) | Scanned: AI (gemini-3.5-flash-lite, vision) |
+|---|---|---|---|---|
+| Invoice number | 0% | **100%** | 0% | **100%** |
+| Issue date | 100% | **100%** | 0% | **100%** |
+| Due date | 0% | **100%** | 0% | **100%** |
+| Total | 50% | **100%** | 50% | **100%** |
+| Seller / buyer TRN | 0% / 0% | **100% / 100%** | 0% / 0% | **100% / 100%** |
+| Company, parties, addresses, line items | 100% | **100%** | 0–100% | **100%** |
+
+**Hybrid** (auto-accept where rules and AI agree, otherwise ask the owner with the AI value
+pre-filled): auto-accepted 55% (digital) / 33% (scanned) of fields, **100% of those correct**;
+every final value correct after confirmation.
+
+How the agent uses this (opt-in, `QAID_LLM=1`): rules first; the AI is called **only when the
+rules miss a key field** (invoice number, date, total, seller, a valid seller TRN, or line
+items). On familiar layouts the rules score 100%, so most invoices cost no AI call. Any AI
+failure (quota, offline, bad reply) falls back to rules-only.
+
+Caveats: 20 documents per set; one rendered layout; model behaviour changes over time (model
+names recorded in `benchmarks/results/`). The Gemini free tier allowed **20 requests per day
+per model** when this was run, enough for a demo, not for production volumes. With AI on,
+unclear invoices are sent to Google; the UI says so.
+
 # 3. Real-data benchmark: 626 scanned receipts, $0, fully offline
 
 **Dataset:** ICDAR-2019 SROIE training split (626 real scanned receipts, Malaysia), with

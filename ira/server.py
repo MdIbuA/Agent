@@ -61,7 +61,10 @@ def _state() -> dict:
 
 @app.get("/api/health")
 def health():
-    return {"ok": True, "ocr": ocr_engine()}
+    from .agent import llm_enabled
+    from .extract import DEFAULT_MODEL
+    model = os.environ.get("LLM_MODEL", DEFAULT_MODEL) if llm_enabled() else None
+    return {"ok": True, "ocr": ocr_engine(), "ai": llm_enabled(), "aiModel": model}
 
 
 @app.get("/api/invoices")

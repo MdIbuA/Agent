@@ -47,6 +47,13 @@ HOLDOUT2_LAYOUT = dict(title="Tax Invoice", ar="فاتورة ضريبية", no="
                        buyer_trn="Customer TRN", lpo=True)
 
 
+# Third held-out layout, written for the rules-vs-LLM comparison; unusual wording on purpose.
+HOLDOUT3_LAYOUT = dict(title="VAT INVOICE", ar="فاتورة ضريبية", no="Our Invoice", date="Dt.",
+                       due="Credit terms: payable before", trn="Tax Reg. #", bill="Ship & Bill to",
+                       total="BALANCE (AED)", sub="Amount before tax", vat="Output VAT",
+                       trn_fmt=lambda t: f"{t[:3]}.{t[3:9]}.{t[9:]}", accent="#9d174d", quote=True)
+
+
 def _dmy(iso: str) -> str:
     y, m, d = iso.split("-")
     return f"{d}/{m}/{y}"
@@ -69,7 +76,7 @@ th{{background:#f3f4f6}} .r{{text-align:right}} .tot td{{border:0}} .grand{{font
 <div class=hdr><div><strong style="font-size:15px">{e(s['name'])}</strong><br>{e(s['address'])}<br>
 {e(L['trn'])} {L['trn_fmt'](s['trn'])}<br>Trade Licence {e(s['legal_id'])}</div>
 <div style="text-align:right"><h1>{e(L['title'])}</h1><div class=ar>{L['ar']}</div>
-{('LPO No. 45' + inv['invoice_number'][-4:] + '<br>') if L.get('lpo') else ''}{e(L['no'])} {e(inv['invoice_number'])}<br>{e(L['date'])} {_dmy(inv['issue_date'])}<br>
+{('LPO No. 45' + inv['invoice_number'][-4:] + '<br>') if L.get('lpo') else ''}{('Quotation Ref Q-2026-' + inv['invoice_number'][-3:] + '7<br>') if L.get('quote') else ''}{e(L['no'])} {e(inv['invoice_number'])}<br>{e(L['date'])} {_dmy(inv['issue_date'])}<br>
 {e(L['due'])} {_dmy(inv['due_date'])}</div></div>
 <div class=box><strong>{e(L['bill'])}</strong><br>{e(b['name'])}<br>{e(b['address'])}<br>
 {e(L.get('buyer_trn', L['trn']))} {L['trn_fmt'](b['trn'])}</div>
@@ -105,7 +112,7 @@ def make(out: Path, count: int, seed: int, holdout: int = 0) -> None:
     for n in range(1, count + 1):
         inv = clean_invoice(rng, n)
         name = f"uae-{n:03d}"
-        layout = {1: HOLDOUT_LAYOUT, 2: HOLDOUT2_LAYOUT}.get(holdout) or LAYOUTS[n % len(LAYOUTS)]
+        layout = {1: HOLDOUT_LAYOUT, 2: HOLDOUT2_LAYOUT, 3: HOLDOUT3_LAYOUT}.get(holdout) or LAYOUTS[n % len(LAYOUTS)]
         (out / f"{name}.html").write_text(render_html(inv, layout), encoding="utf-8")
         truth[name] = {"invoice_number": inv["invoice_number"], "date": inv["issue_date"],
                        "due_date": inv["due_date"], "total": inv["gross_total"], "company": inv["seller"]["name"],
@@ -177,7 +184,7 @@ def main():
     ap.add_argument("--count", type=int, default=60)
     ap.add_argument("--seed", type=int, default=971)
     ap.add_argument("--scanned", action="store_true")
-    ap.add_argument("--holdout", type=int, default=0, choices=[0, 1, 2], help="render a held-out layout")
+    ap.add_argument("--holdout", type=int, default=0, choices=[0, 1, 2, 3], help="render a held-out layout")
     a = ap.parse_args()
     if a.cmd == "make":
         make(a.out, a.count, a.seed, a.holdout)

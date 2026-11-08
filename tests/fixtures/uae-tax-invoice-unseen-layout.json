@@ -1,0 +1,30 @@
+{
+ "invoice_number": "INV-2026-0002",
+ "date": "2026-03-25",
+ "due_date": "2026-04-25",
+ "total": "2610.30",
+ "company": "Al Noor Building Materials LLC",
+ "seller_trn": "100552674246203",
+ "buyer_trn": "100777941028503",
+ "buyer_name": "Palm Fresh Restaurants LLC",
+ "seller_address": "Deira, Dubai",
+ "buyer_address": "Al Khalidiyah, Abu Dhabi",
+ "lines": [
+  [
+   "9",
+   "135.00",
+   "1215.00"
+  ],
+  [
+   "16",
+   "18.50",
+   "296.00"
+  ],
+  [
+   "13",
+   "75.00",
+   "975.00"
+  ]
+ ],
+ "layout": "holdout3"
+}

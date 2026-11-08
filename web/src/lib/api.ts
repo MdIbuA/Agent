@@ -24,6 +24,7 @@ export interface Line {
 export interface Invoice {
   id: string;
   source: "sample" | "json" | "xml" | "pdf" | "scan";
+  extractor: string | null;
   file: string | null;
   invoiceNumber: string | null;
   issueDate: string | null;
@@ -80,7 +81,7 @@ const json = (body: unknown): RequestInit => ({
 });
 
 export const api = {
-  health: () => request<{ ok: boolean; ocr: string | null }>("/api/health"),
+  health: () => request<{ ok: boolean; ocr: string | null; ai: boolean; aiModel: string | null }>("/api/health"),
   list: () => request<State>("/api/invoices"),
   sample: (count = 12) => request<State>(`/api/invoices/sample?count=${count}`, { method: "POST" }),
   upload: (files: File[]) => {

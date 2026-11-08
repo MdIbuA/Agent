@@ -184,7 +184,7 @@ export function InvoiceDrawer({ invoice, onClose, onUpdated, onDelete }: {
               <div><dt>Seller TRN</dt><dd className="mono"><Val v={seller.trn} /></dd></div>
               <div><dt>Buyer TRN</dt><dd className="mono"><Val v={buyer.trn} /></dd></div>
               <div><dt>Issue date</dt><dd><Val v={fmtDate(invoice.issueDate)} /></dd></div>
-              <div><dt>Source</dt><dd>{{ scan: "Scanned document (OCR)", pdf: "PDF (text layer)", json: "Uploaded data", xml: "E-invoice XML", sample: "Sample data" }[invoice.source]}</dd></div>
+              <div><dt>Source</dt><dd>{{ scan: "Scanned document (OCR)", pdf: "PDF (text layer)", json: "Uploaded data", xml: "E-invoice XML", sample: "Sample data" }[invoice.source]}{invoice.extractor && <div className="cell-sub">Read by {invoice.extractor.replace("AI", "AI (Gemini)")}</div>}</dd></div>
             </dl>
           </section>
 

@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 from pathlib import Path
 
@@ -129,9 +130,46 @@ def _ocr_extract(path: Path, engine: str) -> dict:
     return _to_invoice_dict(found, unconfirmed, path.name, "ocr-2")
 
 
+KEY_FIELDS = ("invoice_number", "date", "total", "company", "seller_trn")
+
+
+def llm_enabled() -> bool:
+    """AI extraction is opt-in (QAID_LLM=1). Without it the agent is fully offline and free."""
+    return os.environ.get("QAID_LLM", "").strip().lower() in ("1", "true", "on", "gemini")
+
+
+def _rules_incomplete(found: dict) -> bool:
+    """Call the AI only when the free rules missed something important (keeps AI calls rare)."""
+    from .validate import TRN_RE
+    return (any(not found.get(f) for f in KEY_FIELDS) or not found.get("lines")
+            or not TRN_RE.match(found.get("seller_trn") or ""))
+
+
+def _with_llm(found: dict, unconfirmed: list[str], text: str, image: Path | None) -> tuple[dict, list[str], str]:
+    """Rules first; AI only if needed. Agreement between the two independent readers is accepted,
+    disagreements go to the owner. Any AI failure (quota, offline, bad reply) falls back to rules."""
+    if not llm_enabled() or not _rules_incomplete(found):
+        return found, unconfirmed, "rules"
+    from .extract import LLMError, hybrid, llm_extract_image, llm_extract_text
+    try:
+        llm = llm_extract_image(image) if image is not None else llm_extract_text(text)
+    except LLMError:
+        return found, unconfirmed, "rules (AI unavailable)"
+    merged, disagreements = hybrid(found, llm)
+    return merged, [f for f in disagreements if f in OCR_FIELDS], "rules + AI"
+
+
+def _render_first_page(pdf: Path, out: Path) -> Path:
+    import pypdfium2 as pdfium
+    pdfium.PdfDocument(str(pdf))[0].render(scale=150 / 72).to_pil().save(out)
+    return out
+
+
 def document_extract(path: Path, engine: str | None) -> dict:
     """Images and PDFs. Digital PDFs are read from their text layer (exact, auto-accepted);
-    scanned PDFs go through OCR and their fields are confirmed by the owner."""
+    scanned PDFs and images go through OCR and their fields are confirmed by the owner.
+    With QAID_LLM=1, the AI is consulted only when the rules leave gaps."""
+    import tempfile
     from .rule_extract import extract as rule_extract
     if path.suffix.lower() == ".pdf":
         from .ocr import ENGINES
@@ -141,11 +179,28 @@ def document_extract(path: Path, engine: str | None) -> dict:
             def ocr(_img):
                 raise ValueError("This PDF is a scan and no OCR engine is installed.")
         text, mode = pdf_to_text(path, ocr)
+        found = rule_extract(text)
         unconfirmed = [] if mode == "text-layer" else list(OCR_FIELDS)
-        return _to_invoice_dict(rule_extract(text), unconfirmed, path.name, mode)
+        with tempfile.TemporaryDirectory() as td:
+            image = None if mode == "text-layer" else _render_first_page(path, Path(td) / "p1.png")
+            found, unconfirmed, by = _with_llm(found, unconfirmed, text, image)
+        d = _to_invoice_dict(found, unconfirmed, path.name, mode)
+        d["_extractor"] = by
+        return d
     if engine is None:
         raise ValueError("No OCR engine installed (pip install rapidocr_onnxruntime).")
-    return _ocr_extract(path, engine)
+    d = _ocr_extract(path, engine)
+    if llm_enabled():
+        from .ocr import ENGINES
+        from .rule_extract import extract as rx
+        found = rx(ENGINES["rapidocr" if engine in ("both", "rapidocr") else engine](path))
+        merged, unconfirmed, by = _with_llm(found, d["_unconfirmed"], "", path)
+        if by == "rules + AI":
+            d = _to_invoice_dict(merged, unconfirmed, path.name, d["_via"])
+        d["_extractor"] = by
+    else:
+        d["_extractor"] = "rules"
+    return d
 
 
 def _load(source: Path, use_llm: bool, ocr: str | None = None) -> list[dict]:
