@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Tests (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Unit tests
+        run: python -m unittest -v
+
+      - name: Fault-detection eval (must stay at 100%)
+        run: |
+          python - <<'PY'
+          from ira.eval import evaluate
+          r = evaluate(count=200)
+          print(r)
+          assert r["precision"] == 1.0 and r["recall"] == 1.0 and r["clean_pass_rate"] == 1.0, r
+          PY
+
+      - name: Agent smoke run on synthetic invoices
+        run: |
+          python -m ira.synth
+          python -m ira.agent data/synthetic_invoices.json --out out
+          test -s out/readiness_report.json
+          ls out/*.xml | head -3

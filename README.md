@@ -1,5 +1,7 @@
 # Invoice Readiness Agent (UAE e-invoicing, PINT-AE)
 
+[![CI](https://github.com/MdIbuA/Agent/actions/workflows/ci.yml/badge.svg)](https://github.com/MdIbuA/Agent/actions/workflows/ci.yml)
+
 An AI agent that turns messy SME invoices (photos, PDFs, Excel, text) into validated,
 structured UBL invoices ready to hand to an Accredited Service Provider (ASP) before
 the UAE's 2027 e-invoicing mandate.
