@@ -21,8 +21,31 @@ document UUID (`ibr-193-ae`), seller trade licence + issuing authority (`ibr-150
 Peppol endpoint (scheme 0235), and line-level AED amounts (`ibr-104-ae`). CI runs this
 check on every push.
 
-Scope: standard tax invoices (S/Z rated). Credit notes, reverse charge, exports, free-zone
-and margin-scheme variants are not generated yet.
+Generated documents now include **credit notes** (official reason codes, reference to the
+original invoice): 100/100 pass (80 invoices + 20 credit notes).
+
+### Does the agent's own validator agree with the official rules? (`benchmarks/agreement.py`)
+
+The agent validates invoices itself (so it can ask the owner plain-language questions), so it
+must neither block valid UAE invoices nor wave through invalid ones.
+
+| Test | Result |
+|---|---|
+| False alarms on the 12 official example documents (standard, zero-rated, reverse charge, export in USD, free zone, e-commerce, margin scheme, summary, out-of-scope, 2 credit notes) | **0** |
+| 120 mutants: each official invoice with one injected error (12 error types) | **100% agreement**, 100% recall, never stricter than official |
+
+Getting there exposed real UAE rules the agent had wrong: reverse-charge and margin-scheme
+lines carry 5% but no VAT is charged by the seller; VAT is computed per category after
+document-level discounts and charges (not per line); foreign and unregistered buyers have no
+TRN; the official payment-means list (cheque yes, generic "bank card" no); emirate must be
+stated in e-invoice XML, never inferred; credit notes need an official reason code
+(Art. 61 cases) and a reference to the original invoice. Code lists (ISO 4217, ISO 3166,
+UN/ECE Rec 20, payment means, credit reasons, transaction flags) are extracted from the
+official bundle into `ira/codelists.py`.
+
+Scope: the agent *validates* all official document types, and *generates* standard,
+zero-rated invoices and credit notes. Generating reverse-charge, export, free-zone and
+margin-scheme documents is not implemented yet.
 
 # 2. Real-data benchmark: 626 scanned receipts, $0, fully offline
 

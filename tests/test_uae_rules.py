@@ -29,10 +29,13 @@ class TestUaeRules(unittest.TestCase):
         self.assertNotIn("BAD_SELLER_TRN", codes(self.d))
 
     def test_emirate_required_and_inferred_only_when_written(self):  # ibr-128/143/144-ae
-        self.d["buyer"].update(address="Warehouse 4", city="Industrial Area", emirate=None)
+        self.d["buyer"].update(address="Warehouse 4", city="Industrial Area")
+        self.d["buyer"].pop("emirate", None)
         self.assertIn("MISSING_BUYER_EMIRATE", codes(self.d))
-        self.d["buyer"]["city"] = "Abu Dhabi"
+        self.d["buyer"]["city"] = "Abu Dhabi"            # absent field + explicit city -> inferred
         self.assertEqual(invoice_from_dict(self.d).buyer.emirate, "AUH")
+        self.d["buyer"]["emirate"] = None                # e-invoice XML said nothing -> never inferred
+        self.assertIsNone(invoice_from_dict(self.d).buyer.emirate)
 
     def test_due_date_and_payment_means_required(self):  # ibr-127-ae, ibr-191-ae
         self.d["due_date"] = None
@@ -64,3 +67,31 @@ class TestUaeRules(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestCreditNotes(unittest.TestCase):
+    def setUp(self):
+        from ira.synth import credit_note_for
+        self.inv = clean_invoice(random.Random(3), 3)
+        self.cn = credit_note_for(self.inv, random.Random(3), 9)
+
+    def test_clean_credit_note_is_valid_and_has_no_payment_terms(self):
+        self.assertEqual(codes(self.cn), set())
+        xml = to_ubl_xml(invoice_from_dict(self.cn))
+        self.assertIn("<CreditNote ", xml)
+        self.assertIn("<cbc:ResponseCode>DL8.61.1.D</cbc:ResponseCode>", xml)
+        self.assertIn(f"<cbc:ID>{self.inv['invoice_number']}</cbc:ID>", xml)  # BillingReference
+        self.assertNotIn("<cbc:DueDate>", xml)
+        self.assertNotIn("<cac:PaymentMeans>", xml)
+
+    def test_reason_and_reference_required(self):  # ibr-158-ae, ibr-055-ae
+        self.cn["credit_reason"] = None
+        self.cn["preceding_invoice"] = None
+        self.assertTrue({"MISSING_CREDIT_REASON", "MISSING_PRECEDING_INVOICE"} <= codes(self.cn))
+        self.cn["credit_reason"] = "VD"  # volume discount: no single invoice to reference
+        self.assertNotIn("MISSING_PRECEDING_INVOICE", codes(self.cn))
+
+    def test_round_trip_through_importer(self):
+        from ira.ubl_import import parse_ubl
+        xml = to_ubl_xml(invoice_from_dict(self.cn))
+        self.assertEqual(to_ubl_xml(invoice_from_dict(parse_ubl(xml))), xml)

@@ -2,7 +2,9 @@
 
 [![CI](https://github.com/MdIbuA/Agent/actions/workflows/ci.yml/badge.svg)](https://github.com/MdIbuA/Agent/actions/workflows/ci.yml)
 
-**100/100 generated invoices pass the official OpenPeppol PINT AE v1.0.3 Schematron** (checked in CI).
+**Checked against the official OpenPeppol PINT AE v1.0.3 rules in CI:** 100/100 generated
+invoices and credit notes pass; 0 false alarms on the 12 official example documents; 100%
+agreement with the official rules on 120 mutated invoices. See [BENCHMARK.md](BENCHMARK.md).
 
 An AI agent that turns messy SME invoices (photos, PDFs, Excel, text) into validated,
 structured UBL invoices ready to hand to an Accredited Service Provider (ASP) before
@@ -75,12 +77,15 @@ Use **synthetic invoices only** on free tiers (they may log data).
 | `ira/validate.py` | Rule engine with stable codes, severities and owner-facing questions |
 | `ira/ubl.py` | UBL 2.1 XML generator (VAT grouped by rate) |
 | `ira/extract.py` | LLM extraction via any OpenAI-compatible endpoint |
+| `ira/ubl_import.py` | Reads UBL / PINT AE invoices and credit notes (ERP output) |
+| `ira/codelists.py` | Official PINT AE code lists (currencies, units, payment means, credit reasons) |
 | `ira/ocr.py` | Free local OCR engines: RapidOCR (PP-OCR/ONNX) and Tesseract |
 | `ira/layout.py` | Rebuilds visual rows from OCR word boxes (label/value columns) |
 | `ira/rule_extract.py` | Offline extractor for date / total / seller; LLM cross-check and fallback |
 | `benchmarks/sroie_bench.py` | Accuracy on 626 real scanned receipts (ICDAR-2019 SROIE) |
 | `benchmarks/confidence.py` | Two-engine agreement: auto-accept coverage vs precision |
 | `benchmarks/pint_ae_check.py` | Validates XML with the official OpenPeppol PINT AE Schematron |
+| `benchmarks/agreement.py` | Agent validator vs official rules: official examples + 120 mutants |
 | `ira/agent.py` | Orchestrator, human-in-the-loop repair, readiness report |
 | `ira/service.py` | Workspace: stores invoices, applies owner answers, re-validates |
 | `ira/server.py` | FastAPI app: REST API + serves the built web UI |

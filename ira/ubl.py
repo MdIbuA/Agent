@@ -17,8 +17,11 @@ from decimal import ROUND_HALF_UP, Decimal
 
 from .models import Invoice, Party
 
+INVOICE_NS = "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+CREDIT_NOTE_NS = "urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2"
+CREDIT_NOTE_TYPES = {"381", "81", "261"}
 NS = {
-    "": "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2",
+    "": INVOICE_NS,
     "cac": "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2",
     "cbc": "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
 }
@@ -30,7 +33,8 @@ UNIT_PIECE = "H87"                                   # UN/ECE Rec 20: piece
 _UUID_NS = uuid.UUID("6f1c3a52-6a77-4a8e-9c0f-6d2a1f0e5b11")
 
 for prefix, uri in NS.items():
-    ET.register_namespace(prefix, uri)
+    if prefix:
+        ET.register_namespace(prefix, uri)
 
 CENT = Decimal("0.01")
 
@@ -92,21 +96,32 @@ def _category(rate: Decimal) -> str:
 
 
 def to_ubl_xml(inv: Invoice) -> str:
+    """Invoice (380/480) or CreditNote (381/81/261) in PINT AE UBL 2.1."""
     cur = inv.currency or "AED"
-    root = ET.Element(_q(":Invoice"))
+    credit = inv.invoice_type in CREDIT_NOTE_TYPES
+    doc_ns = CREDIT_NOTE_NS if credit else INVOICE_NS
+    ET.register_namespace("", doc_ns)
+    root = ET.Element(f"{{{doc_ns}}}{'CreditNote' if credit else 'Invoice'}")
     _el(root, "cbc:CustomizationID", CUSTOMIZATION_ID)
     _el(root, "cbc:ProfileID", PROFILE_ID)
     _el(root, "cbc:ProfileExecutionID", TRANSACTION_TYPE_STANDARD)
     _el(root, "cbc:ID", inv.invoice_number)
     _el(root, "cbc:UUID", document_uuid(inv))
     _el(root, "cbc:IssueDate", inv.issue_date)
-    if inv.due_date:
+    if inv.due_date and not credit:  # UBL CreditNote has no header DueDate
         _el(root, "cbc:DueDate", inv.due_date)
-    _el(root, "cbc:InvoiceTypeCode", inv.invoice_type)
+    _el(root, "cbc:CreditNoteTypeCode" if credit else "cbc:InvoiceTypeCode", inv.invoice_type)
     _el(root, "cbc:DocumentCurrencyCode", cur)
+    if credit and inv.credit_reason:
+        _el(_el(root, "cac:DiscrepancyResponse"), "cbc:ResponseCode", inv.credit_reason)
+    if inv.preceding_invoice:
+        ref = _el(_el(root, "cac:BillingReference"), "cac:InvoiceDocumentReference")
+        _el(ref, "cbc:ID", inv.preceding_invoice)
+        if inv.preceding_invoice_date:
+            _el(ref, "cbc:IssueDate", inv.preceding_invoice_date)
     _party(root, "cac:AccountingSupplierParty", inv.seller)
     _party(root, "cac:AccountingCustomerParty", inv.buyer)
-    if inv.payment_means:
+    if inv.payment_means and not credit:
         _el(_el(root, "cac:PaymentMeans"), "cbc:PaymentMeansCode", inv.payment_means)
 
     # Per-line amounts, rounded per line exactly as validate.py does, so totals agree.
@@ -140,9 +155,10 @@ def to_ubl_xml(inv: Invoice) -> str:
     _el(lmt, "cbc:PayableAmount", _money(net_total + vat_total), currencyID=cur)
 
     for i, (ln, net, vat) in enumerate(lines, start=1):
-        il = _el(root, "cac:InvoiceLine")
+        il = _el(root, "cac:CreditNoteLine" if credit else "cac:InvoiceLine")
         _el(il, "cbc:ID", i)
-        _el(il, "cbc:InvoicedQuantity", _num(ln.quantity), unitCode=UNIT_PIECE)
+        _el(il, "cbc:CreditedQuantity" if credit else "cbc:InvoicedQuantity", _num(ln.quantity),
+            unitCode=ln.unit_code or UNIT_PIECE)
         _el(il, "cbc:LineExtensionAmount", _money(net), currencyID=cur)
         item = _el(il, "cac:Item")
         _el(item, "cbc:Description", ln.description)
@@ -153,7 +169,7 @@ def to_ubl_xml(inv: Invoice) -> str:
         _el(_el(cat, "cac:TaxScheme"), "cbc:ID", "VAT")
         price = _el(il, "cac:Price")
         _el(price, "cbc:PriceAmount", _money(ln.unit_price), currencyID=cur)
-        _el(price, "cbc:BaseQuantity", "1", unitCode=UNIT_PIECE)
+        _el(price, "cbc:BaseQuantity", "1", unitCode=ln.unit_code or UNIT_PIECE)
         ac = _el(price, "cac:AllowanceCharge")  # gross price = net price (no price discount)
         _el(ac, "cbc:ChargeIndicator", "false")
         _el(ac, "cbc:Amount", "0.00", currencyID=cur)

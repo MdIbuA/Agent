@@ -45,14 +45,16 @@ class Checker:
         from saxonche import PySaxonProcessor
         self._proc = PySaxonProcessor(license=False)
         xslt = self._proc.new_xslt30_processor()
-        base = resources / "trn-invoice" / "schematron"
-        self._sheets = [xslt.compile_stylesheet(stylesheet_file=str(base / f"{n}.xslt")) for n in SHEETS]
+        self._sheets = {kind: [xslt.compile_stylesheet(
+            stylesheet_file=str(resources / folder / "schematron" / f"{n}.xslt")) for n in SHEETS]
+            for kind, folder in (("Invoice", "trn-invoice"), ("CreditNote", "trn-creditnote"))}
 
     def check(self, xml_text: str) -> list[tuple[str, str, str]]:
         """Return (flag, rule_id, message) for every failed assertion."""
         node = self._proc.parse_xml(xml_text=xml_text)
+        kind = "CreditNote" if "<CreditNote" in xml_text[:600] or ":CreditNote-2\"" in xml_text[:900] else "Invoice"
         out = []
-        for sheet in self._sheets:
+        for sheet in self._sheets[kind]:
             svrl = sheet.transform_to_string(xdm_node=node)
             out += [(m[2], m[1], " ".join(m[3].split())) for m in _FAIL.finditer(svrl)]
         return out
@@ -60,14 +62,18 @@ class Checker:
 
 def generated_invoices(count: int, seed: int):
     from ira.models import invoice_from_dict
-    from ira.synth import clean_invoice
+    from ira.synth import clean_invoice, credit_note_for
     from ira.ubl import to_ubl_xml
     from ira.validate import validate
     rng = random.Random(seed)
     for n in range(1, count + 1):
-        inv = invoice_from_dict(clean_invoice(rng, n))
-        assert not [i for i in validate(inv) if i.severity == "error"], "clean invoice must validate"
-        yield f"generated-{n:03d}", to_ubl_xml(inv)
+        d = clean_invoice(rng, n)
+        if n % 5 == 0:  # every 5th document is a credit note
+            d = credit_note_for(d, rng, n)
+        inv = invoice_from_dict(d)
+        errs = [i.code for i in validate(inv) if i.severity == "error"]
+        assert not errs, f"clean document must validate: {errs}"
+        yield f"generated-{n:03d}-{inv.invoice_type}", to_ubl_xml(inv)
 
 
 def main() -> int:

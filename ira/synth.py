@@ -65,7 +65,7 @@ def clean_invoice(rng: random.Random, n: int) -> dict:
         "invoice_number": f"INV-2026-{n:04d}",
         "issue_date": f"2026-{month:02d}-{day:02d}",
         "due_date": f"2026-{month + 1:02d}-{day:02d}",
-        "payment_means": rng.choice(["30", "30", "30", "48", "10"]),
+        "payment_means": rng.choice(["30", "30", "30", "20", "10", "54"]),
         "currency": "AED",
         "seller": {"name": s[0], "trn": _trn(rng), "address": s[1], "city": s[1].split(", ")[-1],
                    "legal_id": f"{rng.randint(100000, 999999)}", "legal_id_type": "TL", "legal_authority": s[2]},
@@ -73,6 +73,19 @@ def clean_invoice(rng: random.Random, n: int) -> dict:
         "lines": lines,
         "net_total": str(net), "vat_total": str(vat), "gross_total": str(net + vat),
     }
+
+
+def credit_note_for(inv: dict, rng: random.Random, n: int) -> dict:
+    """A credit note returning part of the first line of `inv` (e.g. damaged goods)."""
+    line = dict(inv["lines"][0])
+    qty = Decimal(max(1, int(Decimal(line["quantity"])) // 2))
+    net = (qty * Decimal(line["unit_price"])).quantize(Decimal("0.01"))
+    vat = (net * Decimal(line["vat_rate"]) / 100).quantize(Decimal("0.01"))
+    line.update(quantity=str(qty), line_total=str(net))
+    return {**inv, "invoice_number": f"CN-2026-{n:04d}", "invoice_type": "381", "due_date": None,
+            "payment_means": None, "preceding_invoice": inv["invoice_number"],
+            "preceding_invoice_date": inv["issue_date"], "credit_reason": "DL8.61.1.D", "lines": [line],
+            "net_total": str(net), "vat_total": str(vat), "gross_total": str(net + vat)}
 
 
 def generate(count: int = 50, seed: int = 42, clean_ratio: float = 0.3) -> list[dict]:

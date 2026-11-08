@@ -60,8 +60,18 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install saxonche
-      - name: Validate 100 generated invoices against official PINT AE v1.0.3
+      - name: Validate 100 generated documents (80 invoices, 20 credit notes) against official PINT AE v1.0.3
         run: python -m benchmarks.pint_ae_check --count 100
+      - name: Agent vs official rules on official examples and 120 mutants
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from benchmarks.agreement import run
+          r = run(Path(".cache/pint-ae-1.0.3"))
+          print(r)
+          assert not r["false_alarms_on_official"], r["false_alarms_on_official"]
+          assert r["agreement_pct"] == 100.0, r["per_mutation"]
+          PY
 
   web:
     name: Web UI (typecheck + build)

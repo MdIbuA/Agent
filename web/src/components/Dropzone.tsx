@@ -1,7 +1,7 @@
 import { UploadCloud } from "lucide-react";
 import { useRef, useState, type DragEvent } from "react";
 
-const ACCEPT = ".jpg,.jpeg,.png,.tif,.tiff,.webp,.bmp,.json";
+const ACCEPT = ".jpg,.jpeg,.png,.tif,.tiff,.webp,.bmp,.json,.xml";
 
 export function Dropzone({ onFiles, busy }: { onFiles: (files: File[]) => void; busy: boolean }) {
   const input = useRef<HTMLInputElement>(null);
@@ -26,7 +26,7 @@ export function Dropzone({ onFiles, busy }: { onFiles: (files: File[]) => void; 
     >
       <div className="drop-icon">{busy ? <span className="spinner" /> : <UploadCloud size={24} aria-hidden />}</div>
       <strong>{busy ? "Reading your invoices…" : "Drop invoices here, or click to browse"}</strong>
-      <small>Photos or scans (JPG, PNG, TIFF, WEBP) or JSON exports · up to 25 files, 15 MB each</small>
+      <small>Photos or scans (JPG, PNG, TIFF, WEBP), e-invoice XML (UBL / PINT AE) or JSON · up to 25 files, 15 MB each</small>
       <input ref={input} type="file" multiple accept={ACCEPT} hidden
         onChange={(e) => { const f = Array.from(e.target.files ?? []); if (f.length) onFiles(f); e.target.value = ""; }} />
     </div>

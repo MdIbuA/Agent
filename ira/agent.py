@@ -33,7 +33,19 @@ _FIELD_SETTERS = {
     "seller.legal_authority": lambda inv, v: setattr(inv.seller, "legal_authority", v.strip()),
     "due_date": lambda inv, v: setattr(inv, "due_date", v),
     "payment_means": lambda inv, v: setattr(inv, "payment_means", parse_payment_means(v)),
+    "credit_reason": lambda inv, v: setattr(inv, "credit_reason", parse_credit_reason(v)),
+    "preceding_invoice": lambda inv, v: setattr(inv, "preceding_invoice", v.strip()),
 }
+
+
+def parse_credit_reason(value: str) -> str:
+    from .codelists import CREDIT_REASONS
+    v = value.strip().upper()
+    if v in CREDIT_REASONS:
+        return v
+    if f"DL8.61.1.{v}" in CREDIT_REASONS:  # allow the short letter "D"
+        return f"DL8.61.1.{v}"
+    raise ValueError("Choose an official reason: " + "; ".join(CREDIT_REASONS.values()))
 
 
 def parse_emirate(value: str) -> str:
@@ -46,8 +58,10 @@ def parse_emirate(value: str) -> str:
     return code
 
 
-_PAYMENT_WORDS = [("TRANSFER", "30"), ("BANK", "30"), ("CASH", "10"), ("DEBIT", "55"),
-                  ("CREDIT CARD", "54"), ("CARD", "48"), ("DIRECT DEBIT", "49")]
+# Order matters: more specific phrases first.
+_PAYMENT_WORDS = [("DIRECT DEBIT", "49"), ("DEBIT CARD", "55"), ("CREDIT CARD", "54"), ("DRAFT", "21"),
+                  ("CHEQUE", "20"), ("CHECK", "20"), ("PDC", "20"), ("ONLINE", "68"), ("LINK", "68"),
+                  ("TRANSFER", "30"), ("BANK", "30"), ("WIRE", "30"), ("CASH", "10"), ("CARD", "54")]
 
 
 def parse_payment_means(value: str) -> str:
@@ -59,7 +73,7 @@ def parse_payment_means(value: str) -> str:
     for word, code in _PAYMENT_WORDS:
         if word in v:
             return code
-    raise ValueError("Say how the buyer pays, e.g. bank transfer, cash or card.")
+    raise ValueError("Say how the buyer pays, e.g. bank transfer, cheque, cash or card.")
 
 
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".tif", ".tiff", ".bmp", ".webp"}

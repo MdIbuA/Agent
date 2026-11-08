@@ -29,7 +29,7 @@ _LABELS = {"date": "issue date", "total": "total", "company": "seller name"}
 class Record:
     id: str
     invoice: Invoice
-    source: str                      # "sample" | "json" | "scan"
+    source: str                      # "sample" | "json" | "xml" | "scan"
     unconfirmed: set[str] = field(default_factory=set)  # OCR fields awaiting owner confirmation
     answered: dict[str, str] = field(default_factory=dict)
 

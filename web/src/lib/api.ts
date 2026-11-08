@@ -23,7 +23,7 @@ export interface Line {
 
 export interface Invoice {
   id: string;
-  source: "sample" | "json" | "scan";
+  source: "sample" | "json" | "xml" | "scan";
   file: string | null;
   invoiceNumber: string | null;
   issueDate: string | null;
@@ -131,9 +131,21 @@ const EMIRATES = [
   { value: "AJM", label: "Ajman" }, { value: "UAQ", label: "Umm Al Quwain" },
   { value: "RAK", label: "Ras Al Khaimah" }, { value: "FUJ", label: "Fujairah" },
 ];
+// Official PINT AE payment means code list (UNCL4461 subset).
 const PAYMENT_MEANS = [
-  { value: "30", label: "Bank transfer" }, { value: "10", label: "Cash" }, { value: "48", label: "Bank card" },
+  { value: "30", label: "Bank transfer" }, { value: "20", label: "Cheque" }, { value: "10", label: "Cash" },
   { value: "54", label: "Credit card" }, { value: "55", label: "Debit card" }, { value: "49", label: "Direct debit" },
+  { value: "68", label: "Online payment link" }, { value: "21", label: "Banker's draft" },
+  { value: "1", label: "Not specified" },
+];
+// Official UAE credit note reasons (CreditReason code list, Art. 61 VAT Decree-Law cases).
+const CREDIT_REASONS = [
+  { value: "DL8.61.1.D", label: "Goods or services returned" },
+  { value: "DL8.61.1.A", label: "Supply cancelled" },
+  { value: "DL8.61.1.C", label: "Agreed price changed (e.g. bad debt relief)" },
+  { value: "DL8.61.1.E", label: "Tax charged or applied in error" },
+  { value: "DL8.61.1.B", label: "Tax treatment changed" },
+  { value: "VD", label: "Volume discount" },
 ];
 const TRN_HINT = "15 digits, starting with 1 and ending with 03. Spaces and dashes are fine.";
 
@@ -143,6 +155,8 @@ export const fieldHint: Record<string, FieldHint> = {
   "seller.emirate": { placeholder: "Choose emirate", options: EMIRATES },
   "buyer.emirate": { placeholder: "Choose emirate", options: EMIRATES },
   payment_means: { placeholder: "Choose payment method", options: PAYMENT_MEANS, hint: "Required on UAE e-invoices." },
+  credit_reason: { placeholder: "Choose a reason", options: CREDIT_REASONS, hint: "Official UAE credit note reasons." },
+  preceding_invoice: { placeholder: "e.g. INV-2026-0042", hint: "The invoice this credit note corrects." },
   due_date: { placeholder: "25/01/2027", hint: "Day first. Required when an amount is payable." },
   "seller.legal_id": { placeholder: "e.g. 1234567", hint: "As printed on the trade licence." },
   "seller.legal_authority": { placeholder: "e.g. Dubai Department of Economy and Tourism", hint: "The mainland or free-zone authority that issued the licence." },

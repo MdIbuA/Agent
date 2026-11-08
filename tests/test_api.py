@@ -51,6 +51,18 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(self.c.post("/api/invoices/nope/answer",
                                      json={"field": "buyer.trn", "value": "1"}).status_code, 404)
 
+    def test_xml_upload_round_trip(self):
+        from ira.synth import clean_invoice
+        from ira.models import invoice_from_dict
+        from ira.ubl import to_ubl_xml
+        import random
+        xml = to_ubl_xml(invoice_from_dict(clean_invoice(random.Random(9), 9)))
+        r = self.c.post("/api/invoices/upload", files=[("files", ("erp.xml", xml, "application/xml"))]).json()
+        self.assertEqual(r["errors"], [])
+        item = r["items"][0]
+        self.assertEqual((item["source"], item["status"]), ("xml", "ready"))
+        self.assertEqual(self.c.get(f"/api/invoices/{item['id']}/xml").text, xml)
+
     def test_export_zip(self):
         self.assertEqual(self.c.get("/api/export.zip").status_code, 409)
         self.c.post("/api/invoices/sample?count=20")

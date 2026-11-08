@@ -23,6 +23,7 @@ from pydantic import BaseModel, Field
 from .agent import IMAGE_SUFFIXES
 from .service import Workspace
 from .synth import generate
+from .ubl_import import parse_ubl
 
 MAX_FILES = 25
 MAX_BYTES = 15 * 1024 * 1024  # per file
@@ -96,6 +97,10 @@ async def upload(files: list[UploadFile] = File(...)):
                     for i in items:
                         i.setdefault("source_file", name)
                     ws.add_dicts(items, source="json")
+                elif suffix == ".xml":
+                    item = parse_ubl(data.decode("utf-8"))
+                    item["source_file"] = name
+                    ws.add_dicts([item], source="xml")
                 elif suffix in IMAGE_SUFFIXES:
                     if engine is None:
                         raise ValueError("No OCR engine installed (pip install rapidocr_onnxruntime).")
@@ -104,7 +109,7 @@ async def upload(files: list[UploadFile] = File(...)):
                     rec = ws.add_scan(path, engine)
                     ws.get(rec["id"]).invoice.source_file = name
                 else:
-                    raise ValueError("Use invoice images (JPG, PNG, TIFF, WEBP) or JSON.")
+                    raise ValueError("Use invoice images (JPG, PNG, TIFF, WEBP), UBL/PINT AE XML or JSON.")
             except (ValueError, UnicodeDecodeError, json.JSONDecodeError) as e:
                 errors.append({"file": name, "error": str(e)})
     return {**_state(), "errors": errors}

@@ -156,7 +156,7 @@ export function InvoiceDrawer({ invoice, onClose, onUpdated, onDelete }: {
               <div><dt>Seller TRN</dt><dd className="mono"><Val v={seller.trn} /></dd></div>
               <div><dt>Buyer TRN</dt><dd className="mono"><Val v={buyer.trn} /></dd></div>
               <div><dt>Issue date</dt><dd><Val v={fmtDate(invoice.issueDate)} /></dd></div>
-              <div><dt>Source</dt><dd>{invoice.source === "scan" ? "Scanned document (OCR)" : invoice.source === "json" ? "Uploaded data" : "Sample data"}</dd></div>
+              <div><dt>Source</dt><dd>{{ scan: "Scanned document (OCR)", json: "Uploaded data", xml: "E-invoice XML", sample: "Sample data" }[invoice.source]}</dd></div>
             </dl>
           </section>
 
