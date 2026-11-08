@@ -80,6 +80,27 @@ function Question({ issue, invoiceId, onUpdated }: {
   );
 }
 
+function ConfirmAll({ invoiceId, fields, onUpdated }: {
+  invoiceId: string; fields: string[]; onUpdated: (inv: Invoice, msg: string) => void;
+}) {
+  const [busy, setBusy] = useState(false);
+  const run = async () => {
+    setBusy(true);
+    try {
+      let last: Invoice | null = null;
+      for (const f of fields) last = (await api.confirm(invoiceId, f)).item;
+      if (last) onUpdated(last, `${fields.length} values confirmed`);
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <button className="btn btn-sm" onClick={run} disabled={busy}>
+      {busy ? <span className="spinner" /> : <Check size={14} />}All correct ({fields.length})
+    </button>
+  );
+}
+
 const Val = ({ v }: { v: string | null | undefined }) => (v ? <>{v}</> : <span className="missing">Missing</span>);
 
 export function InvoiceDrawer({ invoice, onClose, onUpdated, onDelete }: {
@@ -128,7 +149,14 @@ export function InvoiceDrawer({ invoice, onClose, onUpdated, onDelete }: {
               </div>
             ) : groups.map((g) => (
               <div key={g.title} style={{ marginBottom: 14 }}>
-                {g.title && <div className="cell-sub" style={{ margin: "0 0 8px", fontWeight: 550 }}>{g.title}</div>}
+                {g.title && (
+                  <div className="group-head">
+                    <span className="cell-sub" style={{ fontWeight: 550 }}>{g.title}</span>
+                    {g.items.length > 1 && g.items.every((q) => q.code.startsWith("UNCONFIRMED")) && (
+                      <ConfirmAll invoiceId={invoice.id} fields={g.items.map((q) => q.field)} onUpdated={onUpdated} />
+                    )}
+                  </div>
+                )}
                 {g.items.map((q) => <Question key={q.code + q.field} issue={q} invoiceId={invoice.id} onUpdated={onUpdated} />)}
               </div>
             ))}
@@ -156,7 +184,7 @@ export function InvoiceDrawer({ invoice, onClose, onUpdated, onDelete }: {
               <div><dt>Seller TRN</dt><dd className="mono"><Val v={seller.trn} /></dd></div>
               <div><dt>Buyer TRN</dt><dd className="mono"><Val v={buyer.trn} /></dd></div>
               <div><dt>Issue date</dt><dd><Val v={fmtDate(invoice.issueDate)} /></dd></div>
-              <div><dt>Source</dt><dd>{{ scan: "Scanned document (OCR)", json: "Uploaded data", xml: "E-invoice XML", sample: "Sample data" }[invoice.source]}</dd></div>
+              <div><dt>Source</dt><dd>{{ scan: "Scanned document (OCR)", pdf: "PDF (text layer)", json: "Uploaded data", xml: "E-invoice XML", sample: "Sample data" }[invoice.source]}</dd></div>
             </dl>
           </section>
 

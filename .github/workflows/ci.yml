@@ -28,8 +28,8 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
-      - name: Install API dependencies
-        run: pip install fastapi uvicorn python-multipart httpx
+      - name: Install API and PDF dependencies
+        run: pip install fastapi uvicorn python-multipart httpx pypdfium2
 
       - name: Unit + API tests
         run: python -m unittest -v

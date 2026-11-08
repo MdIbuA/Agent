@@ -73,7 +73,7 @@ export function InvoiceTable({ items, query, selectedId, onOpen }: {
           </thead>
           <tbody>
             {rows.map((i) => {
-              const Icon = i.source === "scan" ? ScanLine : FileText;
+              const Icon = i.source === "scan" ? ScanLine : FileText;  // pdf/xml/json are digital
               const q = i.issues.filter((x) => x.answerable).length;
               return (
                 <tr key={i.id} aria-selected={selectedId === i.id} tabIndex={0}

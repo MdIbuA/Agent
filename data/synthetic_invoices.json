@@ -151,8 +151,8 @@
       }
     ],
     "net_total": "1185.50",
-    "vat_total": "59.27",
-    "gross_total": "1244.77",
+    "vat_total": "59.28",
+    "gross_total": "1244.78",
     "_expected": [
       "BAD_VAT_RATE"
     ],
@@ -210,8 +210,8 @@
       }
     ],
     "net_total": "17924.50",
-    "vat_total": "896.22",
-    "gross_total": "18820.72",
+    "vat_total": "896.23",
+    "gross_total": "18820.73",
     "_expected": [
       "BAD_ISSUE_DATE",
       "LINE_MATH_MISMATCH",
@@ -1243,8 +1243,8 @@
       }
     ],
     "net_total": "3723.50",
-    "vat_total": "186.17",
-    "gross_total": "3909.67",
+    "vat_total": "186.18",
+    "gross_total": "3909.68",
     "_expected": [
       "MISSING_BUYER_TRN",
       "MISSING_DUE_DATE"
@@ -1959,8 +1959,8 @@
       }
     ],
     "net_total": "1425.50",
-    "vat_total": "71.27",
-    "gross_total": "1496.77",
+    "vat_total": "71.28",
+    "gross_total": "1496.78",
     "_expected": [
       "BAD_ISSUE_DATE",
       "BAD_SELLER_TRN",
@@ -2381,8 +2381,8 @@
       }
     ],
     "net_total": "28768.50",
-    "vat_total": "1438.42",
-    "gross_total": "30206.92",
+    "vat_total": "1438.43",
+    "gross_total": "30206.93",
     "_expected": [
       "MISSING_INVOICE_NUMBER"
     ],

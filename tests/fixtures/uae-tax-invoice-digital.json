@@ -1,0 +1,25 @@
+{
+ "invoice_number": "INV-2026-0001",
+ "date": "2026-03-02",
+ "due_date": "2026-04-02",
+ "total": "1117.72",
+ "company": "Sahara Spice Trading LLC",
+ "seller_trn": "100720335501603",
+ "buyer_trn": "100962750304903",
+ "buyer_name": "Palm Fresh Restaurants LLC",
+ "seller_address": "Al Ras, Dubai",
+ "buyer_address": "Al Khalidiyah, Abu Dhabi",
+ "lines": [
+  [
+   "17",
+   "18.50",
+   "314.50"
+  ],
+  [
+   "10",
+   "75.00",
+   "750.00"
+  ]
+ ],
+ "layout": "holdout2"
+}

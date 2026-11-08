@@ -6,7 +6,7 @@
 invoices and credit notes pass; 0 false alarms on the 12 official example documents; 100%
 agreement with the official rules on 120 mutated invoices. See [BENCHMARK.md](BENCHMARK.md).
 
-An AI agent that turns messy SME invoices (photos, PDFs, Excel, text) into validated,
+An AI agent that turns messy SME invoices (PDFs, scans, photos, e-invoice XML, JSON) into validated,
 structured UBL invoices ready to hand to an Accredited Service Provider (ASP) before
 the UAE's 2027 e-invoicing mandate.
 
@@ -19,8 +19,10 @@ ingest -> extract (LLM) -> validate (rules) -> ask owner to repair -> re-validat
 
 ## Web app
 
-A full web UI: upload scans or exports, see workspace readiness, answer the agent's
-questions inline, and download PINT-AE UBL XML or an ASP hand-off ZIP.
+A full web UI: upload PDFs, scans or ERP e-invoices, see workspace readiness, answer the
+agent's questions inline (or confirm everything it read in one tap), and download PINT-AE UBL
+XML or an ASP hand-off ZIP. Work is saved to SQLite (`~/.qaid/workspace.db`; set `QAID_DB` to
+change it, or `QAID_DB=` to keep everything in memory).
 
 ```bash
 pip install -r requirements.txt
@@ -79,13 +81,15 @@ Use **synthetic invoices only** on free tiers (they may log data).
 | `ira/extract.py` | LLM extraction via any OpenAI-compatible endpoint |
 | `ira/ubl_import.py` | Reads UBL / PINT AE invoices and credit notes (ERP output) |
 | `ira/codelists.py` | Official PINT AE code lists (currencies, units, payment means, credit reasons) |
-| `ira/ocr.py` | Free local OCR engines: RapidOCR (PP-OCR/ONNX) and Tesseract |
+| `ira/ocr.py` | Free local OCR engines: RapidOCR (PP-OCR/ONNX, with deskew) and Tesseract |
+| `ira/pdf.py` | PDF text layer (digital) or page rendering for OCR (scanned) |
 | `ira/layout.py` | Rebuilds visual rows from OCR word boxes (label/value columns) |
-| `ira/rule_extract.py` | Offline extractor for date / total / seller; LLM cross-check and fallback |
+| `ira/rule_extract.py` | Offline extractor: invoice no., dates, TRNs, parties, line items, total |
 | `benchmarks/sroie_bench.py` | Accuracy on 626 real scanned receipts (ICDAR-2019 SROIE) |
 | `benchmarks/confidence.py` | Two-engine agreement: auto-accept coverage vs precision |
 | `benchmarks/pint_ae_check.py` | Validates XML with the official OpenPeppol PINT AE Schematron |
 | `benchmarks/agreement.py` | Agent validator vs official rules: official examples + 120 mutants |
+| `benchmarks/uae_invoice_pdfs.py` | UAE tax-invoice PDFs (digital + scanned, held-out layouts) |
 | `ira/agent.py` | Orchestrator, human-in-the-loop repair, readiness report |
 | `ira/service.py` | Workspace: stores invoices, applies owner answers, re-validates |
 | `ira/server.py` | FastAPI app: REST API + serves the built web UI |

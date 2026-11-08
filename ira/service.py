@@ -5,14 +5,16 @@ Kept separate from the HTTP layer so it is unit-testable without a server.
 """
 from __future__ import annotations
 
+import json
+import sqlite3
 import threading
 import uuid
 from dataclasses import dataclass, field
 from decimal import Decimal
 from pathlib import Path
 
-from .agent import IMAGE_SUFFIXES, _FIELD_SETTERS, _ocr_extract
-from .models import Invoice, invoice_from_dict, to_decimal
+from .agent import IMAGE_SUFFIXES, _FIELD_SETTERS, document_extract
+from .models import Invoice, invoice_from_dict, invoice_to_dict, to_decimal
 from .rule_extract import normalize_date
 from .ubl import to_ubl_xml
 from .validate import Issue, readiness_score, validate
@@ -21,41 +23,49 @@ from .validate import Issue, readiness_score, validate
 _EXTRA_SETTERS = {
     "gross_total": lambda inv, v: setattr(inv, "stated_gross_total", to_decimal(v)),
 }
-_UNCONFIRMED_FIELD = {"date": "issue_date", "total": "gross_total", "company": "seller.name"}
-_LABELS = {"date": "issue date", "total": "total", "company": "seller name"}
+# short name -> (answerable field, label, getter)
+_UNCONFIRMED = {
+    "invoice_number": ("invoice_number", "invoice number", lambda i: i.invoice_number),
+    "date": ("issue_date", "issue date", lambda i: i.issue_date),
+    "due_date": ("due_date", "due date", lambda i: i.due_date),
+    "total": ("gross_total", "total", lambda i: i.stated_gross_total),
+    "company": ("seller.name", "seller name", lambda i: i.seller.name),
+    "seller_trn": ("seller.trn", "seller TRN", lambda i: i.seller.trn),
+    "buyer_trn": ("buyer.trn", "buyer TRN", lambda i: i.buyer.trn),
+}
+_UNCONFIRMED_FIELD = {k: v[0] for k, v in _UNCONFIRMED.items()}
 
 
 @dataclass
 class Record:
     id: str
     invoice: Invoice
-    source: str                      # "sample" | "json" | "xml" | "scan"
+    source: str                      # "sample" | "json" | "xml" | "pdf" | "scan"
     unconfirmed: set[str] = field(default_factory=set)  # OCR fields awaiting owner confirmation
     answered: dict[str, str] = field(default_factory=dict)
 
     def issues(self) -> list[Issue]:
         issues = validate(self.invoice)
-        for f in sorted(self.unconfirmed):
-            fld = _UNCONFIRMED_FIELD[f]
-            value = {"date": self.invoice.issue_date, "total": self.invoice.stated_gross_total,
-                     "company": self.invoice.seller.name}[f]
+        order = list(_UNCONFIRMED)
+        for f in sorted(self.unconfirmed, key=order.index):
+            fld, label, get = _UNCONFIRMED[f]
+            value = get(self.invoice)
             if value in (None, ""):
-                issues.append(Issue(f"MISSING_{f.upper()}", "error", fld,
-                                    f"Could not read the {_LABELS[f]} from the scan.",
-                                    f"What is the {_LABELS[f]} on this invoice?"))
-            else:
-                if f == "date":
-                    from datetime import date as _d
-                    try:
-                        d = _d.fromisoformat(str(value))
-                        value = f"{d.day} {d:%b %Y}"  # portable (no %-d, which fails on Windows)
-                    except ValueError:
-                        pass
-                elif f == "total":
-                    value = f"{self.invoice.currency or 'AED'} {value}"
-                issues.append(Issue(f"UNCONFIRMED_{f.upper()}", "warning", fld,
-                                    f"The two OCR engines disagree on the {_LABELS[f]}.",
-                                    f"Confirm the {_LABELS[f]}: is it {value}?"))
+                continue  # nothing was read; the validator already asks for it if required
+            if f in ("date", "due_date"):
+                from datetime import date as _d
+                try:
+                    d = _d.fromisoformat(str(value))
+                    value = f"{d.day} {d:%b %Y}"  # portable (no %-d, which fails on Windows)
+                except ValueError:
+                    pass
+            elif f == "total":
+                value = f"{self.invoice.currency or 'AED'} {value}"
+            # Hide a validator error on the same field: confirming or correcting covers both.
+            issues = [i for i in issues if i.field != fld]
+            issues.append(Issue(f"UNCONFIRMED_{f.upper()}", "warning", fld,
+                                f"The {label} was read from a scan and needs a quick check.",
+                                f"Confirm the {label}: is it {value}?"))
         return issues
 
 
@@ -97,11 +107,39 @@ def serialize(rec: Record) -> dict:
 
 
 class Workspace:
-    """Thread-safe in-memory store. One workspace per server process (demo scope)."""
+    """Thread-safe store. In memory by default; pass db_path to persist to SQLite so work
+    survives restarts. Each invoice is one row of JSON (invoice + confirmation state)."""
 
-    def __init__(self):
+    def __init__(self, db_path: str | Path | None = None):
         self._lock = threading.Lock()
         self._records: dict[str, Record] = {}
+        self._db = None
+        if db_path:
+            Path(db_path).parent.mkdir(parents=True, exist_ok=True)
+            self._db = sqlite3.connect(str(db_path), check_same_thread=False)
+            self._db.execute("CREATE TABLE IF NOT EXISTS invoices (id TEXT PRIMARY KEY, seq INTEGER, body TEXT)")
+            for rid, body in self._db.execute("SELECT id, body FROM invoices ORDER BY seq"):
+                d = json.loads(body)
+                self._records[rid] = Record(id=rid, invoice=invoice_from_dict(d["invoice"]), source=d["source"],
+                                            unconfirmed=set(d["unconfirmed"]), answered=d["answered"])
+
+    def _save(self, rec: Record) -> None:  # call with the lock held
+        if self._db is None:
+            return
+        body = json.dumps({"invoice": invoice_to_dict(rec.invoice), "source": rec.source,
+                           "unconfirmed": sorted(rec.unconfirmed), "answered": rec.answered})
+        self._db.execute("INSERT INTO invoices (id, seq, body) VALUES (?, (SELECT COALESCE(MAX(seq), 0) + 1 "
+                         "FROM invoices), ?) ON CONFLICT(id) DO UPDATE SET body = excluded.body", (rec.id, body))
+        self._db.commit()
+
+    def _forget(self, rid: str | None) -> None:
+        if self._db is None:
+            return
+        if rid is None:
+            self._db.execute("DELETE FROM invoices")
+        else:
+            self._db.execute("DELETE FROM invoices WHERE id = ?", (rid,))
+        self._db.commit()
 
     # --- ingest -------------------------------------------------------------
     def add_dicts(self, items: list[dict], source: str) -> list[dict]:
@@ -111,13 +149,16 @@ class Workspace:
                 rec = Record(id=uuid.uuid4().hex[:10], invoice=invoice_from_dict(d), source=source,
                              unconfirmed=set(d.get("_unconfirmed", [])))
                 self._records[rec.id] = rec
+                self._save(rec)
                 out.append(serialize(rec))
         return out
 
-    def add_scan(self, path: Path, engine: str) -> dict:
-        if path.suffix.lower() not in IMAGE_SUFFIXES:
+    def add_scan(self, path: Path, engine: str | None) -> dict:
+        if path.suffix.lower() not in IMAGE_SUFFIXES | {".pdf"}:
             raise ValueError(f"Unsupported file type: {path.suffix}")
-        return self.add_dicts([_ocr_extract(path, engine)], source="scan")[0]
+        d = document_extract(path, engine)
+        source = "pdf" if d["_via"] == "text-layer" else "scan"
+        return self.add_dicts([d], source=source)[0]
 
     # --- queries ------------------------------------------------------------
     def list(self) -> list[dict]:
@@ -168,6 +209,7 @@ class Workspace:
             for short, fld in _UNCONFIRMED_FIELD.items():  # an explicit answer confirms OCR fields
                 if fld == field_name:
                     rec.unconfirmed.discard(short)
+            self._save(rec)
             return serialize(rec)
 
     def confirm(self, rid: str, field_name: str) -> dict:
@@ -179,15 +221,18 @@ class Workspace:
             for short, fld in _UNCONFIRMED_FIELD.items():
                 if fld == field_name:
                     rec.unconfirmed.discard(short)
+            self._save(rec)
             return serialize(rec)
 
     def delete(self, rid: str) -> None:
         with self._lock:
             self._records.pop(rid, None)
+            self._forget(rid)
 
     def clear(self) -> None:
         with self._lock:
             self._records.clear()
+            self._forget(None)
 
     def xml(self, rid: str) -> str:
         rec = self.get(rid)

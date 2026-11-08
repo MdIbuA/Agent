@@ -6,7 +6,9 @@ Benchmarked on 626 real scanned receipts in benchmarks/sroie_bench.py.
 """
 from __future__ import annotations
 
+import math
 import os
+import statistics
 import subprocess
 from functools import lru_cache
 from pathlib import Path
@@ -20,11 +22,27 @@ def _rapid():
     return RapidOCR()
 
 
+def _skew(result) -> float:
+    """Median text-line angle (radians) from the top edges of wide OCR boxes."""
+    angles = []
+    for quad, text, _conf in result:
+        (x0, y0), (x1, y1) = quad[0], quad[1]
+        if x1 - x0 > 60:  # short boxes give noisy angles
+            angles.append(math.atan2(y1 - y0, x1 - x0))
+    return statistics.median(angles) if len(angles) >= 3 else 0.0
+
+
 def ocr_rapid(img: Path) -> str:
     result, _ = _rapid()(str(img))
+    result = result or []
+    # Deskew: rotate box coordinates by the page's text angle so rows line up even on
+    # slightly rotated scans (a 1.5 degree tilt shifts a wide table row by ~15 px).
+    a = -_skew(result)
+    cos, sin = math.cos(a), math.sin(a)
     boxes = []
-    for quad, text, _conf in result or []:
-        ys, xs = [p[1] for p in quad], [p[0] for p in quad]
+    for quad, text, _conf in result:
+        pts = [(x * cos - y * sin, x * sin + y * cos) for x, y in quad]
+        ys, xs = [p[1] for p in pts], [p[0] for p in pts]
         boxes.append((min(ys), max(ys), min(xs), text))
     return rows_from_boxes(boxes)
 

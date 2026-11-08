@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 import random
-from decimal import Decimal
+from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 
 SELLERS = [  # (name, address, licensing authority) -- fictional businesses
@@ -55,9 +55,10 @@ def clean_invoice(rng: random.Random, n: int) -> dict:
     for desc, price in rng.sample(ITEMS, rng.randint(1, 4)):
         qty = Decimal(rng.randint(1, 20))
         rate = Decimal("5") if rng.random() > 0.1 else Decimal("0")
-        lt = (qty * Decimal(price)).quantize(Decimal("0.01"))
+        lt = (qty * Decimal(price)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
         net += lt
-        vat += (lt * rate / 100).quantize(Decimal("0.01"))
+        # Commercial rounding (half up), as on real invoices -- not Python's default half-even.
+        vat += (lt * rate / 100).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
         lines.append({"description": desc, "quantity": str(qty), "unit_price": price,
                       "vat_rate": str(rate), "line_total": str(lt)})
     month, day = rng.randint(1, 10), rng.randint(1, 28)
@@ -79,8 +80,8 @@ def credit_note_for(inv: dict, rng: random.Random, n: int) -> dict:
     """A credit note returning part of the first line of `inv` (e.g. damaged goods)."""
     line = dict(inv["lines"][0])
     qty = Decimal(max(1, int(Decimal(line["quantity"])) // 2))
-    net = (qty * Decimal(line["unit_price"])).quantize(Decimal("0.01"))
-    vat = (net * Decimal(line["vat_rate"]) / 100).quantize(Decimal("0.01"))
+    net = (qty * Decimal(line["unit_price"])).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    vat = (net * Decimal(line["vat_rate"]) / 100).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
     line.update(quantity=str(qty), line_total=str(net))
     return {**inv, "invoice_number": f"CN-2026-{n:04d}", "invoice_type": "381", "due_date": None,
             "payment_means": None, "preceding_invoice": inv["invoice_number"],

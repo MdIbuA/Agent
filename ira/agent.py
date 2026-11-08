@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 
 from .models import invoice_from_dict, to_decimal
@@ -79,38 +80,72 @@ def parse_payment_means(value: str) -> str:
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".tif", ".tiff", ".bmp", ".webp"}
 
 
+# Fields read from a document that the owner may be asked to confirm.
+OCR_FIELDS = ("invoice_number", "date", "due_date", "total", "company", "seller_trn", "buyer_trn")
+
+
+def _norm(v) -> str:
+    return re.sub(r"[^A-Z0-9.]", "", str(v or "").upper())
+
+
+def _to_invoice_dict(found: dict, unconfirmed: list[str], source_file: str, via: str) -> dict:
+    """Rule-extraction output -> invoice dict. Unread fields stay None so the validator asks for them."""
+    seller = {"name": found.get("company"), "trn": found.get("seller_trn"), "address": found.get("seller_address")}
+    buyer = {"name": found.get("buyer_name"), "trn": found.get("buyer_trn"), "address": found.get("buyer_address")}
+    for party in (seller, buyer):  # city/emirate only from an explicit address
+        if party["address"]:
+            party["city"] = party["address"].split(",")[-1].strip()
+    return {
+        "_unconfirmed": [f for f in unconfirmed if found.get(f) not in (None, "")],
+        "_via": via,
+        "invoice_number": found.get("invoice_number"),
+        "issue_date": found.get("date"),
+        "due_date": found.get("due_date"),
+        "seller": seller,
+        "buyer": buyer,
+        "lines": found.get("lines") or [],
+        "gross_total": found.get("total"),
+        "source_file": source_file,
+    }
+
+
 def _ocr_extract(path: Path, engine: str) -> dict:
-    """Offline path: OCR + rule extraction. Fields it can't see stay None, so the
-    validator turns them into questions for the owner instead of guesses."""
+    """Image -> OCR -> rule extraction. With engine="both", fields the two independent engines
+    agree on are auto-accepted; everything else read by OCR is put to the owner to confirm.
+    (On 626 real receipts: agreed dates 100% correct; agreed keyword totals 90.3% strict,
+    ~97% excluding Malaysia's 5-sen cash rounding. See BENCHMARK.md.)"""
     from .ocr import ENGINES
     from .rule_extract import extract as rule_extract
-    unconfirmed: list[str] = []
-    if engine == "both":
-        # Two independent engines. Agreement = auto-accept; disagreement = ask the owner.
-        # Totals also need both engines to have found a TOTAL-type line (not a guess).
-        # On 626 real receipts: agreed dates 100% correct; agreed keyword totals 90.3%
-        # strict, ~97% excluding Malaysia's 5-sen cash rounding (see BENCHMARK.md).
-        a = rule_extract(ENGINES["rapidocr"](path))
-        b = rule_extract(ENGINES["tesseract"](path))
-        found = dict(a)
-        for f in ("date", "total", "company"):
-            same = (a[f] or "").replace(" ", "").upper() == (b[f] or "").replace(" ", "").upper()
-            strong = f != "total" or (a["total_source"] == b["total_source"] == "keyword")
-            if not (a[f] and same and strong):
-                unconfirmed.append(f)
-                found[f] = a[f] or b[f]  # RapidOCR is the stronger engine
-    else:
-        found = rule_extract(ENGINES[engine](path))
-    return {
-        "_unconfirmed": unconfirmed,
-        "invoice_number": None,
-        "issue_date": found["date"],
-        "seller": {"name": found["company"]},
-        "buyer": {},
-        "lines": [],
-        "gross_total": found["total"],
-        "source_file": path.name,
-    }
+    if engine != "both":
+        return _to_invoice_dict(rule_extract(ENGINES[engine](path)), list(OCR_FIELDS), path.name, "ocr")
+    a = rule_extract(ENGINES["rapidocr"](path))
+    b = rule_extract(ENGINES["tesseract"](path))
+    found, unconfirmed = dict(a), []
+    for f in OCR_FIELDS:
+        strong = f != "total" or (a["total_source"] == b["total_source"] == "keyword")
+        if not (a.get(f) and _norm(a.get(f)) == _norm(b.get(f)) and strong):
+            unconfirmed.append(f)
+            found[f] = a.get(f) or b.get(f)  # RapidOCR is the stronger engine
+    return _to_invoice_dict(found, unconfirmed, path.name, "ocr-2")
+
+
+def document_extract(path: Path, engine: str | None) -> dict:
+    """Images and PDFs. Digital PDFs are read from their text layer (exact, auto-accepted);
+    scanned PDFs go through OCR and their fields are confirmed by the owner."""
+    from .rule_extract import extract as rule_extract
+    if path.suffix.lower() == ".pdf":
+        from .ocr import ENGINES
+        from .pdf import pdf_to_text
+        ocr = ENGINES["rapidocr" if engine in ("both", "rapidocr") else engine] if engine else None
+        if ocr is None:
+            def ocr(_img):
+                raise ValueError("This PDF is a scan and no OCR engine is installed.")
+        text, mode = pdf_to_text(path, ocr)
+        unconfirmed = [] if mode == "text-layer" else list(OCR_FIELDS)
+        return _to_invoice_dict(rule_extract(text), unconfirmed, path.name, mode)
+    if engine is None:
+        raise ValueError("No OCR engine installed (pip install rapidocr_onnxruntime).")
+    return _ocr_extract(path, engine)
 
 
 def _load(source: Path, use_llm: bool, ocr: str | None = None) -> list[dict]:
@@ -118,8 +153,8 @@ def _load(source: Path, use_llm: bool, ocr: str | None = None) -> list[dict]:
         data = json.loads(source.read_text())
         return data if isinstance(data, list) else [data]
     if ocr:
-        files = sorted(p for p in source.iterdir() if p.suffix.lower() in IMAGE_SUFFIXES)
-        return [_ocr_extract(p, ocr) for p in files]
+        files = sorted(p for p in source.iterdir() if p.suffix.lower() in IMAGE_SUFFIXES | {".pdf"})
+        return [document_extract(p, ocr) for p in files]
     if not use_llm:
         raise SystemExit("Folder input needs --ocr {rapidocr,tesseract,both} or --llm "
                          "(set LLM_BASE_URL, LLM_API_KEY, LLM_MODEL).")

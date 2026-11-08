@@ -31,7 +31,8 @@ WEB_DIST = Path(__file__).resolve().parent.parent / "web" / "dist"
 
 app = FastAPI(title="Qaid API", version="0.1.0",
               description="UAE e-invoicing readiness agent: ingest, validate, repair, export UBL.")
-ws = Workspace()
+# Persist to SQLite so work survives restarts. QAID_DB="" keeps everything in memory.
+ws = Workspace(os.environ.get("QAID_DB", str(Path.home() / ".qaid" / "workspace.db")) or None)
 
 
 def ocr_engine() -> str | None:
@@ -101,15 +102,13 @@ async def upload(files: list[UploadFile] = File(...)):
                     item = parse_ubl(data.decode("utf-8"))
                     item["source_file"] = name
                     ws.add_dicts([item], source="xml")
-                elif suffix in IMAGE_SUFFIXES:
-                    if engine is None:
-                        raise ValueError("No OCR engine installed (pip install rapidocr_onnxruntime).")
+                elif suffix in IMAGE_SUFFIXES or suffix == ".pdf":
                     path = Path(td) / f"upload{suffix}"
                     path.write_bytes(data)
                     rec = ws.add_scan(path, engine)
                     ws.get(rec["id"]).invoice.source_file = name
                 else:
-                    raise ValueError("Use invoice images (JPG, PNG, TIFF, WEBP), UBL/PINT AE XML or JSON.")
+                    raise ValueError("Use PDF, invoice images (JPG, PNG, TIFF, WEBP), UBL/PINT AE XML or JSON.")
             except (ValueError, UnicodeDecodeError, json.JSONDecodeError) as e:
                 errors.append({"file": name, "error": str(e)})
     return {**_state(), "errors": errors}

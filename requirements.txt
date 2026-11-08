@@ -5,6 +5,9 @@ fastapi
 uvicorn
 python-multipart
 
+# PDF invoices (text layer; scanned PDFs are rendered for OCR)
+pypdfium2
+
 # Offline OCR for real scans
 rapidocr_onnxruntime
 # Second OCR engine (system package): apt-get install -y tesseract-ocr

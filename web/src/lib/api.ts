@@ -23,7 +23,7 @@ export interface Line {
 
 export interface Invoice {
   id: string;
-  source: "sample" | "json" | "xml" | "scan";
+  source: "sample" | "json" | "xml" | "pdf" | "scan";
   file: string | null;
   invoiceNumber: string | null;
   issueDate: string | null;

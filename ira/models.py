@@ -145,3 +145,29 @@ def line_category(ln: LineItem) -> str:
     if ln.vat_category:
         return ln.vat_category
     return "S" if (ln.vat_rate or 0) > 0 else "Z"
+
+
+def invoice_to_dict(inv: Invoice) -> dict:
+    """Inverse of invoice_from_dict (used for storage). Decimals become strings."""
+    def dec(x):
+        return None if x is None else str(x)
+
+    def party(p: Party) -> dict:
+        return {"name": p.name, "trn": p.trn, "address": p.address, "city": p.city, "country": p.country,
+                "emirate": p.emirate, "legal_id": p.legal_id, "legal_id_type": p.legal_id_type,
+                "legal_authority": p.legal_authority, "party_id": p.party_id}
+
+    return {
+        "invoice_number": inv.invoice_number, "issue_date": inv.issue_date, "currency": inv.currency,
+        "invoice_type": inv.invoice_type, "due_date": inv.due_date, "payment_means": inv.payment_means,
+        "transaction_type": inv.transaction_type, "preceding_invoice": inv.preceding_invoice,
+        "preceding_invoice_date": inv.preceding_invoice_date, "credit_reason": inv.credit_reason,
+        "customization_id": inv.customization_id,
+        "doc_adjustments": [{"amount": str(a), "category": c, "rate": str(r)} for a, c, r in inv.doc_adjustments],
+        "seller": party(inv.seller), "buyer": party(inv.buyer),
+        "lines": [{"description": l.description, "quantity": dec(l.quantity), "unit_price": dec(l.unit_price),
+                   "vat_rate": dec(l.vat_rate), "line_total": dec(l.line_total), "vat_category": l.vat_category,
+                   "adjustment": str(l.adjustment), "unit_code": l.unit_code} for l in inv.lines],
+        "net_total": dec(inv.stated_net_total), "vat_total": dec(inv.stated_vat_total),
+        "gross_total": dec(inv.stated_gross_total), "source_file": inv.source_file,
+    }

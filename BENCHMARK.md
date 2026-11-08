@@ -47,7 +47,35 @@ Scope: the agent *validates* all official document types, and *generates* standa
 zero-rated invoices and credit notes. Generating reverse-charge, export, free-zone and
 margin-scheme documents is not implemented yet.
 
-# 2. Real-data benchmark: 626 scanned receipts, $0, fully offline
+## 2. UAE tax-invoice PDFs: digital and scanned (`benchmarks/uae_invoice_pdfs.py`)
+
+No public set of labelled UAE invoice PDFs exists, so fictional invoices are rendered as
+realistic bilingual "Tax Invoice / فاتورة ضريبية" PDFs (headless Chromium), plus scanned
+variants (150 dpi, ±1.5° rotation, blur) saved as image-only PDFs. 11 fields are scored.
+
+| Set | Fields at 100% | Lowest field |
+|---|---|---|
+| Tuned layouts (3), digital, 60 docs | **11 / 11** | — |
+| Tuned layouts, scanned | date, due date, total, company, both TRNs, seller address | invoice no. 83% (OCR letter case), line items 98% |
+| **Held-out layout #1, first run (before any fix)** | dates, company, TRNs, parties, lines | **invoice no. 0%, due date 0%, total 53%** |
+| **Held-out layout #2 (fresh), digital** | **11 / 11** (incl. an LPO-number distractor) | — |
+| Held-out layout #2, scanned | date, due, total, TRNs, parties | invoice no. 77%, company 93%, lines 97% |
+
+What the held-out run taught: the first rule vocabulary was overfitted to my own templates
+("Invoice Ref.", "Amount Payable", "Payment Terms: due" were unknown, and the pre-VAT total
+was picked in 47% of cases). After broadening the vocabulary with common real-world labels,
+a *second, fresh* held-out layout scored 100% digital. Rule-based extraction will still meet
+unseen wordings in the wild; the LLM extractor (`ira/extract.py`) is the generalising path,
+with the rules kept as a free fallback and cross-check. Wrong totals are not silently
+accepted: the validator recomputes VAT and totals from the line items.
+
+Scanned-specific fixes: deskewing OCR boxes by their median angle (scanned line items 25% →
+98%), deriving a dropped single-digit quantity exactly (amount ÷ price, whole numbers only),
+labels tolerant of OCR I/l confusion, buyer block anchored on the buyer TRN when the heading
+is lost, document titles cut from merged header rows. The 626-receipt benchmark below was
+re-run after these changes: no regression beyond one receipt (total 87.1% → 86.9%).
+
+# 3. Real-data benchmark: 626 scanned receipts, $0, fully offline
 
 **Dataset:** ICDAR-2019 SROIE training split (626 real scanned receipts, Malaysia), with
 human labels for company, date, address and total. Mirror: `github.com/zzzDavid/ICDAR-2019-SROIE`

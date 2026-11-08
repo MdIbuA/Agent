@@ -220,6 +220,7 @@ tbody tr[aria-selected="true"] { background: var(--accent-soft); }
 .section-title { font-size: 13px; font-weight: 600; color: var(--text-2); margin: 0 0 10px; display: flex; align-items: center; gap: 8px; }
 .section-title .count { color: var(--text-3); font-weight: 500; }
 
+.group-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 8px; }
 .question {
   border: 1px solid var(--border); border-radius: var(--r-md); padding: 14px; display: flex; flex-direction: column; gap: 10px;
   transition: border-color .2s, background .2s;

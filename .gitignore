@@ -9,3 +9,6 @@ web/node_modules/
 web/dist/
 *.tsbuildinfo
 .cache/
+
+# local workspace database
+*.db
