@@ -28,7 +28,10 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
-      - name: Unit tests
+      - name: Install API dependencies
+        run: pip install fastapi uvicorn python-multipart httpx
+
+      - name: Unit + API tests
         run: python -m unittest -v
 
       - name: Fault-detection eval (must stay at 100%)
@@ -46,3 +49,21 @@ jobs:
           python -m ira.agent data/synthetic_invoices.json --out out
           test -s out/readiness_report.json
           ls out/*.xml | head -3
+
+  web:
+    name: Web UI (typecheck + build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - name: Typecheck and build
+        run: npm run build

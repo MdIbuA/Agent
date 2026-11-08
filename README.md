@@ -13,6 +13,26 @@ calculation and compliance check, so hallucinated numbers can't reach the output
 ingest -> extract (LLM) -> validate (rules) -> ask owner to repair -> re-validate -> UBL XML + report
 ```
 
+## Web app
+
+A full web UI: upload scans or exports, see workspace readiness, answer the agent's
+questions inline, and download PINT-AE UBL XML or an ASP hand-off ZIP.
+
+```bash
+pip install -r requirements.txt
+(cd web && npm ci && npm run build)     # React + TypeScript UI -> web/dist
+python3 -m ira.server                   # http://127.0.0.1:8000  · API docs at /docs
+```
+
+UI development with hot reload: run `python3 -m ira.server` and, in another terminal,
+`cd web && npm run dev` (http://127.0.0.1:5173, proxies `/api` to the server).
+
+| Layer | Stack |
+|---|---|
+| UI | React 19, TypeScript (strict), Vite, hand-built design system (light/dark, responsive, keyboard accessible) |
+| API | FastAPI: typed endpoints, upload limits, OpenAPI docs |
+| Agent | Python: OCR, extraction, deterministic validation, UBL generation |
+
 ## Quick start (no API key needed)
 
 ```bash
@@ -59,6 +79,9 @@ Use **synthetic invoices only** on free tiers (they may log data).
 | `benchmarks/sroie_bench.py` | Accuracy on 626 real scanned receipts (ICDAR-2019 SROIE) |
 | `benchmarks/confidence.py` | Two-engine agreement: auto-accept coverage vs precision |
 | `ira/agent.py` | Orchestrator, human-in-the-loop repair, readiness report |
+| `ira/service.py` | Workspace: stores invoices, applies owner answers, re-validates |
+| `ira/server.py` | FastAPI app: REST API + serves the built web UI |
+| `web/` | React + TypeScript frontend |
 | `ira/synth.py` | Synthetic invoices with known injected faults |
 | `ira/eval.py` | Accuracy harness |
 

@@ -57,7 +57,7 @@ def validate(inv: Invoice) -> list[Issue]:
         except ValueError:
             add(Issue("BAD_ISSUE_DATE", "error", "issue_date",
                       f"Issue date '{inv.issue_date}' is not YYYY-MM-DD.",
-                      "What is the exact issue date (day/month/year)?"))
+                      "What is the exact issue date?"))
     if inv.currency != "AED":
         add(Issue("NON_AED_CURRENCY", "warning", "currency",
                   f"Currency is {inv.currency}; VAT amounts must also be reported in AED.",
@@ -76,7 +76,7 @@ def validate(inv: Invoice) -> list[Issue]:
         elif not TRN_RE.match(trn):
             add(Issue(f"BAD_{role.upper()}_TRN", "error", f"{role}.trn",
                       f"{role.title()} TRN '{party.trn}' is not 15 digits.",
-                      f"Please re-check the {role}'s TRN -- it should be exactly 15 digits."))
+                      f"Please re-check the {role}'s TRN. It should be exactly 15 digits."))
         if not party.address:
             add(Issue(f"MISSING_{role.upper()}_ADDRESS", "error", f"{role}.address",
                       f"{role.title()} address is missing.", f"What is the {role}'s address?"))
@@ -118,7 +118,7 @@ def validate(inv: Invoice) -> list[Issue]:
         if ln.vat_rate not in ALLOWED_VAT_RATES:
             add(Issue("BAD_VAT_RATE", "error", f"{f}.vat_rate",
                       f"Line {i} VAT rate {ln.vat_rate}% is not a UAE rate (5% or 0%).",
-                      f"Line {i} shows {ln.vat_rate}% VAT -- should it be 5%?"))
+                      f"Line {i} shows {ln.vat_rate}% VAT. Should it be 5%?"))
             vat_ok = False
         net = _r(ln.quantity * ln.unit_price)
         if ln.line_total is not None and abs(net - ln.line_total) > CENT:

@@ -5,3 +5,6 @@ __pycache__/
 bench_out/
 sroie/
 PLAYBOOK.md
+web/node_modules/
+web/dist/
+*.tsbuildinfo
