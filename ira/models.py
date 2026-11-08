@@ -16,6 +16,10 @@ class Party:
     address: Optional[str] = None
     city: Optional[str] = None
     country: Optional[str] = "AE"
+    emirate: Optional[str] = None         # PINT-AE CountrySubentity: AUH DXB SHJ AJM UAQ RAK FUJ
+    legal_id: Optional[str] = None        # IBT-030/047 legal registration, e.g. trade licence number
+    legal_id_type: Optional[str] = "TL"   # BTAE-15/16: TL trade licence, EID, PAS, CD
+    legal_authority: Optional[str] = None # BTAE-11/12: licence issuing authority
 
 
 @dataclass
@@ -33,6 +37,8 @@ class Invoice:
     issue_date: Optional[str] = None      # ISO YYYY-MM-DD
     currency: Optional[str] = "AED"
     invoice_type: str = "380"             # UNCL1001: 380 = commercial invoice, 381 = credit note
+    due_date: Optional[str] = None        # ISO; PINT-AE ibr-127-ae requires it when amount due > 0
+    payment_means: Optional[str] = None   # UNCL4461 code, e.g. 30 credit transfer, 10 cash, 48 card
     seller: Party = field(default_factory=Party)
     buyer: Party = field(default_factory=Party)
     lines: list[LineItem] = field(default_factory=list)
@@ -59,7 +65,9 @@ def invoice_from_dict(d: dict) -> Invoice:
     """Build an Invoice from the JSON shape the LLM extractor (or synth data) produces."""
     def party(p: dict | None) -> Party:
         p = p or {}
-        return Party(p.get("name"), p.get("trn"), p.get("address"), p.get("city"), p.get("country", "AE"))
+        return Party(p.get("name"), p.get("trn"), p.get("address"), p.get("city"), p.get("country", "AE"),
+                     p.get("emirate") or emirate_from_text(p.get("city"), p.get("address")),
+                     p.get("legal_id"), p.get("legal_id_type", "TL"), p.get("legal_authority"))
 
     lines = [
         LineItem(
@@ -76,6 +84,8 @@ def invoice_from_dict(d: dict) -> Invoice:
         issue_date=d.get("issue_date"),
         currency=d.get("currency", "AED"),
         invoice_type=d.get("invoice_type", "380"),
+        due_date=d.get("due_date"),
+        payment_means=d.get("payment_means"),
         seller=party(d.get("seller")),
         buyer=party(d.get("buyer")),
         lines=lines,
@@ -84,3 +94,18 @@ def invoice_from_dict(d: dict) -> Invoice:
         stated_gross_total=to_decimal(d.get("gross_total")),
         source_file=d.get("source_file"),
     )
+
+
+EMIRATES = {"AUH": "Abu Dhabi", "DXB": "Dubai", "SHJ": "Sharjah", "AJM": "Ajman",
+            "UAQ": "Umm Al Quwain", "RAK": "Ras Al Khaimah", "FUJ": "Fujairah"}
+_EMIRATE_WORDS = [("ABU DHABI", "AUH"), ("DUBAI", "DXB"), ("SHARJAH", "SHJ"), ("AJMAN", "AJM"),
+                  ("UMM AL QUWAIN", "UAQ"), ("RAS AL KHAIMAH", "RAK"), ("FUJAIRAH", "FUJ")]
+
+
+def emirate_from_text(*texts) -> Optional[str]:
+    """Only infer the emirate when its name is written explicitly ("Deira, Dubai" -> DXB)."""
+    blob = " ".join(t for t in texts if t).upper()
+    for word, code in _EMIRATE_WORDS:
+        if word in blob:
+            return code
+    return None

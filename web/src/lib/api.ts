@@ -119,9 +119,33 @@ export const statusColor: Record<Status, string> = { ready: "var(--ok)", review:
 export const scoreColor = (s: number) => (s >= 85 ? "var(--ok)" : s >= 50 ? "var(--warn)" : "var(--err)");
 
 // Input hints for owner answers, keyed by field.
-export const fieldHint: Record<string, { placeholder: string; hint?: string; inputMode?: "numeric" | "decimal" | "text" }> = {
-  "seller.trn": { placeholder: "100 1234 5678 9012", hint: "15 digits. Spaces and dashes are fine.", inputMode: "numeric" },
-  "buyer.trn": { placeholder: "100 1234 5678 9012", hint: "15 digits. Spaces and dashes are fine.", inputMode: "numeric" },
+export interface FieldHint {
+  placeholder: string;
+  hint?: string;
+  inputMode?: "numeric" | "decimal" | "text";
+  options?: { value: string; label: string }[];
+}
+
+const EMIRATES = [
+  { value: "DXB", label: "Dubai" }, { value: "AUH", label: "Abu Dhabi" }, { value: "SHJ", label: "Sharjah" },
+  { value: "AJM", label: "Ajman" }, { value: "UAQ", label: "Umm Al Quwain" },
+  { value: "RAK", label: "Ras Al Khaimah" }, { value: "FUJ", label: "Fujairah" },
+];
+const PAYMENT_MEANS = [
+  { value: "30", label: "Bank transfer" }, { value: "10", label: "Cash" }, { value: "48", label: "Bank card" },
+  { value: "54", label: "Credit card" }, { value: "55", label: "Debit card" }, { value: "49", label: "Direct debit" },
+];
+const TRN_HINT = "15 digits, starting with 1 and ending with 03. Spaces and dashes are fine.";
+
+export const fieldHint: Record<string, FieldHint> = {
+  "seller.trn": { placeholder: "100 1234 5678 9003", hint: TRN_HINT, inputMode: "numeric" },
+  "buyer.trn": { placeholder: "100 1234 5678 9003", hint: TRN_HINT, inputMode: "numeric" },
+  "seller.emirate": { placeholder: "Choose emirate", options: EMIRATES },
+  "buyer.emirate": { placeholder: "Choose emirate", options: EMIRATES },
+  payment_means: { placeholder: "Choose payment method", options: PAYMENT_MEANS, hint: "Required on UAE e-invoices." },
+  due_date: { placeholder: "25/01/2027", hint: "Day first. Required when an amount is payable." },
+  "seller.legal_id": { placeholder: "e.g. 1234567", hint: "As printed on the trade licence." },
+  "seller.legal_authority": { placeholder: "e.g. Dubai Department of Economy and Tourism", hint: "The mainland or free-zone authority that issued the licence." },
   issue_date: { placeholder: "25/12/2026", hint: "Day first, as printed on the invoice." },
   invoice_number: { placeholder: "e.g. INV-2026-0042" },
   gross_total: { placeholder: "0.00", inputMode: "decimal" },

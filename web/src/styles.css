@@ -234,6 +234,7 @@ tbody tr[aria-selected="true"] { background: var(--accent-soft); }
   flex: 1; height: 36px; padding: 0 12px; border: 1px solid var(--border-strong); border-radius: var(--r-md);
   background: var(--surface); outline: 0; min-width: 0; transition: border-color .15s, box-shadow .15s;
 }
+select.input { padding-right: 8px; cursor: pointer; }
 .input:focus { border-color: var(--focus); box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 18%, transparent); }
 .input[aria-invalid="true"] { border-color: var(--danger); }
 .field-error { font-size: 12.5px; color: var(--danger); }

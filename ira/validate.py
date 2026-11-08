@@ -14,7 +14,11 @@ from .models import Invoice
 
 ALLOWED_VAT_RATES = {Decimal("5"), Decimal("0")}
 CENT = Decimal("0.01")
-TRN_RE = re.compile(r"^\d{15}$")
+# PINT-AE ibr-132-ae: TRN is 15 digits, starts with 1, ends with 03.
+TRN_RE = re.compile(r"^1\d{12}03$")
+EMIRATE_CODES = {"AUH", "DXB", "SHJ", "AJM", "UAQ", "RAK", "FUJ"}
+PAYMENT_MEANS = {"10": "Cash", "30": "Credit transfer", "42": "Bank account", "48": "Bank card",
+                 "49": "Direct debit", "54": "Credit card", "55": "Debit card", "58": "SEPA transfer"}
 
 
 @dataclass(frozen=True)
@@ -75,15 +79,47 @@ def validate(inv: Invoice) -> list[Issue]:
                       f"What is the {role}'s 15-digit Tax Registration Number?"))
         elif not TRN_RE.match(trn):
             add(Issue(f"BAD_{role.upper()}_TRN", "error", f"{role}.trn",
-                      f"{role.title()} TRN '{party.trn}' is not 15 digits.",
-                      f"Please re-check the {role}'s TRN. It should be exactly 15 digits."))
+                      f"{role.title()} TRN '{party.trn}' is not a valid UAE TRN "
+                      "(15 digits, starting with 1 and ending with 03).",
+                      f"Please re-check the {role}'s TRN. It has 15 digits, starts with 1 and ends with 03."))
         if not party.address:
             add(Issue(f"MISSING_{role.upper()}_ADDRESS", "error", f"{role}.address",
                       f"{role.title()} address is missing.", f"What is the {role}'s address?"))
+        if (party.country or "AE") == "AE" and party.emirate not in EMIRATE_CODES:
+            add(Issue(f"MISSING_{role.upper()}_EMIRATE", "error", f"{role}.emirate",
+                      f"{role.title()} emirate is missing or invalid (PINT-AE ibr-128-ae).",
+                      f"Which emirate is the {role} in?"))
+    # PINT-AE ibr-150-ae / ibr-172-ae: seller legal registration + issuing authority.
+    if not inv.seller.legal_id:
+        add(Issue("MISSING_SELLER_LICENSE", "error", "seller.legal_id",
+                  "Seller trade licence number is missing (PINT-AE ibr-150-ae).",
+                  "What is the seller's trade licence number?"))
+    elif (inv.seller.legal_id_type or "TL") == "TL" and not inv.seller.legal_authority:
+        add(Issue("MISSING_SELLER_LICENSE_AUTHORITY", "error", "seller.legal_authority",
+                  "Trade licence issuing authority is missing (PINT-AE ibr-172-ae).",
+                  "Which authority issued the seller's trade licence?"))
+
     s_trn, b_trn = normalize_trn(inv.seller.trn), normalize_trn(inv.buyer.trn)
     if s_trn and s_trn == b_trn:
         add(Issue("SAME_TRN", "error", "buyer.trn",
                   "Seller and buyer have the same TRN.", "Which TRN belongs to the buyer?"))
+
+    # --- Payment (PINT-AE ibr-127-ae, ibr-191-ae; not required on credit notes) -----
+    if inv.invoice_type == "380":
+        if not inv.due_date:
+            add(Issue("MISSING_DUE_DATE", "error", "due_date",
+                      "Payment due date is missing (PINT-AE ibr-127-ae).",
+                      "When is payment due for this invoice?"))
+        else:
+            try:
+                date.fromisoformat(inv.due_date)
+            except ValueError:
+                add(Issue("BAD_DUE_DATE", "error", "due_date",
+                          f"Due date '{inv.due_date}' is not a valid date.", "When is payment due?"))
+        if inv.payment_means not in PAYMENT_MEANS:
+            add(Issue("MISSING_PAYMENT_MEANS", "error", "payment_means",
+                      "Payment method is missing (PINT-AE ibr-191-ae).",
+                      "How will the buyer pay this invoice?"))
 
     # --- Lines --------------------------------------------------------------
     if not inv.lines:

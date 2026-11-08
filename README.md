@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/MdIbuA/Agent/actions/workflows/ci.yml/badge.svg)](https://github.com/MdIbuA/Agent/actions/workflows/ci.yml)
 
+**100/100 generated invoices pass the official OpenPeppol PINT AE v1.0.3 Schematron** (checked in CI).
+
 An AI agent that turns messy SME invoices (photos, PDFs, Excel, text) into validated,
 structured UBL invoices ready to hand to an Accredited Service Provider (ASP) before
 the UAE's 2027 e-invoicing mandate.
@@ -78,6 +80,7 @@ Use **synthetic invoices only** on free tiers (they may log data).
 | `ira/rule_extract.py` | Offline extractor for date / total / seller; LLM cross-check and fallback |
 | `benchmarks/sroie_bench.py` | Accuracy on 626 real scanned receipts (ICDAR-2019 SROIE) |
 | `benchmarks/confidence.py` | Two-engine agreement: auto-accept coverage vs precision |
+| `benchmarks/pint_ae_check.py` | Validates XML with the official OpenPeppol PINT AE Schematron |
 | `ira/agent.py` | Orchestrator, human-in-the-loop repair, readiness report |
 | `ira/service.py` | Workspace: stores invoices, applies owner answers, re-validates |
 | `ira/server.py` | FastAPI app: REST API + serves the built web UI |
@@ -87,8 +90,8 @@ Use **synthetic invoices only** on free tiers (they may log data).
 
 ## Status / TODO before submission
 
-- Rules are a **core subset**. Map every rule to the official PINT-AE data dictionary and add the rest.
-- Verify `CUSTOMIZATION_ID` / `PROFILE_ID` in `ira/ubl.py` against the official spec.
+- Generated XML passes the official PINT AE Schematron for standard tax invoices; credit notes,
+  reverse charge, exports, free-zone and margin-scheme variants are not generated yet.
 - Validate XML output against the OASIS UBL 2.1 XSD.
 - Exempt supplies, reverse charge, credit notes and non-AED currency need full handling.
 - Add PDF/XLSX ingest, Arabic samples, TRN memory (SQLite), Streamlit UI.

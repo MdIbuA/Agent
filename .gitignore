@@ -8,3 +8,4 @@ PLAYBOOK.md
 web/node_modules/
 web/dist/
 *.tsbuildinfo
+.cache/

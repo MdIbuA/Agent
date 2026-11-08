@@ -27,7 +27,39 @@ _FIELD_SETTERS = {
     "buyer.address": lambda inv, v: setattr(inv.buyer, "address", v),
     "seller.name": lambda inv, v: setattr(inv.seller, "name", v),
     "buyer.name": lambda inv, v: setattr(inv.buyer, "name", v),
+    "seller.emirate": lambda inv, v: setattr(inv.seller, "emirate", parse_emirate(v)),
+    "buyer.emirate": lambda inv, v: setattr(inv.buyer, "emirate", parse_emirate(v)),
+    "seller.legal_id": lambda inv, v: setattr(inv.seller, "legal_id", v.strip()),
+    "seller.legal_authority": lambda inv, v: setattr(inv.seller, "legal_authority", v.strip()),
+    "due_date": lambda inv, v: setattr(inv, "due_date", v),
+    "payment_means": lambda inv, v: setattr(inv, "payment_means", parse_payment_means(v)),
 }
+
+
+def parse_emirate(value: str) -> str:
+    """Accept 'DXB', 'dubai', 'Abu Dhabi' ... -> PINT-AE code. Raises ValueError if unknown."""
+    from .models import EMIRATES, emirate_from_text
+    v = value.strip().upper()
+    code = v if v in EMIRATES else emirate_from_text(v)
+    if not code:
+        raise ValueError("Use an emirate name or code: " + ", ".join(EMIRATES))
+    return code
+
+
+_PAYMENT_WORDS = [("TRANSFER", "30"), ("BANK", "30"), ("CASH", "10"), ("DEBIT", "55"),
+                  ("CREDIT CARD", "54"), ("CARD", "48"), ("DIRECT DEBIT", "49")]
+
+
+def parse_payment_means(value: str) -> str:
+    """Accept a UNCL4461 code or words like 'bank transfer', 'cash', 'card'."""
+    from .validate import PAYMENT_MEANS
+    v = value.strip().upper()
+    if v in PAYMENT_MEANS:
+        return v
+    for word, code in _PAYMENT_WORDS:
+        if word in v:
+            return code
+    raise ValueError("Say how the buyer pays, e.g. bank transfer, cash or card.")
 
 
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".tif", ".tiff", ".bmp", ".webp"}

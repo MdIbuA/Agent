@@ -50,6 +50,19 @@ jobs:
           test -s out/readiness_report.json
           ls out/*.xml | head -3
 
+  pint-ae:
+    name: Official PINT AE rules (OpenPeppol Schematron)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install saxonche
+      - name: Validate 100 generated invoices against official PINT AE v1.0.3
+        run: python -m benchmarks.pint_ae_check --count 100
+
   web:
     name: Web UI (typecheck + build)
     runs-on: ubuntu-latest

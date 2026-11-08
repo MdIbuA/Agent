@@ -156,7 +156,7 @@ class Workspace:
             setter = _FIELD_SETTERS.get(field_name) or _EXTRA_SETTERS.get(field_name)
             if setter is None:
                 raise ValueError(f"Field '{field_name}' can't be edited here.")
-            if field_name == "issue_date":  # accept how people write dates: 25/12/2026, 25 Dec 2026, ISO
+            if field_name in ("issue_date", "due_date"):  # accept 25/12/2026, 25 Dec 2026, ISO
                 iso = normalize_date(value)
                 if not iso:
                     raise ValueError("Couldn't read that date. Try a format like 25/12/2026.")

@@ -11,16 +11,16 @@ import random
 from decimal import Decimal
 from pathlib import Path
 
-SELLERS = [
-    ("Al Noor Building Materials LLC", "Deira, Dubai"),
-    ("Blue Dhow Marine Supplies FZE", "Jebel Ali Free Zone, Dubai"),
-    ("Sahara Spice Trading LLC", "Al Ras, Dubai"),
-    ("Falcon Tech Repairs", "Al Quoz, Dubai"),
+SELLERS = [  # (name, address, licensing authority) -- fictional businesses
+    ("Al Noor Building Materials LLC", "Deira, Dubai", "Dubai Department of Economy and Tourism"),
+    ("Blue Dhow Marine Supplies FZE", "Jebel Ali Free Zone, Dubai", "Jebel Ali Free Zone Authority"),
+    ("Sahara Spice Trading LLC", "Al Ras, Dubai", "Dubai Department of Economy and Tourism"),
+    ("Falcon Tech Repairs", "Al Nahda, Sharjah", "Sharjah Economic Development Department"),
 ]
 BUYERS = [
     ("Gulf Horizon Contracting LLC", "Business Bay, Dubai"),
-    ("Palm Fresh Restaurants LLC", "Jumeirah, Dubai"),
-    ("Emirates Cold Chain Logistics", "Al Qusais, Dubai"),
+    ("Palm Fresh Restaurants LLC", "Al Khalidiyah, Abu Dhabi"),
+    ("Emirates Cold Chain Logistics", "Industrial Area 4, Sharjah"),
 ]
 ITEMS = [
     ("Cement bag 50kg", "18.50"), ("Steel rebar 12mm (ton)", "2450.00"),
@@ -38,13 +38,15 @@ def _drop_number(d):     d["invoice_number"] = None; return "MISSING_INVOICE_NUM
 def _bad_date(d):        d["issue_date"] = "31/02/2026"; return "BAD_ISSUE_DATE"
 def _vat_total(d):       d["vat_total"] = str(Decimal(d["vat_total"]) + 5); return "VAT_TOTAL_MISMATCH"
 def _drop_buyer_addr(d): d["buyer"]["address"] = None; return "MISSING_BUYER_ADDRESS"
+def _drop_due_date(d):   d["due_date"] = None; return "MISSING_DUE_DATE"
 
 FAULTS = [_drop_buyer_trn, _short_seller_trn, _bad_vat, _line_math,
-          _drop_number, _bad_date, _vat_total, _drop_buyer_addr]
+          _drop_number, _bad_date, _vat_total, _drop_buyer_addr, _drop_due_date]
 
 
 def _trn(rng: random.Random) -> str:
-    return "100" + "".join(rng.choice("0123456789") for _ in range(12))
+    """Valid UAE TRN shape (PINT-AE ibr-132-ae): 15 digits, starts with 1, ends with 03."""
+    return "100" + "".join(rng.choice("0123456789") for _ in range(10)) + "03"
 
 
 def clean_invoice(rng: random.Random, n: int) -> dict:
@@ -58,12 +60,16 @@ def clean_invoice(rng: random.Random, n: int) -> dict:
         vat += (lt * rate / 100).quantize(Decimal("0.01"))
         lines.append({"description": desc, "quantity": str(qty), "unit_price": price,
                       "vat_rate": str(rate), "line_total": str(lt)})
+    month, day = rng.randint(1, 10), rng.randint(1, 28)
     return {
         "invoice_number": f"INV-2026-{n:04d}",
-        "issue_date": f"2026-{rng.randint(1, 10):02d}-{rng.randint(1, 28):02d}",
+        "issue_date": f"2026-{month:02d}-{day:02d}",
+        "due_date": f"2026-{month + 1:02d}-{day:02d}",
+        "payment_means": rng.choice(["30", "30", "30", "48", "10"]),
         "currency": "AED",
-        "seller": {"name": s[0], "trn": _trn(rng), "address": s[1], "city": "Dubai"},
-        "buyer": {"name": b[0], "trn": _trn(rng), "address": b[1], "city": "Dubai"},
+        "seller": {"name": s[0], "trn": _trn(rng), "address": s[1], "city": s[1].split(", ")[-1],
+                   "legal_id": f"{rng.randint(100000, 999999)}", "legal_id_type": "TL", "legal_authority": s[2]},
+        "buyer": {"name": b[0], "trn": _trn(rng), "address": b[1], "city": b[1].split(", ")[-1]},
         "lines": lines,
         "net_total": str(net), "vat_total": str(vat), "gross_total": str(net + vat),
     }

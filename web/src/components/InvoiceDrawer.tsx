@@ -6,8 +6,9 @@ import { ScoreRing, StatusChip } from "./ui";
 // Client-side checks mirror the server rules so the owner gets instant feedback.
 function check(field: string, v: string): string | null {
   const s = v.trim();
-  if (!s) return "Enter a value.";
-  if (field.endsWith(".trn") && !/^\d{15}$/.test(s.replace(/[\s-]/g, ""))) return "A TRN has exactly 15 digits.";
+  if (!s) return "Enter or choose a value.";
+  if (field.endsWith(".trn") && !/^1\d{12}03$/.test(s.replace(/[\s-]/g, "")))
+    return "A UAE TRN has 15 digits, starts with 1 and ends with 03.";
   if (field === "gross_total" && !/^\d+(\.\d{1,2})?$/.test(s.replace(/,/g, ""))) return "Enter an amount like 1250.00.";
   return null;
 }
@@ -54,9 +55,18 @@ function Question({ issue, invoiceId, onUpdated }: {
       {hint.hint && editing && <div className="question-hint">{hint.hint}</div>}
       {editing ? (
         <form className="answer-row" onSubmit={submit} noValidate>
-          <input id={id} className="input" value={value} placeholder={hint.placeholder} inputMode={hint.inputMode}
-            autoComplete="off" aria-invalid={!!error} aria-describedby={error ? `${id}-err` : undefined}
-            onChange={(e) => { setValue(e.target.value); setError(null); }} />
+          {hint.options ? (
+            <select id={id} className="input" value={value} aria-invalid={!!error}
+              aria-describedby={error ? `${id}-err` : undefined}
+              onChange={(e) => { setValue(e.target.value); setError(null); }}>
+              <option value="" disabled>{hint.placeholder}</option>
+              {hint.options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+            </select>
+          ) : (
+            <input id={id} className="input" value={value} placeholder={hint.placeholder} inputMode={hint.inputMode}
+              autoComplete="off" aria-invalid={!!error} aria-describedby={error ? `${id}-err` : undefined}
+              onChange={(e) => { setValue(e.target.value); setError(null); }} />
+          )}
           <button className="btn btn-primary" disabled={busy}>{busy ? <span className="spinner" /> : "Save"}</button>
         </form>
       ) : (

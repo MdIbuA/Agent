@@ -11,3 +11,6 @@ rapidocr_onnxruntime
 
 # Tests for the API
 httpx
+
+# Official PINT AE Schematron check (benchmarks/pint_ae_check.py)
+saxonche

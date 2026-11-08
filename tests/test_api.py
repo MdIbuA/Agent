@@ -33,11 +33,11 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(item["status"], "blocked")
         self.assertEqual(self.c.get(f"/api/invoices/{item['id']}/xml").status_code, 409)
         r = self.c.post(f"/api/invoices/{item['id']}/answer",
-                        json={"field": "buyer.trn", "value": "100 2345 6789 0123"}).json()
+                        json={"field": "buyer.trn", "value": "100 2345 6789 0103"}).json()
         self.assertEqual(r["item"]["status"], "ready")
         x = self.c.get(f"/api/invoices/{item['id']}/xml")
         self.assertEqual(x.status_code, 200)
-        self.assertIn("<cbc:CompanyID>100234567890123</cbc:CompanyID>", x.text)
+        self.assertIn("<cbc:CompanyID>100234567890103</cbc:CompanyID>", x.text)
 
     def test_rejects_bad_files_and_unknown_fields(self):
         r = self.c.post("/api/invoices/upload",

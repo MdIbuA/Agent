@@ -1,10 +1,36 @@
-# Real-data benchmark: 626 scanned receipts, $0, fully offline
+# Benchmarks
+
+## 1. Official UAE compliance: OpenPeppol PINT AE v1.0.3 Schematron
+
+The official PINT AE Billing resources published by OpenPeppol (docs.peppol.eu/poac/ae)
+include the compiled Schematron rules and example invoices. `benchmarks/pint_ae_check.py`
+downloads the pinned bundle (SHA-256 checked) and runs both rule sets with Saxon.
+
+| Check | Result |
+|---|---|
+| Official example invoices (sanity check of the harness) | 10 / 10 pass |
+| Known-invalid invoice (bad TRN) | correctly fails `ibr-132-ae` |
+| Agent XML **before** this work | **0 / 100 pass**, 15 fatal rules each |
+| Agent XML **after** rebuilding to the official example | **100 / 100 pass**, 0 fatal, 0 warnings |
+| End-to-end in the web UI: answer 4 questions, download, validate | pass |
+
+What the official rules caught that our own tests did not: UAE TRN format (15 digits,
+starts with 1, **ends with 03**, `ibr-132-ae`), emirate code (`ibr-128-ae`), due date
+(`ibr-127-ae`), payment means (`ibr-191-ae`), transaction-type code (`ibr-154-ae`),
+document UUID (`ibr-193-ae`), seller trade licence + issuing authority (`ibr-150/172-ae`),
+Peppol endpoint (scheme 0235), and line-level AED amounts (`ibr-104-ae`). CI runs this
+check on every push.
+
+Scope: standard tax invoices (S/Z rated). Credit notes, reverse charge, exports, free-zone
+and margin-scheme variants are not generated yet.
+
+# 2. Real-data benchmark: 626 scanned receipts, $0, fully offline
 
 **Dataset:** ICDAR-2019 SROIE training split (626 real scanned receipts, Malaysia), with
 human labels for company, date, address and total. Mirror: `github.com/zzzDavid/ICDAR-2019-SROIE`
 (repo code MIT; the scans are the public ICDAR competition data — research use).
 
-**Why receipts and not UAE invoices?** No public labelled set of UAE tax invoices exists.
+**Why receipts and not UAE invoices?** No public labelled set of scanned UAE tax invoices exists (the official PINT AE examples above are structured XML, not scans).
 SROIE tests the hardest part of the agent — reading real, messy, low-resolution scans — and,
 like the UAE, uses day-first dates. Next step: repeat with UAE invoices you collect (with
 permission) or render.
