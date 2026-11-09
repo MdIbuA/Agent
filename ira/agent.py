@@ -83,6 +83,7 @@ IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".tif", ".tiff", ".bmp", ".webp"}
 
 # Fields read from a document that the owner may be asked to confirm.
 OCR_FIELDS = ("invoice_number", "date", "due_date", "total", "company", "seller_trn", "buyer_trn")
+REGISTER_FIELDS = ("company", "buyer_name", "seller_licence")  # corrected/suggested from the official register
 
 
 def _norm(v) -> str:
@@ -91,13 +92,14 @@ def _norm(v) -> str:
 
 def _to_invoice_dict(found: dict, unconfirmed: list[str], source_file: str, via: str) -> dict:
     """Rule-extraction output -> invoice dict. Unread fields stay None so the validator asks for them."""
-    seller = {"name": found.get("company"), "trn": found.get("seller_trn"), "address": found.get("seller_address")}
+    seller = {"name": found.get("company"), "trn": found.get("seller_trn"), "address": found.get("seller_address"),
+              "legal_id": found.get("seller_licence"), "legal_authority": found.get("seller_licence_authority")}
     buyer = {"name": found.get("buyer_name"), "trn": found.get("buyer_trn"), "address": found.get("buyer_address")}
     for party in (seller, buyer):  # city/emirate only from an explicit address
         if party["address"]:
             party["city"] = party["address"].split(",")[-1].strip()
     return {
-        "_unconfirmed": [f for f in unconfirmed if found.get(f) not in (None, "")],
+        "_unconfirmed": [f for f in dict.fromkeys(unconfirmed) if found.get(f) not in (None, "")],
         "_via": via,
         "invoice_number": found.get("invoice_number"),
         "issue_date": found.get("date"),
@@ -159,6 +161,16 @@ def _with_llm(found: dict, unconfirmed: list[str], text: str, image: Path | None
     return merged, [f for f in disagreements if f in OCR_FIELDS], "rules + AI"
 
 
+def _with_register(found: dict, unconfirmed: list[str], by: str) -> tuple[dict, list[str], str]:
+    """Correct OCR-garbled party names to their form in the official Ajman licence register and
+    suggest the seller's licence number. Every change is put to the owner to confirm."""
+    from .registry import snap_parties
+    found, changed = snap_parties(found)
+    if not changed:
+        return found, unconfirmed, by
+    return found, list(unconfirmed) + changed, f"{by} + Ajman licence register"
+
+
 def _render_first_page(pdf: Path, out: Path) -> Path:
     import pypdfium2 as pdfium
     pdfium.PdfDocument(str(pdf))[0].render(scale=150 / 72).to_pil().save(out)
@@ -184,6 +196,7 @@ def document_extract(path: Path, engine: str | None) -> dict:
         with tempfile.TemporaryDirectory() as td:
             image = None if mode == "text-layer" else _render_first_page(path, Path(td) / "p1.png")
             found, unconfirmed, by = _with_llm(found, unconfirmed, text, image)
+        found, unconfirmed, by = _with_register(found, unconfirmed, by)
         d = _to_invoice_dict(found, unconfirmed, path.name, mode)
         d["_extractor"] = by
         return d

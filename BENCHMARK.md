@@ -104,6 +104,27 @@ names recorded in `benchmarks/results/`). The Gemini free tier allowed **20 requ
 per model** when this was run, enough for a demo, not for production volumes. With AI on,
 unclear invoices are sent to Google; the UI says so.
 
+## 2c. Real UAE business names (official Ajman DED licence register)
+
+45 invoices rendered with **real Ajman licence holders** as seller and buyer (names are ALL CAPS,
+abbreviated, often without a legal suffix, sometimes long enough to wrap). Rules-only vs rules +
+register-based correction (`--register`): OCR-tolerant matching against the 61,901 registered
+trade names and official area names.
+
+| Field | Digital: rules | Digital: + register | Scanned: rules | Scanned: + register |
+|---|---|---|---|---|
+| Seller name | 100% | 100% | 93.3% | **95.6%** |
+| Buyer name | 97.8% | **100%** | 86.7% | **97.8%** |
+| Seller address | 100% | 100% | 53.3% | **95.6%** |
+| Buyer address | 100% | 100% | 64.4% | **100%** |
+| Dates, total, TRNs, line items | 98–100% | 98–100% | 98–100% | 98–100% |
+| Invoice number | 97.8% | 97.8% | 80% | 80% (OCR letter case → owner confirms) |
+
+Real names exposed real issues, all fixed: the official CSV export starts with a byte-order mark,
+so the full register loaded **0** licences (tests now cover the full file); long trade names wrap
+onto a second line ("… L.L.C (SOLE" / "PROPRIETORSHIP)") and are now joined, but never with an
+address, tax-ID or date line (OCR turned a real "{L.L.C" into "(L.L.C" and glued on the address).
+
 # 3. Real-data benchmark: 626 scanned receipts, $0, fully offline
 
 **Dataset:** ICDAR-2019 SROIE training split (626 real scanned receipts, Malaysia), with

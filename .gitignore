@@ -12,3 +12,6 @@ web/dist/
 
 # local workspace database
 *.db
+
+# full open-data downloads (fetched by scripts/)
+data/uae_open_data/ajman_licences.csv

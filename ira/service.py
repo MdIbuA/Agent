@@ -32,6 +32,9 @@ _UNCONFIRMED = {
     "company": ("seller.name", "seller name", lambda i: i.seller.name),
     "seller_trn": ("seller.trn", "seller TRN", lambda i: i.seller.trn),
     "buyer_trn": ("buyer.trn", "buyer TRN", lambda i: i.buyer.trn),
+    "buyer_name": ("buyer.name", "buyer name", lambda i: i.buyer.name),
+    "seller_licence": ("seller.legal_id", "seller's trade licence (from the official Ajman register)",
+                       lambda i: i.seller.legal_id),
 }
 _UNCONFIRMED_FIELD = {k: v[0] for k, v in _UNCONFIRMED.items()}
 

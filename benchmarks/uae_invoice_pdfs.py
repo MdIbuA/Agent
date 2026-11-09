@@ -105,12 +105,33 @@ const dir = process.argv[2];
 """
 
 
-def make(out: Path, count: int, seed: int, holdout: int = 0) -> None:
+def _real_parties(rng: random.Random):
+    """Seller/buyer from the official Ajman DED licence register (data/uae_open_data)."""
+    import csv
+    path = Path(__file__).resolve().parent.parent / "data" / "uae_open_data" / "ajman_licences.csv"
+    rows = [r for r in csv.DictReader(open(path, encoding="utf-8-sig"))
+            if r["tradenameen"] and r["tradenameen"] != "NULL" and r["areaen"] and r["areaen"] != "NULL"]
+
+    def party(r):
+        return {"name": " ".join(r["tradenameen"].split()), "address": f"{' '.join(r['areaen'].split())}, Ajman",
+                "legal_id": r["licensenumber"].split(".")[0],
+                "legal_authority": "Ajman Department of Economic Development"}
+    while True:
+        a, b = rng.sample(rows, 2)
+        yield party(a), party(b)
+
+
+def make(out: Path, count: int, seed: int, holdout: int = 0, real_names: bool = False) -> None:
     out.mkdir(parents=True, exist_ok=True)
     rng = random.Random(seed)
     truth = {}
+    parties = _real_parties(random.Random(seed + 1)) if real_names else None
     for n in range(1, count + 1):
         inv = clean_invoice(rng, n)
+        if parties:
+            sp, bp = next(parties)
+            inv["seller"].update(sp)
+            inv["buyer"].update({k: bp[k] for k in ("name", "address")})
         name = f"uae-{n:03d}"
         layout = {1: HOLDOUT_LAYOUT, 2: HOLDOUT2_LAYOUT, 3: HOLDOUT3_LAYOUT}.get(holdout) or LAYOUTS[n % len(LAYOUTS)]
         (out / f"{name}.html").write_text(render_html(inv, layout), encoding="utf-8")
@@ -120,7 +141,8 @@ def make(out: Path, count: int, seed: int, holdout: int = 0) -> None:
                        "buyer_name": inv["buyer"]["name"], "seller_address": inv["seller"]["address"],
                        "buyer_address": inv["buyer"]["address"],
                        "lines": [[l["quantity"], l["unit_price"], l["line_total"]] for l in inv["lines"]],
-                       "layout": f"holdout{holdout}" if holdout else n % len(LAYOUTS)}
+                       "layout": f"holdout{holdout}" if holdout else n % len(LAYOUTS),
+                       "seller_licence": inv["seller"]["legal_id"]}
     (out / "truth.json").write_text(json.dumps(truth, indent=2))
     js = out / "render.cjs"
     js.write_text(RENDER_JS)
@@ -143,7 +165,7 @@ FIELDS = ("invoice_number", "date", "due_date", "total", "company", "seller_trn"
           "buyer_name", "seller_address", "buyer_address", "lines")
 
 
-def score(out: Path, scanned: bool) -> dict:
+def score(out: Path, scanned: bool, register: bool = False) -> dict:
     from ira.ocr import ENGINES
     from ira.pdf import pdf_to_text
     from ira.rule_extract import extract
@@ -156,6 +178,9 @@ def score(out: Path, scanned: bool) -> dict:
         text, mode = pdf_to_text(folder / f"{name}.pdf", ENGINES["rapidocr"])
         modes[mode] = modes.get(mode, 0) + 1
         got = extract(text)
+        if register:  # correct party names against the official Ajman licence register
+            from ira.registry import snap_parties
+            got, _ = snap_parties(got)
         for f in FIELDS:
             if f == "total":
                 ok = bool(got[f]) and Decimal(got[f]) == Decimal(t[f])
@@ -185,12 +210,14 @@ def main():
     ap.add_argument("--seed", type=int, default=971)
     ap.add_argument("--scanned", action="store_true")
     ap.add_argument("--holdout", type=int, default=0, choices=[0, 1, 2, 3], help="render a held-out layout")
+    ap.add_argument("--real-names", action="store_true", help="sellers/buyers from the Ajman licence register")
+    ap.add_argument("--register", action="store_true", help="score with register-based name correction")
     a = ap.parse_args()
     if a.cmd == "make":
-        make(a.out, a.count, a.seed, a.holdout)
+        make(a.out, a.count, a.seed, a.holdout, a.real_names)
         print(f"wrote {a.count} PDFs (+ scanned variants) to {a.out}")
     else:
-        r = score(a.out, a.scanned)
+        r = score(a.out, a.scanned, a.register)
         print(json.dumps({k: v for k, v in r.items() if k != "misses"}, indent=1))
         for m in r["misses"]:
             print("  miss", m)

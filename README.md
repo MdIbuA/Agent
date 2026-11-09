@@ -60,6 +60,17 @@ Two independent OCR engines read every scan. Fields they agree on are auto-accep
 fields they disagree on become a confirmation question for the owner. See
 [BENCHMARK.md](BENCHMARK.md) for accuracy on 626 real scanned receipts.
 
+## UAE public data
+
+`data/uae_open_data/` holds official UAE open data with sources, checksums and attribution
+([SOURCES.md](data/uae_open_data/SOURCES.md)):
+
+- **Ajman DED business-licence register** (61,901 licences, CC BY 4.0): `python scripts/fetch_ajman_licences.py`.
+  Used to verify a seller's licence, correct OCR-garbled business and area names, and as real
+  names in benchmarks. Over 55% of Ajman licences are single-owner businesses.
+- **FTA service activity 2025**: 90,893 VAT registrations and 227,263 Corporate Tax registrations
+  processed in 2025 (service counts, not taxpayer totals).
+
 ## Optional AI assist (Gemini, free tier)
 
 ```bash
@@ -84,6 +95,8 @@ layout the AI read 100% of fields where rules alone missed invoice numbers, TRNs
 | `ira/extract.py` | AI extraction (Gemini / any OpenAI-compatible API) + rules/AI hybrid merge |
 | `ira/ubl_import.py` | Reads UBL / PINT AE invoices and credit notes (ERP output) |
 | `ira/codelists.py` | Official PINT AE code lists (currencies, units, payment means, credit reasons) |
+| `ira/registry.py` | Ajman DED licence register: licence check, name and area correction |
+| `scripts/fetch_ajman_licences.py` | Downloads the official Ajman licence register (CC BY 4.0) |
 | `ira/ocr.py` | Free local OCR engines: RapidOCR (PP-OCR/ONNX, with deskew) and Tesseract |
 | `ira/pdf.py` | PDF text layer (digital) or page rendering for OCR (scanned) |
 | `ira/layout.py` | Rebuilds visual rows from OCR word boxes (label/value columns) |

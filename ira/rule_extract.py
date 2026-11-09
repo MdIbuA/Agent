@@ -212,6 +212,24 @@ def _company_lines(lines: list[str]) -> list[str]:
     return out
 
 
+_SUFFIX_ONLY = re.compile(r"^\(?\s*(L\.?\s*L\.?\s*C\.?|LLC|FZE|FZCO|SOLE\s*PROPRIETORSHIP\)?|S\.?P\.?S.*|"
+                          r"PROPRIETORSHIP\)|BRANCH\s*\w+|-\s*BRANCH.*)\s*\)?$", re.I)
+
+
+def _join_wrapped(name: str, following: list[str]) -> str:
+    """Long trade names wrap: 'X PERFUMES L.L.C (SOLE' + 'PROPRIETORSHIP)'."""
+    for nxt in following[:2]:
+        nxt = nxt.strip()
+        # Never glue on an address, tax ID or date line (OCR can fake an open bracket).
+        if _ADDRESS_HINT.search(nxt) or _TAX_ID_LINE.search(nxt) or re.search(r"\d{2}[/\-.]\d{2}", nxt):
+            break
+        if name.count("(") > name.count(")") or _SUFFIX_ONLY.match(nxt):
+            name = f"{name} {nxt}"
+        else:
+            break
+    return name
+
+
 def extract_company(lines: list[str]) -> str | None:
     """Seller name sits near the top. Prefer a legal suffix (SDN BHD, LLC, FZE) and join a
     name wrapped over several lines; else a business-type word; else the first text line."""
@@ -227,19 +245,19 @@ def extract_company(lines: list[str]) -> str | None:
             start = i
             while start > 0 and i - start < 3 and fragment(top[start - 1]):
                 start -= 1
-            return _clean_company(" ".join(top[start:i + 1]))
+            return _clean_company(_join_wrapped(" ".join(top[start:i + 1]), top[i + 1:]))
     for i, ln in enumerate(top[:6]):
         if _BIZ.search(ln):
             nxt = top[i + 1] if i + 1 < len(top) else ""
             if ln.rstrip().endswith("&") and nxt and not re.search(r"\d", nxt):
                 return _clean_company(f"{ln} {nxt}")
-            return _clean_company(ln)
-    return _clean_company(top[0]) if top else None
+            return _clean_company(_join_wrapped(ln, top[i + 1:]))
+    return _clean_company(_join_wrapped(top[0], top[1:])) if top else None
 
 
 # UAE TRN: 15 digits, starts with 1, ends with 03 (PINT-AE ibr-132-ae). Printed with spaces/dashes.
 _TRN_LOOSE = re.compile(r"(?<!\d)1(?:[\s\-]?\d){12}[\s\-]?0[\s\-]?3(?!-?\d)")
-_BUYER_SECTION = re.compile(r"\b(BILL(?:ED)?\s*TO|SOLD\s*TO|CUSTOMER|BUYER|CLIENT|RECIPIENT)\b|العميل|المشتري", re.I)
+_BUYER_SECTION = re.compile(r"\b(B[I1l][LN]{1,2}(?:ED)?\s*T[O0]|SOLD\s*TO|CUSTOMER|BUYER|CLIENT|RECIPIENT)\b|العميل|المشتري", re.I)
 _INV_NO = re.compile(
     r"(?:(?:TAX\s+)?[I1l]NV(?:OICE)?\.?\s*(?:NO\.?|NUMBER|NUM|#|REF(?:ERENCE)?\.?|ID)"
     r"|BILL\s*(?:NO\.?|NUMBER|#)|DOCUMENT\s*(?:NO\.?|NUMBER|#)|REF(?:ERENCE)?\s*(?:NO\.?|NUMBER|#))"
@@ -359,7 +377,7 @@ def extract_parties(lines: list[str]) -> dict:
                 block.insert(0, ln.strip())
         block = [b for b in block if len(re.sub(r"[^A-Za-z]", "", b)) >= 4]
     if block:
-        buyer_name = _respace(block[0])
+        buyer_name = _respace(_join_wrapped(block[0], block[1:]))
         buyer_addr = next((_clean_address(_respace(b)) for b in block[1:] if _ADDRESS_HINT.search(b)), None)
     return {"seller_address": seller_addr, "buyer_name": buyer_name, "buyer_address": buyer_addr}
 

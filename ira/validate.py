@@ -115,6 +115,13 @@ def validate(inv: Invoice) -> list[Issue]:
                   "Trade licence issuing authority is missing (PINT-AE ibr-172-ae).",
                   "Which authority issued the seller's trade licence?"))
 
+    # Advisory check against the official Ajman DED licence register (UAE open data).
+    from .registry import check_seller_licence
+    finding = check_seller_licence(inv.seller.legal_id, inv.seller.legal_authority, inv.seller.name)
+    if finding:
+        add(Issue(finding[0], "warning", "seller.legal_id", finding[1],
+                  "Please re-check the seller's trade licence number."))
+
     s_trn, b_trn = normalize_trn(inv.seller.trn), normalize_trn(inv.buyer.trn)
     if s_trn and s_trn == b_trn:
         add(Issue("SAME_TRN", "error", "buyer.trn",
