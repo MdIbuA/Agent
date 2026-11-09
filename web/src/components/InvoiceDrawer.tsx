@@ -186,7 +186,7 @@ export function InvoiceDrawer({ invoice, onClose, onUpdated, onDelete }: {
           <section aria-labelledby="sec-p">
             <h3 className="section-title" id="sec-p">{t("parties")}</h3>
             {invoice.learned.length > 0 && (
-              <div className="learned"><Sparkles size={14} aria-hidden />{t("learnedNote")}</div>
+              <div className="learned"><Sparkles size={14} aria-hidden />{t(invoice.learnedFromProfile ? "learnedProfile" : "learnedNote")}</div>
             )}
             <dl className="kv">
               <div><dt>{t("seller")}</dt><dd><Val v={seller.name} /></dd></div>

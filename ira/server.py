@@ -51,6 +51,17 @@ class Answer(BaseModel):
     value: str = Field(..., max_length=500)
 
 
+class Profile(BaseModel):
+    name: str | None = Field(None, max_length=200)
+    trn: str | None = Field(None, max_length=40)
+    legal_id: str | None = Field(None, max_length=60)
+    legal_authority: str | None = Field(None, max_length=200)
+    address: str | None = Field(None, max_length=300)
+    emirate: str | None = Field(None, max_length=40)
+    payment_means: str | None = Field(None, max_length=60)
+    payment_terms_days: str | None = Field(None, max_length=4)
+
+
 class Confirm(BaseModel):
     field: str = Field(..., max_length=64)
 
@@ -86,6 +97,7 @@ async def upload(files: list[UploadFile] = File(...)):
     if len(files) > MAX_FILES:
         raise HTTPException(413, f"Upload at most {MAX_FILES} files at a time.")
     errors: list[dict] = []
+    imports: list[dict] = []
     engine = ocr_engine()
     with tempfile.TemporaryDirectory() as td:
         for f in files:
@@ -104,6 +116,11 @@ async def upload(files: list[UploadFile] = File(...)):
                     for i in items:
                         i.setdefault("source_file", name)
                     ws.add_dicts(items, source="json")
+                elif suffix in (".xlsx", ".xlsm", ".csv"):
+                    from .spreadsheet import parse_register
+                    items, info = parse_register(data, name)
+                    ws.add_dicts(items, source="spreadsheet")
+                    imports.append({"file": name, **info})
                 elif suffix == ".xml":
                     item = parse_ubl(data.decode("utf-8"))
                     item["source_file"] = name
@@ -114,10 +131,10 @@ async def upload(files: list[UploadFile] = File(...)):
                     rec = ws.add_scan(path, engine)
                     ws.get(rec["id"]).invoice.source_file = name
                 else:
-                    raise ValueError("Use PDF, invoice images (JPG, PNG, TIFF, WEBP), UBL/PINT AE XML or JSON.")
+                    raise ValueError("Use PDF, Excel/CSV registers, invoice images, UBL/PINT AE XML or JSON.")
             except (ValueError, UnicodeDecodeError, json.JSONDecodeError) as e:
                 errors.append({"file": name, "error": str(e)})
-    return {**_state(), "errors": errors}
+    return {**_state(), "errors": errors, "imports": imports}
 
 
 def _get_or_404(rid: str):
@@ -135,6 +152,19 @@ def answer(rid: str, body: Answer):
     except ValueError as e:
         raise HTTPException(422, str(e))
     return {"item": item, "summary": ws.summary()}
+
+
+@app.get("/api/profile")
+def get_profile():
+    return {"profile": ws.profile}
+
+
+@app.put("/api/profile")
+def put_profile(body: Profile):
+    try:
+        return {**ws.set_profile(body.model_dump()), **_state()}
+    except ValueError as e:
+        raise HTTPException(422, str(e))
 
 
 @app.get("/api/outreach")

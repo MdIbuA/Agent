@@ -2,7 +2,7 @@ import { UploadCloud } from "lucide-react";
 import { useRef, useState, type DragEvent } from "react";
 import { useI18n } from "../lib/i18n";
 
-const ACCEPT = ".pdf,.jpg,.jpeg,.png,.tif,.tiff,.webp,.bmp,.json,.xml";
+const ACCEPT = ".xlsx,.xlsm,.csv,.pdf,.jpg,.jpeg,.png,.tif,.tiff,.webp,.bmp,.json,.xml";
 
 export function Dropzone({ onFiles, busy }: { onFiles: (files: File[]) => void; busy: boolean }) {
   const { t } = useI18n();

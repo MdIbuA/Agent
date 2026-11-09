@@ -1,0 +1,12 @@
+.git
+.github
+**/__pycache__
+**/*.pyc
+web/node_modules
+web/dist
+.cache
+out
+bench_out
+*.db
+data/uae_open_data/ajman_licences.csv
+tests/

@@ -23,9 +23,10 @@ export interface Line {
 
 export interface Invoice {
   id: string;
-  source: "sample" | "json" | "xml" | "pdf" | "scan";
+  source: "sample" | "json" | "xml" | "pdf" | "scan" | "spreadsheet";
   extractor: string | null;
   learned: string[];
+  learnedFromProfile: boolean;
   appliedTo?: string[];
   file: string | null;
   invoiceNumber: string | null;
@@ -64,7 +65,15 @@ export interface Report {
   topIssues: { code: string; label: string; invoices: number }[];
   answersReusedByAgent: number; customerRequests: number;
 }
-export interface UploadResult extends State { errors: { file: string; error: string }[] }
+export interface UploadResult extends State {
+  errors: { file: string; error: string }[];
+  imports?: { file: string; invoices: number; headerRow: number; columns: Record<string, string>; unmapped: string[] }[];
+}
+
+export interface BusinessProfile {
+  name?: string | null; trn?: string | null; legal_id?: string | null; legal_authority?: string | null;
+  address?: string | null; emirate?: string | null; payment_means?: string | null; payment_terms_days?: string | null;
+}
 
 export class ApiError extends Error {
   constructor(public status: number, message: string) { super(message); }
@@ -111,6 +120,10 @@ export const api = {
   clear: () => request<State>("/api/invoices", { method: "DELETE" }),
   xmlUrl: (id: string) => `/api/invoices/${id}/xml`,
   outreach: () => request<{ requests: CustomerRequest[] }>("/api/outreach"),
+  profile: () => request<{ profile: BusinessProfile }>("/api/profile"),
+  saveProfile: (p: BusinessProfile) =>
+    request<State & { profile: BusinessProfile; updatedInvoices: number }>("/api/profile",
+      { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(p) }),
   report: () => request<Report>("/api/report"),
   exportUrl: "/api/export.zip",
 };

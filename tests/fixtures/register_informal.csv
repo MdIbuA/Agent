@@ -1,0 +1,4 @@
+Inv #,Date,Customer Name,Amount,VAT,Total,Payment Mode
+S-1001,2026-05-02,Emirates Cold Chain Logistics,"1,200.00",60.00,"1,260.00",Bank transfer
+S-1002,03/05/2026,Gulf Horizon Contracting LLC,500,25,525,Cash
+TOTAL,,,"1,700.00",85.00,"1,785.00",

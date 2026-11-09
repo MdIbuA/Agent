@@ -93,6 +93,7 @@ def serialize(rec: Record) -> dict:
         "source": rec.source,
         "extractor": rec.extractor,
         "learned": sorted(rec.learned),
+        "learnedFromProfile": any(v == "profile" for v in rec.learned.values()),
         "file": inv.source_file,
         "invoiceNumber": inv.invoice_number,
         "issueDate": inv.issue_date,
@@ -113,6 +114,61 @@ def serialize(rec: Record) -> dict:
     }
 
 
+PROFILE_FIELDS = ("name", "trn", "legal_id", "legal_authority", "address", "emirate",
+                  "payment_means", "payment_terms_days")
+
+
+def apply_profile(rec: "Record", profile: dict, own_sales: bool) -> list[str]:
+    """Fill the business's own details into an invoice it issued. Only empty fields are filled.
+    own_sales=True for the business's own registers (spreadsheets, samples); otherwise the
+    invoice must name the business as seller (scans/PDFs may be purchase invoices)."""
+    if not profile.get("name"):
+        return []
+    inv, seller = rec.invoice, rec.invoice.seller
+    same = _same_business(seller, _profile_party(profile))
+    if not (same or (own_sales and not seller.name)):
+        return []
+    filled = []
+    from .agent import _FIELD_SETTERS
+    for f in ("name", "trn", "legal_id", "legal_authority", "address", "emirate"):
+        if profile.get(f) and getattr(seller, f) in (None, ""):
+            _FIELD_SETTERS.get(f"seller.{f}", lambda i, v, f=f: setattr(i.seller, f, v))(inv, str(profile[f]))
+            if f == "address" and not seller.city:
+                seller.city = str(profile[f]).split(",")[-1].strip()
+            rec.learned[f"seller.{f}"] = "profile"
+            filled.append(f"seller.{f}")
+    if inv.invoice_type not in ("381", "81", "261"):
+        if profile.get("payment_means") and not inv.payment_means:
+            inv.payment_means = str(profile["payment_means"])
+            rec.learned["payment_means"] = "profile"
+            filled.append("payment_means")
+        days = profile.get("payment_terms_days")
+        if days not in (None, "") and not inv.due_date and inv.issue_date:
+            from datetime import date, timedelta
+            try:
+                inv.due_date = (date.fromisoformat(inv.issue_date) + timedelta(days=int(days))).isoformat()
+                rec.learned["due_date"] = "profile"
+                filled.append("due_date")
+            except ValueError:
+                pass
+    return filled
+
+
+def _same_business(a, b) -> bool:
+    """Same business if both TRNs are known and equal, or the normalised names are equal."""
+    import re as _re
+    ta, tb = _re.sub(r"\D", "", a.trn or ""), _re.sub(r"\D", "", b.trn or "")
+    if len(ta) == 15 and len(tb) == 15:
+        return ta == tb
+    na = _re.sub(r"[^A-Z0-9]", "", (a.name or "").upper())
+    return len(na) >= 4 and na == _re.sub(r"[^A-Z0-9]", "", (b.name or "").upper())
+
+
+def _profile_party(profile: dict):
+    from .models import Party
+    return Party(name=profile.get("name"), trn=profile.get("trn"))
+
+
 def party_key(p) -> str | None:
     """Identity of a business across invoices: its TRN when valid, else its normalised name."""
     import re as _re
@@ -130,11 +186,15 @@ class Workspace:
     def __init__(self, db_path: str | Path | None = None):
         self._lock = threading.Lock()
         self._records: dict[str, Record] = {}
+        self.profile: dict = {}
         self._db = None
         if db_path:
             Path(db_path).parent.mkdir(parents=True, exist_ok=True)
             self._db = sqlite3.connect(str(db_path), check_same_thread=False)
             self._db.execute("CREATE TABLE IF NOT EXISTS invoices (id TEXT PRIMARY KEY, seq INTEGER, body TEXT)")
+            self._db.execute("CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, body TEXT)")
+            row = self._db.execute("SELECT body FROM settings WHERE key = 'profile'").fetchone()
+            self.profile = json.loads(row[0]) if row else {}
             for rid, body in self._db.execute("SELECT id, body FROM invoices ORDER BY seq"):
                 d = json.loads(body)
                 self._records[rid] = Record(id=rid, invoice=invoice_from_dict(d["invoice"]), source=d["source"],
@@ -166,6 +226,7 @@ class Workspace:
             for d in items:
                 rec = Record(id=uuid.uuid4().hex[:10], invoice=invoice_from_dict(d), source=source,
                              unconfirmed=set(d.get("_unconfirmed", [])), extractor=d.get("_extractor"))
+                apply_profile(rec, self.profile, own_sales=source in ("spreadsheet", "sample"))
                 self._records[rec.id] = rec
                 self._save(rec)
                 out.append(serialize(rec))
@@ -269,6 +330,38 @@ class Workspace:
             self._save(rec)
             return serialize(rec)
 
+    def set_profile(self, profile: dict) -> dict:
+        """Save the business profile and apply it to existing invoices (empty fields only)."""
+        from .agent import parse_emirate, parse_payment_means
+        from .validate import TRN_RE, normalize_trn
+        clean = {k: (str(v).strip() if v not in (None, "") else None) for k, v in profile.items() if k in PROFILE_FIELDS}
+        if clean.get("trn"):
+            clean["trn"] = normalize_trn(clean["trn"])
+            if not TRN_RE.match(clean["trn"]):
+                raise ValueError("A UAE TRN has 15 digits, starts with 1 and ends with 03.")
+        if clean.get("emirate"):
+            clean["emirate"] = parse_emirate(clean["emirate"])
+        elif clean.get("address"):  # "Deira, Dubai" states the emirate
+            from .models import emirate_from_text
+            clean["emirate"] = emirate_from_text(clean["address"])
+        if clean.get("payment_means"):
+            clean["payment_means"] = parse_payment_means(clean["payment_means"])
+        if clean.get("payment_terms_days"):
+            if not clean["payment_terms_days"].isdigit() or int(clean["payment_terms_days"]) > 365:
+                raise ValueError("Payment terms are a number of days, e.g. 30.")
+        with self._lock:
+            self.profile = clean
+            if self._db is not None:
+                self._db.execute("INSERT INTO settings (key, body) VALUES ('profile', ?) ON CONFLICT(key) "
+                                 "DO UPDATE SET body = excluded.body", (json.dumps(clean),))
+                self._db.commit()
+            updated = 0
+            for rec in self._records.values():
+                if apply_profile(rec, clean, own_sales=rec.source in ("spreadsheet", "sample")):
+                    self._save(rec)
+                    updated += 1
+        return {"profile": clean, "updatedInvoices": updated}
+
     def delete(self, rid: str) -> None:
         with self._lock:
             self._records.pop(rid, None)
@@ -363,7 +456,7 @@ def report(ws: "Workspace") -> dict:
     for i in blocked:
         for code in {q["code"] for q in i["issues"] if q["severity"] == "error"}:
             issue_counts[code] += 1
-    learned = sum(len(r.learned) for r in recs.values())
+    learned = sum(len(r.learned) for r in recs.values())  # incl. fills from the business profile
     return {
         "summary": ws.summary(),
         "notReady": len(blocked),

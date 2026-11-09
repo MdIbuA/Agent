@@ -25,8 +25,8 @@ _FIELD_SETTERS = {
     "issue_date": lambda inv, v: setattr(inv, "issue_date", v),
     "seller.trn": lambda inv, v: setattr(inv.seller, "trn", normalize_trn(v)),
     "buyer.trn": lambda inv, v: setattr(inv.buyer, "trn", normalize_trn(v)),
-    "seller.address": lambda inv, v: setattr(inv.seller, "address", v),
-    "buyer.address": lambda inv, v: setattr(inv.buyer, "address", v),
+    "seller.address": lambda inv, v: _set_address(inv.seller, v),
+    "buyer.address": lambda inv, v: _set_address(inv.buyer, v),
     "seller.name": lambda inv, v: setattr(inv.seller, "name", v),
     "buyer.name": lambda inv, v: setattr(inv.buyer, "name", v),
     "seller.emirate": lambda inv, v: setattr(inv.seller, "emirate", parse_emirate(v)),
@@ -48,6 +48,16 @@ def parse_credit_reason(value: str) -> str:
     if f"DL8.61.1.{v}" in CREDIT_REASONS:  # allow the short letter "D"
         return f"DL8.61.1.{v}"
     raise ValueError("Choose an official reason: " + "; ".join(CREDIT_REASONS.values()))
+
+
+def _set_address(party, value: str) -> None:
+    """Saving an address that names its emirate also fills the emirate (one question fewer)."""
+    from .models import emirate_from_text
+    party.address = value
+    if not party.city:
+        party.city = value.split(",")[-1].strip()
+    if not party.emirate:
+        party.emirate = emirate_from_text(value)
 
 
 def parse_emirate(value: str) -> str:
@@ -75,7 +85,15 @@ def parse_payment_means(value: str) -> str:
     for word, code in _PAYMENT_WORDS:
         if word in v:
             return code
+    for word, code in _PAYMENT_WORDS_AR:
+        if word in value:
+            return code
     raise ValueError("Say how the buyer pays, e.g. bank transfer, cheque, cash or card.")
+
+
+_PAYMENT_WORDS_AR = [("خصم مباشر", "49"), ("بطاقة خصم", "55"), ("بطاقة ائتمان", "54"), ("حوالة مصرفية", "21"),
+                     ("شيك", "20"), ("تحويل", "30"), ("بنك", "30"), ("نقد", "10"), ("كاش", "10"),
+                     ("رابط", "68"), ("بطاقة", "54")]
 
 
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".tif", ".tiff", ".bmp", ".webp"}

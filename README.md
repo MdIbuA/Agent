@@ -17,19 +17,33 @@ calculation and compliance check, so hallucinated numbers can't reach the output
 ingest -> extract (LLM) -> validate (rules) -> ask owner to repair -> re-validate -> UBL XML + report
 ```
 
+## Run it (one command)
+
+```bash
+docker build -t qaid . && docker run -p 8000:8000 -v qaid-data:/data qaid
+# open http://localhost:8000  ·  API docs at http://localhost:8000/docs
+```
+
+Your invoices and business profile are kept in the `qaid-data` volume. Behind a corporate
+TLS-inspecting proxy, see the comment at the top of the `Dockerfile`.
+
 ## What the agent does
 
-1. **Reads** PDFs, scans, photos and ERP e-invoice XML (local OCR; optional Gemini only when needed).
+1. **Reads** Excel/CSV invoice registers (English or Arabic headers, mapped automatically), PDFs,
+   scans, photos and ERP e-invoice XML (local OCR; optional Gemini only when needed).
 2. **Checks** every invoice against the official UAE PINT AE rules and asks only what's missing.
-3. **Remembers**: answer a fact about a business once (trade licence, emirate, address, TRN) and the
+3. **Knows your business**: enter your TRN, licence, address and usual payment terms once in the
+   business profile; they are filled into every invoice you issue (purchase invoices from other
+   suppliers are left alone).
+4. **Remembers**: answer a fact about a business once (trade licence, emirate, address, TRN) and the
    agent fills it into every other invoice with that business. In the demo batch, 2 answers fill
    22 fields and lift readiness from 0% to 42%.
-4. **Acts for you**: drafts one bilingual (Arabic / English) message per customer asking for all
+5. **Acts for you**: drafts one bilingual (Arabic / English) message per customer asking for all
    their missing details, ready to send by WhatsApp or email. You review and send.
-5. **Reports in AED**: a one-page readiness report with indicative penalty exposure (AED 100 per
+6. **Reports in AED**: a one-page readiness report with indicative penalty exposure (AED 100 per
    invoice not issued electronically on time, capped at AED 5,000 per month) and what's blocking.
-6. **Speaks Arabic**: full Arabic interface with right-to-left layout.
-7. **Exports** PINT AE UBL XML for your Accredited Service Provider.
+7. **Speaks Arabic**: full Arabic interface with right-to-left layout.
+8. **Exports** PINT AE UBL XML for your Accredited Service Provider.
 
 ## Web app
 
@@ -109,6 +123,7 @@ layout the AI read 100% of fields where rules alone missed invoice numbers, TRNs
 | `ira/extract.py` | AI extraction (Gemini / any OpenAI-compatible API) + rules/AI hybrid merge |
 | `ira/ubl_import.py` | Reads UBL / PINT AE invoices and credit notes (ERP output) |
 | `ira/codelists.py` | Official PINT AE code lists (currencies, units, payment means, credit reasons) |
+| `ira/spreadsheet.py` | Excel/CSV register import: header detection, EN/AR column mapping, grouping |
 | `ira/registry.py` | Ajman DED licence register: licence check, name and area correction |
 | `scripts/fetch_ajman_licences.py` | Downloads the official Ajman licence register (CC BY 4.0) |
 | `ira/ocr.py` | Free local OCR engines: RapidOCR (PP-OCR/ONNX, with deskew) and Tesseract |

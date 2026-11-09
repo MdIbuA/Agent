@@ -1,9 +1,10 @@
-import { BookOpen, Download, FileBarChart, FileStack, Languages, LayoutGrid, Lock, Moon, Plus, Search, ShieldCheck, Sparkles, Sun, Trash2, Users, Zap } from "lucide-react";
+import { BookOpen, Building2, Download, FileBarChart, FileStack, Languages, LayoutGrid, Lock, Moon, Plus, Search, ShieldCheck, Sparkles, Sun, Trash2, Users, Zap } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Dropzone } from "./components/Dropzone";
 import { InvoiceDrawer } from "./components/InvoiceDrawer";
 import { InvoiceTable } from "./components/InvoiceTable";
 import { Kpis, KpisSkeleton } from "./components/Kpis";
+import { ProfileView } from "./components/ProfileView";
 import { ReportView } from "./components/ReportView";
 import { Requests } from "./components/Requests";
 import { useToast } from "./components/ui";
@@ -11,7 +12,7 @@ import { api, ApiError, type Invoice, type State } from "./lib/api";
 import { useI18n, type Key } from "./lib/i18n";
 
 type Theme = "light" | "dark";
-type View = "readiness" | "requests" | "report";
+type View = "readiness" | "requests" | "report" | "profile";
 const initialTheme = (): Theme =>
   (localStorage.getItem("qaid-theme") as Theme | null) ??
   (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
@@ -28,6 +29,7 @@ export default function App() {
   const [view, setView] = useState<View>("readiness");
   const [refreshKey, setRefreshKey] = useState(0);
   const [ai, setAi] = useState<{ on: boolean; model: string | null }>({ on: false, model: null });
+  const [hasProfile, setHasProfile] = useState(true);
   const searchRef = useRef<HTMLInputElement>(null);
   const toast = useToast();
 
@@ -38,6 +40,7 @@ export default function App() {
 
   useEffect(() => {
     api.health().then((h) => setAi({ on: h.ai, model: h.aiModel })).catch(() => {});
+    api.profile().then((r) => setHasProfile(!!r.profile?.name)).catch(() => {});
   }, []);
 
   const reload = useCallback(() => api.list().then(setState).then(() => setRefreshKey((k) => k + 1))
@@ -67,7 +70,8 @@ export default function App() {
       const r = await api.upload(files);
       setState(r); setShowUpload(false); setRefreshKey((k) => k + 1);
       const added = r.summary.invoices - before;
-      if (added) toast(`+${added}`);
+      for (const imp of r.imports ?? []) toast(t("imported", { n: imp.invoices, file: imp.file, c: Object.keys(imp.columns).length }));
+      if (added && !(r.imports ?? []).length) toast(`+${added}`);
       if (r.errors.length) setError(r.errors.map((x) => `${x.file}: ${x.error}`).join(" · "));
     } catch (e) { setError(e instanceof ApiError ? e.message : String(e)); }
     finally { setBusy(false); }
@@ -107,9 +111,11 @@ export default function App() {
     { id: "readiness", icon: LayoutGrid, label: "navReadiness", count: state?.summary.invoices },
     { id: "requests", icon: Users, label: "navRequests" },
     { id: "report", icon: FileBarChart, label: "navReport" },
+    { id: "profile", icon: Building2, label: "navProfile" },
   ];
   const titles: Record<View, [Key, Key]> = {
     readiness: ["pageTitle", "pageSub"], requests: ["reqTitle", "reqSub"], report: ["repTitle", "repSub"],
+    profile: ["navProfile", "profBody"],
   };
 
   return (
@@ -199,6 +205,12 @@ export default function App() {
             </section>
           )}
 
+          {view === "readiness" && state && !empty && !hasProfile && (
+            <div className="prompt-card no-print">
+              <Building2 size={18} aria-hidden /><span>{t("profPrompt")}</span>
+              <button className="btn btn-primary btn-sm" onClick={() => setView("profile")}>{t("profPromptCta")}</button>
+            </div>
+          )}
           {view === "readiness" && state && !empty && (
             <>
               {showUpload && <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}><Dropzone onFiles={onFiles} busy={busy} /></div>}
@@ -208,6 +220,9 @@ export default function App() {
           )}
           {view === "requests" && <Requests refreshKey={refreshKey} />}
           {view === "report" && <ReportView refreshKey={refreshKey} />}
+          {view === "profile" && (
+            <ProfileView onSaved={(n) => { setHasProfile(true); reload(); toast(t("profSaved", { n })); setView("readiness"); }} />
+          )}
         </main>
       </div>
 
