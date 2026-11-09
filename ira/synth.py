@@ -44,6 +44,12 @@ FAULTS = [_drop_buyer_trn, _short_seller_trn, _bad_vat, _line_math,
           _drop_number, _bad_date, _vat_total, _drop_buyer_addr, _drop_due_date]
 
 
+def _business_trn(name: str) -> str:
+    """A business keeps one TRN across all its invoices (valid shape: 1…03), derived from its name."""
+    digits = "".join(str(ord(c) % 10) for c in name.upper() if c.isalnum())
+    return "100" + (digits * 3)[:10] + "03"
+
+
 def _trn(rng: random.Random) -> str:
     """Valid UAE TRN shape (PINT-AE ibr-132-ae): 15 digits, starts with 1, ends with 03."""
     return "100" + "".join(rng.choice("0123456789") for _ in range(10)) + "03"
@@ -68,9 +74,9 @@ def clean_invoice(rng: random.Random, n: int) -> dict:
         "due_date": f"2026-{month + 1:02d}-{day:02d}",
         "payment_means": rng.choice(["30", "30", "30", "20", "10", "54"]),
         "currency": "AED",
-        "seller": {"name": s[0], "trn": _trn(rng), "address": s[1], "city": s[1].split(", ")[-1],
-                   "legal_id": f"{rng.randint(100000, 999999)}", "legal_id_type": "TL", "legal_authority": s[2]},
-        "buyer": {"name": b[0], "trn": _trn(rng), "address": b[1], "city": b[1].split(", ")[-1]},
+        "seller": {"name": s[0], "trn": _business_trn(s[0]), "address": s[1], "city": s[1].split(", ")[-1],
+                   "legal_id": _business_trn(s[0])[3:9], "legal_id_type": "TL", "legal_authority": s[2]},
+        "buyer": {"name": b[0], "trn": _business_trn(b[0]), "address": b[1], "city": b[1].split(", ")[-1]},
         "lines": lines,
         "net_total": str(net), "vat_total": str(vat), "gross_total": str(net + vat),
     }
@@ -109,3 +115,27 @@ if __name__ == "__main__":
     path = Path(__file__).resolve().parent.parent / "data" / "synthetic_invoices.json"
     path.write_text(json.dumps(generate(), indent=2))
     print(f"wrote {path}")
+
+
+def demo_batch(seed: int = 7) -> list[dict]:
+    """A realistic SME batch for demos: one seller's 12 invoices exported from Excel.
+    The owner's own licence details are missing everywhere, one regular customer never gave
+    their TRN, some due dates are missing, and one line has the wrong VAT rate."""
+    rng = random.Random(seed)
+    seller = SELLERS[0]
+    out = []
+    for n in range(1, 13):
+        d = clean_invoice(rng, n)
+        d["invoice_number"] = f"AN-2026-{100 + n}"
+        d["seller"] = {"name": seller[0], "trn": _business_trn(seller[0]), "address": seller[1],
+                       "city": seller[1].split(", ")[-1], "legal_id": None, "legal_authority": None}
+        b = BUYERS[n % len(BUYERS)]
+        d["buyer"] = {"name": b[0], "trn": None if b is BUYERS[0] else _business_trn(b[0]),
+                      "address": b[1], "city": b[1].split(", ")[-1]}
+        if n in (3, 8, 11):
+            d["due_date"] = None
+        if n == 5:
+            _bad_vat(d)
+        d["source_file"] = f"invoices-2026.xlsx#row{n}"
+        out.append(d)
+    return out

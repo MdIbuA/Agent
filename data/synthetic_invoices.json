@@ -1,22 +1,22 @@
 [
   {
-    "invoice_number": null,
-    "issue_date": "31/02/2026",
-    "due_date": "2026-03-07",
+    "invoice_number": "INV-2026-0001",
+    "issue_date": "2026-02-07",
+    "due_date": null,
     "payment_means": "30",
     "currency": "AED",
     "seller": {
       "name": "Al Noor Building Materials LLC",
-      "trn": "100890838637903",
+      "trn": "100568992653603",
       "address": "Deira, Dubai",
       "city": "Dubai",
-      "legal_id": "391704",
+      "legal_id": "568992",
       "legal_id_type": "TL",
       "legal_authority": "Dubai Department of Economy and Tourism"
     },
     "buyer": {
       "name": "Gulf Horizon Contracting LLC",
-      "trn": "100026542351103",
+      "trn": "100156029230903",
       "address": "Business Bay, Dubai",
       "city": "Dubai"
     },
@@ -47,129 +47,22 @@
     "vat_total": "490.00",
     "gross_total": "16960.00",
     "_expected": [
-      "BAD_ISSUE_DATE",
-      "MISSING_INVOICE_NUMBER"
+      "MISSING_DUE_DATE"
     ],
     "source_file": "synthetic_0001.json"
   },
   {
-    "invoice_number": "INV-2026-0002",
+    "invoice_number": null,
     "issue_date": "31/02/2026",
-    "due_date": null,
+    "due_date": "2026-08-04",
     "payment_means": "30",
-    "currency": "AED",
-    "seller": {
-      "name": "Al Noor Building Materials LLC",
-      "trn": "100131647525503",
-      "address": "Deira, Dubai",
-      "city": "Dubai",
-      "legal_id": "319684",
-      "legal_id_type": "TL",
-      "legal_authority": "Dubai Department of Economy and Tourism"
-    },
-    "buyer": {
-      "name": "Emirates Cold Chain Logistics",
-      "trn": "100419283276403",
-      "address": "Industrial Area 4, Sharjah",
-      "city": "Sharjah"
-    },
-    "lines": [
-      {
-        "description": "Laptop screen replacement",
-        "quantity": "18",
-        "unit_price": "380.00",
-        "vat_rate": "5",
-        "line_total": "6850.00"
-      },
-      {
-        "description": "Cement bag 50kg",
-        "quantity": "20",
-        "unit_price": "18.50",
-        "vat_rate": "5",
-        "line_total": "370.00"
-      },
-      {
-        "description": "Saffron 100g",
-        "quantity": "12",
-        "unit_price": "420.00",
-        "vat_rate": "5",
-        "line_total": "5040.00"
-      },
-      {
-        "description": "Delivery charge",
-        "quantity": "3",
-        "unit_price": "75.00",
-        "vat_rate": "0",
-        "line_total": "225.00"
-      }
-    ],
-    "net_total": "12475.00",
-    "vat_total": "612.50",
-    "gross_total": "13087.50",
-    "_expected": [
-      "BAD_ISSUE_DATE",
-      "LINE_MATH_MISMATCH",
-      "MISSING_DUE_DATE"
-    ],
-    "source_file": "synthetic_0002.json"
-  },
-  {
-    "invoice_number": "INV-2026-0003",
-    "issue_date": "2026-10-23",
-    "due_date": "2026-11-23",
-    "payment_means": "30",
-    "currency": "AED",
-    "seller": {
-      "name": "Sahara Spice Trading LLC",
-      "trn": "100376724238803",
-      "address": "Al Ras, Dubai",
-      "city": "Dubai",
-      "legal_id": "375504",
-      "legal_id_type": "TL",
-      "legal_authority": "Dubai Department of Economy and Tourism"
-    },
-    "buyer": {
-      "name": "Gulf Horizon Contracting LLC",
-      "trn": "100969653287103",
-      "address": "Business Bay, Dubai",
-      "city": "Dubai"
-    },
-    "lines": [
-      {
-        "description": "Cement bag 50kg",
-        "quantity": "13",
-        "unit_price": "18.50",
-        "vat_rate": "10",
-        "line_total": "240.50"
-      },
-      {
-        "description": "Marine rope 20m",
-        "quantity": "7",
-        "unit_price": "135.00",
-        "vat_rate": "5",
-        "line_total": "945.00"
-      }
-    ],
-    "net_total": "1185.50",
-    "vat_total": "59.28",
-    "gross_total": "1244.78",
-    "_expected": [
-      "BAD_VAT_RATE"
-    ],
-    "source_file": "synthetic_0003.json"
-  },
-  {
-    "invoice_number": "INV-2026-0004",
-    "issue_date": "31/02/2026",
-    "due_date": "2026-03-22",
-    "payment_means": "10",
     "currency": "AED",
     "seller": {
       "name": "Blue Dhow Marine Supplies FZE",
-      "trn": "100451462704803",
+      "trn": "100665982977503",
       "address": "Jebel Ali Free Zone, Dubai",
       "city": "Dubai",
-      "legal_id": "898975",
+      "legal_id": "665982",
       "legal_id_type": "TL",
       "legal_authority": "Jebel Ali Free Zone Authority"
     },
@@ -181,64 +74,784 @@
     },
     "lines": [
       {
-        "description": "Laptop screen replacement",
-        "quantity": "20",
-        "unit_price": "380.00",
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "6",
+        "unit_price": "2450.00",
         "vat_rate": "5",
-        "line_total": "7610.00"
-      },
-      {
-        "description": "Cement bag 50kg",
-        "quantity": "17",
-        "unit_price": "18.50",
-        "vat_rate": "5",
-        "line_total": "314.50"
+        "line_total": "14700.00"
       },
       {
         "description": "Saffron 100g",
-        "quantity": "18",
+        "quantity": "11",
         "unit_price": "420.00",
         "vat_rate": "5",
-        "line_total": "7560.00"
+        "line_total": "4620.00"
       },
       {
-        "description": "Steel rebar 12mm (ton)",
-        "quantity": "1",
-        "unit_price": "2450.00",
+        "description": "Marine rope 20m",
+        "quantity": "7",
+        "unit_price": "135.00",
         "vat_rate": "5",
-        "line_total": "2450.00"
+        "line_total": "945.00"
+      },
+      {
+        "description": "Cement bag 50kg",
+        "quantity": "11",
+        "unit_price": "18.50",
+        "vat_rate": "5",
+        "line_total": "203.50"
       }
     ],
-    "net_total": "17924.50",
-    "vat_total": "896.23",
-    "gross_total": "18820.73",
+    "net_total": "20468.50",
+    "vat_total": "1023.43",
+    "gross_total": "21491.93",
     "_expected": [
       "BAD_ISSUE_DATE",
-      "LINE_MATH_MISMATCH",
+      "MISSING_BUYER_TRN",
+      "MISSING_INVOICE_NUMBER"
+    ],
+    "source_file": "synthetic_0002.json"
+  },
+  {
+    "invoice_number": "INV-2026-0003",
+    "issue_date": "31/02/2026",
+    "due_date": "2026-11-28",
+    "payment_means": "30",
+    "currency": "AED",
+    "seller": {
+      "name": "Falcon Tech Repairs",
+      "trn": "100056798497",
+      "address": "Al Nahda, Sharjah",
+      "city": "Sharjah",
+      "legal_id": "056798",
+      "legal_id_type": "TL",
+      "legal_authority": "Sharjah Economic Development Department"
+    },
+    "buyer": {
+      "name": "Emirates Cold Chain Logistics",
+      "trn": null,
+      "address": "Industrial Area 4, Sharjah",
+      "city": "Sharjah"
+    },
+    "lines": [
+      {
+        "description": "Saffron 100g",
+        "quantity": "3",
+        "unit_price": "420.00",
+        "vat_rate": "5",
+        "line_total": "1260.00"
+      }
+    ],
+    "net_total": "1260.00",
+    "vat_total": "63.00",
+    "gross_total": "1323.00",
+    "_expected": [
+      "BAD_ISSUE_DATE",
+      "BAD_SELLER_TRN",
       "MISSING_BUYER_TRN"
     ],
+    "source_file": "synthetic_0003.json"
+  },
+  {
+    "invoice_number": "INV-2026-0004",
+    "issue_date": "2026-08-21",
+    "due_date": "2026-09-21",
+    "payment_means": "30",
+    "currency": "AED",
+    "seller": {
+      "name": "Blue Dhow Marine Supplies FZE",
+      "trn": "100665982977503",
+      "address": "Jebel Ali Free Zone, Dubai",
+      "city": "Dubai",
+      "legal_id": "665982",
+      "legal_id_type": "TL",
+      "legal_authority": "Jebel Ali Free Zone Authority"
+    },
+    "buyer": {
+      "name": "Palm Fresh Restaurants LLC",
+      "trn": "100056702932203",
+      "address": "Al Khalidiyah, Abu Dhabi",
+      "city": "Abu Dhabi"
+    },
+    "lines": [
+      {
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "4",
+        "unit_price": "2450.00",
+        "vat_rate": "5",
+        "line_total": "9800.00"
+      }
+    ],
+    "net_total": "9800.00",
+    "vat_total": "490.00",
+    "gross_total": "10290.00",
+    "_expected": [],
     "source_file": "synthetic_0004.json"
   },
   {
     "invoice_number": "INV-2026-0005",
-    "issue_date": "2026-09-25",
-    "due_date": "2026-10-25",
-    "payment_means": "30",
+    "issue_date": "2026-09-08",
+    "due_date": "2026-10-08",
+    "payment_means": "54",
     "currency": "AED",
     "seller": {
-      "name": "Al Noor Building Materials LLC",
-      "trn": "100278248963803",
-      "address": "Deira, Dubai",
+      "name": "Sahara Spice Trading LLC",
+      "trn": "100352525303703",
+      "address": "Al Ras, Dubai",
       "city": "Dubai",
-      "legal_id": "891952",
+      "legal_id": "352525",
       "legal_id_type": "TL",
       "legal_authority": "Dubai Department of Economy and Tourism"
     },
     "buyer": {
       "name": "Gulf Horizon Contracting LLC",
-      "trn": "100346578713303",
+      "trn": "100156029230903",
       "address": "Business Bay, Dubai",
       "city": "Dubai"
+    },
+    "lines": [
+      {
+        "description": "Delivery charge",
+        "quantity": "18",
+        "unit_price": "75.00",
+        "vat_rate": "5",
+        "line_total": "1360.00"
+      },
+      {
+        "description": "Cement bag 50kg",
+        "quantity": "6",
+        "unit_price": "18.50",
+        "vat_rate": "5",
+        "line_total": "111.00"
+      },
+      {
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "9",
+        "unit_price": "2450.00",
+        "vat_rate": "5",
+        "line_total": "22050.00"
+      }
+    ],
+    "net_total": "23511.00",
+    "vat_total": "1175.55",
+    "gross_total": "24686.55",
+    "_expected": [
+      "LINE_MATH_MISMATCH"
+    ],
+    "source_file": "synthetic_0005.json"
+  },
+  {
+    "invoice_number": "INV-2026-0006",
+    "issue_date": "31/02/2026",
+    "due_date": "2026-10-18",
+    "payment_means": "30",
+    "currency": "AED",
+    "seller": {
+      "name": "Al Noor Building Materials LLC",
+      "trn": "100568992653603",
+      "address": "Deira, Dubai",
+      "city": "Dubai",
+      "legal_id": "568992",
+      "legal_id_type": "TL",
+      "legal_authority": "Dubai Department of Economy and Tourism"
+    },
+    "buyer": {
+      "name": "Palm Fresh Restaurants LLC",
+      "trn": "100056702932203",
+      "address": "Al Khalidiyah, Abu Dhabi",
+      "city": "Abu Dhabi"
+    },
+    "lines": [
+      {
+        "description": "Marine rope 20m",
+        "quantity": "11",
+        "unit_price": "135.00",
+        "vat_rate": "5",
+        "line_total": "1485.00"
+      },
+      {
+        "description": "Cement bag 50kg",
+        "quantity": "16",
+        "unit_price": "18.50",
+        "vat_rate": "5",
+        "line_total": "296.00"
+      },
+      {
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "15",
+        "unit_price": "2450.00",
+        "vat_rate": "5",
+        "line_total": "36750.00"
+      },
+      {
+        "description": "Delivery charge",
+        "quantity": "5",
+        "unit_price": "75.00",
+        "vat_rate": "5",
+        "line_total": "375.00"
+      }
+    ],
+    "net_total": "38906.00",
+    "vat_total": "1950.30",
+    "gross_total": "40851.30",
+    "_expected": [
+      "BAD_ISSUE_DATE",
+      "VAT_TOTAL_MISMATCH"
+    ],
+    "source_file": "synthetic_0006.json"
+  },
+  {
+    "invoice_number": "INV-2026-0007",
+    "issue_date": "2026-09-28",
+    "due_date": null,
+    "payment_means": "30",
+    "currency": "AED",
+    "seller": {
+      "name": "Blue Dhow Marine Supplies FZE",
+      "trn": "100665982977503",
+      "address": "Jebel Ali Free Zone, Dubai",
+      "city": "Dubai",
+      "legal_id": "665982",
+      "legal_id_type": "TL",
+      "legal_authority": "Jebel Ali Free Zone Authority"
+    },
+    "buyer": {
+      "name": "Gulf Horizon Contracting LLC",
+      "trn": "100156029230903",
+      "address": "Business Bay, Dubai",
+      "city": "Dubai"
+    },
+    "lines": [
+      {
+        "description": "Cement bag 50kg",
+        "quantity": "6",
+        "unit_price": "18.50",
+        "vat_rate": "5",
+        "line_total": "111.00"
+      },
+      {
+        "description": "Delivery charge",
+        "quantity": "14",
+        "unit_price": "75.00",
+        "vat_rate": "5",
+        "line_total": "1050.00"
+      },
+      {
+        "description": "Laptop screen replacement",
+        "quantity": "13",
+        "unit_price": "380.00",
+        "vat_rate": "5",
+        "line_total": "4940.00"
+      },
+      {
+        "description": "Saffron 100g",
+        "quantity": "15",
+        "unit_price": "420.00",
+        "vat_rate": "5",
+        "line_total": "6300.00"
+      }
+    ],
+    "net_total": "12401.00",
+    "vat_total": "620.05",
+    "gross_total": "13021.05",
+    "_expected": [
+      "MISSING_DUE_DATE"
+    ],
+    "source_file": "synthetic_0007.json"
+  },
+  {
+    "invoice_number": "INV-2026-0008",
+    "issue_date": "2026-02-28",
+    "due_date": "2026-03-28",
+    "payment_means": "54",
+    "currency": "AED",
+    "seller": {
+      "name": "Sahara Spice Trading LLC",
+      "trn": "100352525303703",
+      "address": "Al Ras, Dubai",
+      "city": "Dubai",
+      "legal_id": "352525",
+      "legal_id_type": "TL",
+      "legal_authority": "Dubai Department of Economy and Tourism"
+    },
+    "buyer": {
+      "name": "Emirates Cold Chain Logistics",
+      "trn": "100973254937903",
+      "address": "Industrial Area 4, Sharjah",
+      "city": "Sharjah"
+    },
+    "lines": [
+      {
+        "description": "Cement bag 50kg",
+        "quantity": "6",
+        "unit_price": "18.50",
+        "vat_rate": "5",
+        "line_total": "111.00"
+      },
+      {
+        "description": "Marine rope 20m",
+        "quantity": "9",
+        "unit_price": "135.00",
+        "vat_rate": "5",
+        "line_total": "1215.00"
+      },
+      {
+        "description": "Saffron 100g",
+        "quantity": "6",
+        "unit_price": "420.00",
+        "vat_rate": "5",
+        "line_total": "2520.00"
+      }
+    ],
+    "net_total": "3846.00",
+    "vat_total": "192.30",
+    "gross_total": "4038.30",
+    "_expected": [],
+    "source_file": "synthetic_0008.json"
+  },
+  {
+    "invoice_number": "INV-2026-0009",
+    "issue_date": "2026-05-08",
+    "due_date": "2026-06-08",
+    "payment_means": "30",
+    "currency": "AED",
+    "seller": {
+      "name": "Blue Dhow Marine Supplies FZE",
+      "trn": "100665982977503",
+      "address": "Jebel Ali Free Zone, Dubai",
+      "city": "Dubai",
+      "legal_id": "665982",
+      "legal_id_type": "TL",
+      "legal_authority": "Jebel Ali Free Zone Authority"
+    },
+    "buyer": {
+      "name": "Gulf Horizon Contracting LLC",
+      "trn": "100156029230903",
+      "address": "Business Bay, Dubai",
+      "city": "Dubai"
+    },
+    "lines": [
+      {
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "20",
+        "unit_price": "2450.00",
+        "vat_rate": "5",
+        "line_total": "49000.00"
+      },
+      {
+        "description": "Laptop screen replacement",
+        "quantity": "1",
+        "unit_price": "380.00",
+        "vat_rate": "5",
+        "line_total": "380.00"
+      },
+      {
+        "description": "Cement bag 50kg",
+        "quantity": "12",
+        "unit_price": "18.50",
+        "vat_rate": "5",
+        "line_total": "222.00"
+      }
+    ],
+    "net_total": "49602.00",
+    "vat_total": "2480.10",
+    "gross_total": "52082.10",
+    "_expected": [],
+    "source_file": "synthetic_0009.json"
+  },
+  {
+    "invoice_number": null,
+    "issue_date": "31/02/2026",
+    "due_date": "2026-05-23",
+    "payment_means": "30",
+    "currency": "AED",
+    "seller": {
+      "name": "Al Noor Building Materials LLC",
+      "trn": "100568992653603",
+      "address": "Deira, Dubai",
+      "city": "Dubai",
+      "legal_id": "568992",
+      "legal_id_type": "TL",
+      "legal_authority": "Dubai Department of Economy and Tourism"
+    },
+    "buyer": {
+      "name": "Gulf Horizon Contracting LLC",
+      "trn": "100156029230903",
+      "address": null,
+      "city": "Dubai"
+    },
+    "lines": [
+      {
+        "description": "Cement bag 50kg",
+        "quantity": "16",
+        "unit_price": "18.50",
+        "vat_rate": "5",
+        "line_total": "296.00"
+      },
+      {
+        "description": "Laptop screen replacement",
+        "quantity": "6",
+        "unit_price": "380.00",
+        "vat_rate": "5",
+        "line_total": "2280.00"
+      },
+      {
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "20",
+        "unit_price": "2450.00",
+        "vat_rate": "5",
+        "line_total": "49000.00"
+      },
+      {
+        "description": "Delivery charge",
+        "quantity": "7",
+        "unit_price": "75.00",
+        "vat_rate": "5",
+        "line_total": "525.00"
+      }
+    ],
+    "net_total": "52101.00",
+    "vat_total": "2605.05",
+    "gross_total": "54706.05",
+    "_expected": [
+      "BAD_ISSUE_DATE",
+      "MISSING_BUYER_ADDRESS",
+      "MISSING_INVOICE_NUMBER"
+    ],
+    "source_file": "synthetic_0010.json"
+  },
+  {
+    "invoice_number": "INV-2026-0011",
+    "issue_date": "2026-04-01",
+    "due_date": "2026-05-01",
+    "payment_means": "30",
+    "currency": "AED",
+    "seller": {
+      "name": "Falcon Tech Repairs",
+      "trn": "100056798497203",
+      "address": "Al Nahda, Sharjah",
+      "city": "Sharjah",
+      "legal_id": "056798",
+      "legal_id_type": "TL",
+      "legal_authority": "Sharjah Economic Development Department"
+    },
+    "buyer": {
+      "name": "Gulf Horizon Contracting LLC",
+      "trn": "100156029230903",
+      "address": "Business Bay, Dubai",
+      "city": "Dubai"
+    },
+    "lines": [
+      {
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "11",
+        "unit_price": "2450.00",
+        "vat_rate": "0",
+        "line_total": "26960.00"
+      },
+      {
+        "description": "Cement bag 50kg",
+        "quantity": "18",
+        "unit_price": "18.50",
+        "vat_rate": "5",
+        "line_total": "333.00"
+      }
+    ],
+    "net_total": "27283.00",
+    "vat_total": "16.65",
+    "gross_total": "27299.65",
+    "_expected": [
+      "LINE_MATH_MISMATCH"
+    ],
+    "source_file": "synthetic_0011.json"
+  },
+  {
+    "invoice_number": "INV-2026-0012",
+    "issue_date": "2026-04-26",
+    "due_date": "2026-05-26",
+    "payment_means": "20",
+    "currency": "AED",
+    "seller": {
+      "name": "Al Noor Building Materials LLC",
+      "trn": "100568992653",
+      "address": "Deira, Dubai",
+      "city": "Dubai",
+      "legal_id": "568992",
+      "legal_id_type": "TL",
+      "legal_authority": "Dubai Department of Economy and Tourism"
+    },
+    "buyer": {
+      "name": "Gulf Horizon Contracting LLC",
+      "trn": "100156029230903",
+      "address": "Business Bay, Dubai",
+      "city": "Dubai"
+    },
+    "lines": [
+      {
+        "description": "Cement bag 50kg",
+        "quantity": "9",
+        "unit_price": "18.50",
+        "vat_rate": "5",
+        "line_total": "166.50"
+      },
+      {
+        "description": "Laptop screen replacement",
+        "quantity": "7",
+        "unit_price": "380.00",
+        "vat_rate": "5",
+        "line_total": "2660.00"
+      },
+      {
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "19",
+        "unit_price": "2450.00",
+        "vat_rate": "5",
+        "line_total": "46550.00"
+      }
+    ],
+    "net_total": "49376.50",
+    "vat_total": "2468.83",
+    "gross_total": "51845.33",
+    "_expected": [
+      "BAD_SELLER_TRN"
+    ],
+    "source_file": "synthetic_0012.json"
+  },
+  {
+    "invoice_number": "INV-2026-0013",
+    "issue_date": "2026-04-18",
+    "due_date": "2026-05-18",
+    "payment_means": "20",
+    "currency": "AED",
+    "seller": {
+      "name": "Al Noor Building Materials LLC",
+      "trn": "100568992653603",
+      "address": "Deira, Dubai",
+      "city": "Dubai",
+      "legal_id": "568992",
+      "legal_id_type": "TL",
+      "legal_authority": "Dubai Department of Economy and Tourism"
+    },
+    "buyer": {
+      "name": "Emirates Cold Chain Logistics",
+      "trn": "100973254937903",
+      "address": "Industrial Area 4, Sharjah",
+      "city": "Sharjah"
+    },
+    "lines": [
+      {
+        "description": "Marine rope 20m",
+        "quantity": "2",
+        "unit_price": "135.00",
+        "vat_rate": "5",
+        "line_total": "270.00"
+      },
+      {
+        "description": "Saffron 100g",
+        "quantity": "4",
+        "unit_price": "420.00",
+        "vat_rate": "0",
+        "line_total": "1680.00"
+      },
+      {
+        "description": "Laptop screen replacement",
+        "quantity": "11",
+        "unit_price": "380.00",
+        "vat_rate": "5",
+        "line_total": "4180.00"
+      },
+      {
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "4",
+        "unit_price": "2450.00",
+        "vat_rate": "5",
+        "line_total": "9800.00"
+      }
+    ],
+    "net_total": "15930.00",
+    "vat_total": "712.50",
+    "gross_total": "16642.50",
+    "_expected": [],
+    "source_file": "synthetic_0013.json"
+  },
+  {
+    "invoice_number": "INV-2026-0014",
+    "issue_date": "2026-08-16",
+    "due_date": "2026-09-16",
+    "payment_means": "30",
+    "currency": "AED",
+    "seller": {
+      "name": "Blue Dhow Marine Supplies FZE",
+      "trn": "100665982977503",
+      "address": "Jebel Ali Free Zone, Dubai",
+      "city": "Dubai",
+      "legal_id": "665982",
+      "legal_id_type": "TL",
+      "legal_authority": "Jebel Ali Free Zone Authority"
+    },
+    "buyer": {
+      "name": "Palm Fresh Restaurants LLC",
+      "trn": "100056702932203",
+      "address": "Al Khalidiyah, Abu Dhabi",
+      "city": "Abu Dhabi"
+    },
+    "lines": [
+      {
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "4",
+        "unit_price": "2450.00",
+        "vat_rate": "10",
+        "line_total": "9800.00"
+      },
+      {
+        "description": "Cement bag 50kg",
+        "quantity": "18",
+        "unit_price": "18.50",
+        "vat_rate": "5",
+        "line_total": "333.00"
+      },
+      {
+        "description": "Saffron 100g",
+        "quantity": "3",
+        "unit_price": "420.00",
+        "vat_rate": "5",
+        "line_total": "1260.00"
+      },
+      {
+        "description": "Marine rope 20m",
+        "quantity": "8",
+        "unit_price": "135.00",
+        "vat_rate": "5",
+        "line_total": "1080.00"
+      }
+    ],
+    "net_total": "12473.00",
+    "vat_total": "133.65",
+    "gross_total": "12606.65",
+    "_expected": [
+      "BAD_VAT_RATE"
+    ],
+    "source_file": "synthetic_0014.json"
+  },
+  {
+    "invoice_number": "INV-2026-0015",
+    "issue_date": "2026-09-02",
+    "due_date": "2026-10-02",
+    "payment_means": "54",
+    "currency": "AED",
+    "seller": {
+      "name": "Falcon Tech Repairs",
+      "trn": "100056798497203",
+      "address": "Al Nahda, Sharjah",
+      "city": "Sharjah",
+      "legal_id": "056798",
+      "legal_id_type": "TL",
+      "legal_authority": "Sharjah Economic Development Department"
+    },
+    "buyer": {
+      "name": "Gulf Horizon Contracting LLC",
+      "trn": "100156029230903",
+      "address": null,
+      "city": "Dubai"
+    },
+    "lines": [
+      {
+        "description": "Marine rope 20m",
+        "quantity": "18",
+        "unit_price": "135.00",
+        "vat_rate": "5",
+        "line_total": "2430.00"
+      },
+      {
+        "description": "Saffron 100g",
+        "quantity": "16",
+        "unit_price": "420.00",
+        "vat_rate": "5",
+        "line_total": "6720.00"
+      },
+      {
+        "description": "Delivery charge",
+        "quantity": "10",
+        "unit_price": "75.00",
+        "vat_rate": "5",
+        "line_total": "750.00"
+      },
+      {
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "2",
+        "unit_price": "2450.00",
+        "vat_rate": "5",
+        "line_total": "4900.00"
+      }
+    ],
+    "net_total": "14800.00",
+    "vat_total": "740.00",
+    "gross_total": "15540.00",
+    "_expected": [
+      "MISSING_BUYER_ADDRESS"
+    ],
+    "source_file": "synthetic_0015.json"
+  },
+  {
+    "invoice_number": null,
+    "issue_date": "2026-04-13",
+    "due_date": "2026-05-13",
+    "payment_means": "30",
+    "currency": "AED",
+    "seller": {
+      "name": "Blue Dhow Marine Supplies FZE",
+      "trn": "100665982977503",
+      "address": "Jebel Ali Free Zone, Dubai",
+      "city": "Dubai",
+      "legal_id": "665982",
+      "legal_id_type": "TL",
+      "legal_authority": "Jebel Ali Free Zone Authority"
+    },
+    "buyer": {
+      "name": "Gulf Horizon Contracting LLC",
+      "trn": null,
+      "address": "Business Bay, Dubai",
+      "city": "Dubai"
+    },
+    "lines": [
+      {
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "3",
+        "unit_price": "2450.00",
+        "vat_rate": "5",
+        "line_total": "7360.00"
+      }
+    ],
+    "net_total": "7350.00",
+    "vat_total": "367.50",
+    "gross_total": "7717.50",
+    "_expected": [
+      "LINE_MATH_MISMATCH",
+      "MISSING_BUYER_TRN",
+      "MISSING_INVOICE_NUMBER"
+    ],
+    "source_file": "synthetic_0016.json"
+  },
+  {
+    "invoice_number": null,
+    "issue_date": "2026-02-01",
+    "due_date": null,
+    "payment_means": "20",
+    "currency": "AED",
+    "seller": {
+      "name": "Al Noor Building Materials LLC",
+      "trn": "100568992653",
+      "address": "Deira, Dubai",
+      "city": "Dubai",
+      "legal_id": "568992",
+      "legal_id_type": "TL",
+      "legal_authority": "Dubai Department of Economy and Tourism"
+    },
+    "buyer": {
+      "name": "Palm Fresh Restaurants LLC",
+      "trn": "100056702932203",
+      "address": "Al Khalidiyah, Abu Dhabi",
+      "city": "Abu Dhabi"
     },
     "lines": [
       {
@@ -250,340 +863,342 @@
       },
       {
         "description": "Steel rebar 12mm (ton)",
-        "quantity": "3",
-        "unit_price": "2450.00",
-        "vat_rate": "0",
-        "line_total": "7350.00"
-      },
-      {
-        "description": "Cement bag 50kg",
-        "quantity": "16",
-        "unit_price": "18.50",
-        "vat_rate": "5",
-        "line_total": "296.00"
-      }
-    ],
-    "net_total": "8726.00",
-    "vat_total": "68.80",
-    "gross_total": "8794.80",
-    "_expected": [],
-    "source_file": "synthetic_0005.json"
-  },
-  {
-    "invoice_number": "INV-2026-0006",
-    "issue_date": "2026-01-28",
-    "due_date": null,
-    "payment_means": "30",
-    "currency": "AED",
-    "seller": {
-      "name": "Al Noor Building Materials LLC",
-      "trn": "100183473829",
-      "address": "Deira, Dubai",
-      "city": "Dubai",
-      "legal_id": "595631",
-      "legal_id_type": "TL",
-      "legal_authority": "Dubai Department of Economy and Tourism"
-    },
-    "buyer": {
-      "name": "Emirates Cold Chain Logistics",
-      "trn": null,
-      "address": "Industrial Area 4, Sharjah",
-      "city": "Sharjah"
-    },
-    "lines": [
-      {
-        "description": "Laptop screen replacement",
-        "quantity": "1",
-        "unit_price": "380.00",
-        "vat_rate": "0",
-        "line_total": "380.00"
-      },
-      {
-        "description": "Steel rebar 12mm (ton)",
-        "quantity": "2",
-        "unit_price": "2450.00",
-        "vat_rate": "5",
-        "line_total": "4900.00"
-      }
-    ],
-    "net_total": "5280.00",
-    "vat_total": "245.00",
-    "gross_total": "5525.00",
-    "_expected": [
-      "BAD_SELLER_TRN",
-      "MISSING_BUYER_TRN",
-      "MISSING_DUE_DATE"
-    ],
-    "source_file": "synthetic_0006.json"
-  },
-  {
-    "invoice_number": "INV-2026-0007",
-    "issue_date": "2026-02-15",
-    "due_date": null,
-    "payment_means": "10",
-    "currency": "AED",
-    "seller": {
-      "name": "Falcon Tech Repairs",
-      "trn": "100108013267",
-      "address": "Al Nahda, Sharjah",
-      "city": "Sharjah",
-      "legal_id": "324130",
-      "legal_id_type": "TL",
-      "legal_authority": "Sharjah Economic Development Department"
-    },
-    "buyer": {
-      "name": "Emirates Cold Chain Logistics",
-      "trn": "100602606474603",
-      "address": null,
-      "city": "Sharjah"
-    },
-    "lines": [
-      {
-        "description": "Cement bag 50kg",
-        "quantity": "7",
-        "unit_price": "18.50",
-        "vat_rate": "5",
-        "line_total": "129.50"
-      },
-      {
-        "description": "Steel rebar 12mm (ton)",
         "quantity": "5",
         "unit_price": "2450.00",
         "vat_rate": "5",
         "line_total": "12250.00"
       },
       {
-        "description": "Laptop screen replacement",
-        "quantity": "9",
-        "unit_price": "380.00",
+        "description": "Delivery charge",
+        "quantity": "10",
+        "unit_price": "75.00",
         "vat_rate": "5",
-        "line_total": "3420.00"
+        "line_total": "750.00"
       }
     ],
-    "net_total": "15799.50",
-    "vat_total": "789.98",
-    "gross_total": "16589.48",
+    "net_total": "14080.00",
+    "vat_total": "704.00",
+    "gross_total": "14784.00",
     "_expected": [
       "BAD_SELLER_TRN",
-      "MISSING_BUYER_ADDRESS",
-      "MISSING_DUE_DATE"
+      "MISSING_DUE_DATE",
+      "MISSING_INVOICE_NUMBER"
     ],
-    "source_file": "synthetic_0007.json"
+    "source_file": "synthetic_0017.json"
   },
   {
     "invoice_number": null,
-    "issue_date": "2026-10-16",
-    "due_date": "2026-11-16",
-    "payment_means": "10",
+    "issue_date": "31/02/2026",
+    "due_date": null,
+    "payment_means": "54",
     "currency": "AED",
     "seller": {
       "name": "Blue Dhow Marine Supplies FZE",
-      "trn": "100820812191303",
+      "trn": "100665982977503",
       "address": "Jebel Ali Free Zone, Dubai",
       "city": "Dubai",
-      "legal_id": "523389",
+      "legal_id": "665982",
+      "legal_id_type": "TL",
+      "legal_authority": "Jebel Ali Free Zone Authority"
+    },
+    "buyer": {
+      "name": "Emirates Cold Chain Logistics",
+      "trn": "100973254937903",
+      "address": "Industrial Area 4, Sharjah",
+      "city": "Sharjah"
+    },
+    "lines": [
+      {
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "8",
+        "unit_price": "2450.00",
+        "vat_rate": "5",
+        "line_total": "19600.00"
+      },
+      {
+        "description": "Marine rope 20m",
+        "quantity": "6",
+        "unit_price": "135.00",
+        "vat_rate": "5",
+        "line_total": "810.00"
+      },
+      {
+        "description": "Cement bag 50kg",
+        "quantity": "18",
+        "unit_price": "18.50",
+        "vat_rate": "5",
+        "line_total": "333.00"
+      }
+    ],
+    "net_total": "20743.00",
+    "vat_total": "1037.15",
+    "gross_total": "21780.15",
+    "_expected": [
+      "BAD_ISSUE_DATE",
+      "MISSING_DUE_DATE",
+      "MISSING_INVOICE_NUMBER"
+    ],
+    "source_file": "synthetic_0018.json"
+  },
+  {
+    "invoice_number": "INV-2026-0019",
+    "issue_date": "2026-05-17",
+    "due_date": "2026-06-17",
+    "payment_means": "20",
+    "currency": "AED",
+    "seller": {
+      "name": "Al Noor Building Materials LLC",
+      "trn": "100568992653603",
+      "address": "Deira, Dubai",
+      "city": "Dubai",
+      "legal_id": "568992",
+      "legal_id_type": "TL",
+      "legal_authority": "Dubai Department of Economy and Tourism"
+    },
+    "buyer": {
+      "name": "Gulf Horizon Contracting LLC",
+      "trn": "100156029230903",
+      "address": "Business Bay, Dubai",
+      "city": "Dubai"
+    },
+    "lines": [
+      {
+        "description": "Cement bag 50kg",
+        "quantity": "9",
+        "unit_price": "18.50",
+        "vat_rate": "5",
+        "line_total": "166.50"
+      },
+      {
+        "description": "Delivery charge",
+        "quantity": "7",
+        "unit_price": "75.00",
+        "vat_rate": "5",
+        "line_total": "525.00"
+      },
+      {
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "7",
+        "unit_price": "2450.00",
+        "vat_rate": "5",
+        "line_total": "17150.00"
+      }
+    ],
+    "net_total": "17841.50",
+    "vat_total": "892.08",
+    "gross_total": "18733.58",
+    "_expected": [],
+    "source_file": "synthetic_0019.json"
+  },
+  {
+    "invoice_number": null,
+    "issue_date": "31/02/2026",
+    "due_date": "2026-03-03",
+    "payment_means": "54",
+    "currency": "AED",
+    "seller": {
+      "name": "Al Noor Building Materials LLC",
+      "trn": "100568992653603",
+      "address": "Deira, Dubai",
+      "city": "Dubai",
+      "legal_id": "568992",
+      "legal_id_type": "TL",
+      "legal_authority": "Dubai Department of Economy and Tourism"
+    },
+    "buyer": {
+      "name": "Gulf Horizon Contracting LLC",
+      "trn": null,
+      "address": "Business Bay, Dubai",
+      "city": "Dubai"
+    },
+    "lines": [
+      {
+        "description": "Marine rope 20m",
+        "quantity": "5",
+        "unit_price": "135.00",
+        "vat_rate": "5",
+        "line_total": "675.00"
+      },
+      {
+        "description": "Cement bag 50kg",
+        "quantity": "9",
+        "unit_price": "18.50",
+        "vat_rate": "5",
+        "line_total": "166.50"
+      },
+      {
+        "description": "Laptop screen replacement",
+        "quantity": "15",
+        "unit_price": "380.00",
+        "vat_rate": "5",
+        "line_total": "5700.00"
+      },
+      {
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "14",
+        "unit_price": "2450.00",
+        "vat_rate": "5",
+        "line_total": "34300.00"
+      }
+    ],
+    "net_total": "40841.50",
+    "vat_total": "2042.08",
+    "gross_total": "42883.58",
+    "_expected": [
+      "BAD_ISSUE_DATE",
+      "MISSING_BUYER_TRN",
+      "MISSING_INVOICE_NUMBER"
+    ],
+    "source_file": "synthetic_0020.json"
+  },
+  {
+    "invoice_number": "INV-2026-0021",
+    "issue_date": "2026-04-22",
+    "due_date": null,
+    "payment_means": "30",
+    "currency": "AED",
+    "seller": {
+      "name": "Blue Dhow Marine Supplies FZE",
+      "trn": "100665982977503",
+      "address": "Jebel Ali Free Zone, Dubai",
+      "city": "Dubai",
+      "legal_id": "665982",
       "legal_id_type": "TL",
       "legal_authority": "Jebel Ali Free Zone Authority"
     },
     "buyer": {
       "name": "Palm Fresh Restaurants LLC",
-      "trn": "100193990916903",
+      "trn": "100056702932203",
       "address": "Al Khalidiyah, Abu Dhabi",
       "city": "Abu Dhabi"
     },
     "lines": [
       {
         "description": "Cement bag 50kg",
-        "quantity": "18",
+        "quantity": "12",
         "unit_price": "18.50",
-        "vat_rate": "0",
-        "line_total": "343.00"
-      },
-      {
-        "description": "Laptop screen replacement",
-        "quantity": "11",
-        "unit_price": "380.00",
-        "vat_rate": "0",
-        "line_total": "4180.00"
-      }
-    ],
-    "net_total": "4513.00",
-    "vat_total": "0.00",
-    "gross_total": "4513.00",
-    "_expected": [
-      "LINE_MATH_MISMATCH",
-      "MISSING_INVOICE_NUMBER"
-    ],
-    "source_file": "synthetic_0008.json"
-  },
-  {
-    "invoice_number": "INV-2026-0009",
-    "issue_date": "2026-02-03",
-    "due_date": "2026-03-03",
-    "payment_means": "10",
-    "currency": "AED",
-    "seller": {
-      "name": "Sahara Spice Trading LLC",
-      "trn": "100384251354203",
-      "address": "Al Ras, Dubai",
-      "city": "Dubai",
-      "legal_id": "559469",
-      "legal_id_type": "TL",
-      "legal_authority": "Dubai Department of Economy and Tourism"
-    },
-    "buyer": {
-      "name": "Gulf Horizon Contracting LLC",
-      "trn": "100849808412403",
-      "address": "Business Bay, Dubai",
-      "city": "Dubai"
-    },
-    "lines": [
-      {
-        "description": "Saffron 100g",
-        "quantity": "15",
-        "unit_price": "420.00",
         "vat_rate": "5",
-        "line_total": "6300.00"
-      },
-      {
-        "description": "Steel rebar 12mm (ton)",
-        "quantity": "3",
-        "unit_price": "2450.00",
-        "vat_rate": "0",
-        "line_total": "7350.00"
+        "line_total": "222.00"
       },
       {
         "description": "Marine rope 20m",
-        "quantity": "20",
+        "quantity": "2",
         "unit_price": "135.00",
         "vat_rate": "5",
-        "line_total": "2700.00"
+        "line_total": "270.00"
       }
     ],
-    "net_total": "16350.00",
-    "vat_total": "450.00",
-    "gross_total": "16800.00",
-    "_expected": [],
-    "source_file": "synthetic_0009.json"
-  },
-  {
-    "invoice_number": "INV-2026-0010",
-    "issue_date": "2026-05-17",
-    "due_date": null,
-    "payment_means": "20",
-    "currency": "AED",
-    "seller": {
-      "name": "Al Noor Building Materials LLC",
-      "trn": "100401640052403",
-      "address": "Deira, Dubai",
-      "city": "Dubai",
-      "legal_id": "269430",
-      "legal_id_type": "TL",
-      "legal_authority": "Dubai Department of Economy and Tourism"
-    },
-    "buyer": {
-      "name": "Emirates Cold Chain Logistics",
-      "trn": "100786801128003",
-      "address": "Industrial Area 4, Sharjah",
-      "city": "Sharjah"
-    },
-    "lines": [
-      {
-        "description": "Marine rope 20m",
-        "quantity": "20",
-        "unit_price": "135.00",
-        "vat_rate": "10",
-        "line_total": "2710.00"
-      },
-      {
-        "description": "Delivery charge",
-        "quantity": "11",
-        "unit_price": "75.00",
-        "vat_rate": "5",
-        "line_total": "825.00"
-      }
-    ],
-    "net_total": "3525.00",
-    "vat_total": "176.25",
-    "gross_total": "3701.25",
+    "net_total": "492.00",
+    "vat_total": "29.60",
+    "gross_total": "516.60",
     "_expected": [
-      "BAD_VAT_RATE",
-      "LINE_MATH_MISMATCH",
-      "MISSING_DUE_DATE"
+      "MISSING_DUE_DATE",
+      "VAT_TOTAL_MISMATCH"
     ],
-    "source_file": "synthetic_0010.json"
+    "source_file": "synthetic_0021.json"
   },
   {
-    "invoice_number": "INV-2026-0011",
-    "issue_date": "2026-07-20",
-    "due_date": "2026-08-20",
+    "invoice_number": null,
+    "issue_date": "2026-07-26",
+    "due_date": "2026-08-26",
     "payment_means": "54",
     "currency": "AED",
     "seller": {
       "name": "Blue Dhow Marine Supplies FZE",
-      "trn": "100232260256303",
+      "trn": "100665982977503",
       "address": "Jebel Ali Free Zone, Dubai",
       "city": "Dubai",
-      "legal_id": "379766",
+      "legal_id": "665982",
       "legal_id_type": "TL",
       "legal_authority": "Jebel Ali Free Zone Authority"
     },
     "buyer": {
       "name": "Gulf Horizon Contracting LLC",
-      "trn": "100216073375403",
+      "trn": "100156029230903",
       "address": "Business Bay, Dubai",
       "city": "Dubai"
     },
     "lines": [
       {
-        "description": "Marine rope 20m",
-        "quantity": "7",
-        "unit_price": "135.00",
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "1",
+        "unit_price": "2450.00",
         "vat_rate": "5",
-        "line_total": "955.00"
+        "line_total": "2450.00"
       },
       {
-        "description": "Cement bag 50kg",
-        "quantity": "4",
-        "unit_price": "18.50",
+        "description": "Saffron 100g",
+        "quantity": "11",
+        "unit_price": "420.00",
         "vat_rate": "5",
-        "line_total": "74.00"
-      },
-      {
-        "description": "Delivery charge",
-        "quantity": "18",
-        "unit_price": "75.00",
-        "vat_rate": "5",
-        "line_total": "1350.00"
+        "line_total": "4620.00"
       }
     ],
-    "net_total": "2369.00",
-    "vat_total": "118.45",
-    "gross_total": "2487.45",
+    "net_total": "7070.00",
+    "vat_total": "353.50",
+    "gross_total": "7423.50",
+    "_expected": [
+      "MISSING_INVOICE_NUMBER"
+    ],
+    "source_file": "synthetic_0022.json"
+  },
+  {
+    "invoice_number": "INV-2026-0023",
+    "issue_date": "2026-04-07",
+    "due_date": "2026-05-07",
+    "payment_means": "20",
+    "currency": "AED",
+    "seller": {
+      "name": "Blue Dhow Marine Supplies FZE",
+      "trn": "100665982977503",
+      "address": "Jebel Ali Free Zone, Dubai",
+      "city": "Dubai",
+      "legal_id": "665982",
+      "legal_id_type": "TL",
+      "legal_authority": "Jebel Ali Free Zone Authority"
+    },
+    "buyer": {
+      "name": "Emirates Cold Chain Logistics",
+      "trn": "100973254937903",
+      "address": "Industrial Area 4, Sharjah",
+      "city": "Sharjah"
+    },
+    "lines": [
+      {
+        "description": "Saffron 100g",
+        "quantity": "2",
+        "unit_price": "420.00",
+        "vat_rate": "5",
+        "line_total": "850.00"
+      }
+    ],
+    "net_total": "840.00",
+    "vat_total": "42.00",
+    "gross_total": "882.00",
     "_expected": [
       "LINE_MATH_MISMATCH"
     ],
-    "source_file": "synthetic_0011.json"
+    "source_file": "synthetic_0023.json"
   },
   {
-    "invoice_number": "INV-2026-0012",
-    "issue_date": "2026-09-13",
+    "invoice_number": "INV-2026-0024",
+    "issue_date": "31/02/2026",
     "due_date": "2026-10-13",
     "payment_means": "54",
     "currency": "AED",
     "seller": {
       "name": "Al Noor Building Materials LLC",
-      "trn": "100850142940103",
+      "trn": "100568992653603",
       "address": "Deira, Dubai",
       "city": "Dubai",
-      "legal_id": "725550",
+      "legal_id": "568992",
       "legal_id_type": "TL",
       "legal_authority": "Dubai Department of Economy and Tourism"
     },
     "buyer": {
       "name": "Emirates Cold Chain Logistics",
-      "trn": "100655698169303",
-      "address": "Industrial Area 4, Sharjah",
+      "trn": null,
+      "address": null,
       "city": "Sharjah"
     },
     "lines": [
@@ -605,29 +1220,370 @@
     "net_total": "4995.00",
     "vat_total": "249.75",
     "gross_total": "5244.75",
-    "_expected": [],
-    "source_file": "synthetic_0012.json"
+    "_expected": [
+      "BAD_ISSUE_DATE",
+      "MISSING_BUYER_ADDRESS",
+      "MISSING_BUYER_TRN"
+    ],
+    "source_file": "synthetic_0024.json"
   },
   {
-    "invoice_number": "INV-2026-0013",
-    "issue_date": "2026-02-24",
+    "invoice_number": "INV-2026-0025",
+    "issue_date": "2026-10-07",
+    "due_date": "2026-11-07",
+    "payment_means": "30",
+    "currency": "AED",
+    "seller": {
+      "name": "Sahara Spice Trading LLC",
+      "trn": "100352525303703",
+      "address": "Al Ras, Dubai",
+      "city": "Dubai",
+      "legal_id": "352525",
+      "legal_id_type": "TL",
+      "legal_authority": "Dubai Department of Economy and Tourism"
+    },
+    "buyer": {
+      "name": "Gulf Horizon Contracting LLC",
+      "trn": "100156029230903",
+      "address": "Business Bay, Dubai",
+      "city": "Dubai"
+    },
+    "lines": [
+      {
+        "description": "Cement bag 50kg",
+        "quantity": "12",
+        "unit_price": "18.50",
+        "vat_rate": "5",
+        "line_total": "222.00"
+      },
+      {
+        "description": "Delivery charge",
+        "quantity": "11",
+        "unit_price": "75.00",
+        "vat_rate": "5",
+        "line_total": "825.00"
+      },
+      {
+        "description": "Saffron 100g",
+        "quantity": "17",
+        "unit_price": "420.00",
+        "vat_rate": "5",
+        "line_total": "7140.00"
+      }
+    ],
+    "net_total": "8187.00",
+    "vat_total": "409.35",
+    "gross_total": "8596.35",
+    "_expected": [],
+    "source_file": "synthetic_0025.json"
+  },
+  {
+    "invoice_number": "INV-2026-0026",
+    "issue_date": "31/02/2026",
     "due_date": "2026-03-24",
     "payment_means": "30",
     "currency": "AED",
     "seller": {
       "name": "Falcon Tech Repairs",
-      "trn": "100846564823603",
+      "trn": "100056798497203",
       "address": "Al Nahda, Sharjah",
       "city": "Sharjah",
-      "legal_id": "797229",
+      "legal_id": "056798",
       "legal_id_type": "TL",
       "legal_authority": "Sharjah Economic Development Department"
     },
     "buyer": {
       "name": "Gulf Horizon Contracting LLC",
-      "trn": "100629946804403",
+      "trn": "100156029230903",
       "address": "Business Bay, Dubai",
       "city": "Dubai"
+    },
+    "lines": [
+      {
+        "description": "Marine rope 20m",
+        "quantity": "3",
+        "unit_price": "135.00",
+        "vat_rate": "5",
+        "line_total": "415.00"
+      },
+      {
+        "description": "Saffron 100g",
+        "quantity": "11",
+        "unit_price": "420.00",
+        "vat_rate": "5",
+        "line_total": "4620.00"
+      }
+    ],
+    "net_total": "5025.00",
+    "vat_total": "256.25",
+    "gross_total": "5276.25",
+    "_expected": [
+      "BAD_ISSUE_DATE",
+      "LINE_MATH_MISMATCH",
+      "VAT_TOTAL_MISMATCH"
+    ],
+    "source_file": "synthetic_0026.json"
+  },
+  {
+    "invoice_number": null,
+    "issue_date": "2026-05-13",
+    "due_date": "2026-06-13",
+    "payment_means": "10",
+    "currency": "AED",
+    "seller": {
+      "name": "Sahara Spice Trading LLC",
+      "trn": "100352525303703",
+      "address": "Al Ras, Dubai",
+      "city": "Dubai",
+      "legal_id": "352525",
+      "legal_id_type": "TL",
+      "legal_authority": "Dubai Department of Economy and Tourism"
+    },
+    "buyer": {
+      "name": "Emirates Cold Chain Logistics",
+      "trn": "100973254937903",
+      "address": "Industrial Area 4, Sharjah",
+      "city": "Sharjah"
+    },
+    "lines": [
+      {
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "13",
+        "unit_price": "2450.00",
+        "vat_rate": "5",
+        "line_total": "31860.00"
+      },
+      {
+        "description": "Saffron 100g",
+        "quantity": "6",
+        "unit_price": "420.00",
+        "vat_rate": "5",
+        "line_total": "2520.00"
+      }
+    ],
+    "net_total": "34370.00",
+    "vat_total": "1718.50",
+    "gross_total": "36088.50",
+    "_expected": [
+      "LINE_MATH_MISMATCH",
+      "MISSING_INVOICE_NUMBER"
+    ],
+    "source_file": "synthetic_0027.json"
+  },
+  {
+    "invoice_number": null,
+    "issue_date": "2026-10-11",
+    "due_date": "2026-11-11",
+    "payment_means": "30",
+    "currency": "AED",
+    "seller": {
+      "name": "Falcon Tech Repairs",
+      "trn": "100056798497203",
+      "address": "Al Nahda, Sharjah",
+      "city": "Sharjah",
+      "legal_id": "056798",
+      "legal_id_type": "TL",
+      "legal_authority": "Sharjah Economic Development Department"
+    },
+    "buyer": {
+      "name": "Emirates Cold Chain Logistics",
+      "trn": "100973254937903",
+      "address": "Industrial Area 4, Sharjah",
+      "city": "Sharjah"
+    },
+    "lines": [
+      {
+        "description": "Saffron 100g",
+        "quantity": "7",
+        "unit_price": "420.00",
+        "vat_rate": "5",
+        "line_total": "2940.00"
+      },
+      {
+        "description": "Delivery charge",
+        "quantity": "6",
+        "unit_price": "75.00",
+        "vat_rate": "5",
+        "line_total": "450.00"
+      },
+      {
+        "description": "Laptop screen replacement",
+        "quantity": "10",
+        "unit_price": "380.00",
+        "vat_rate": "5",
+        "line_total": "3800.00"
+      }
+    ],
+    "net_total": "7190.00",
+    "vat_total": "359.50",
+    "gross_total": "7549.50",
+    "_expected": [
+      "MISSING_INVOICE_NUMBER"
+    ],
+    "source_file": "synthetic_0028.json"
+  },
+  {
+    "invoice_number": "INV-2026-0029",
+    "issue_date": "2026-02-15",
+    "due_date": null,
+    "payment_means": "20",
+    "currency": "AED",
+    "seller": {
+      "name": "Blue Dhow Marine Supplies FZE",
+      "trn": "100665982977503",
+      "address": "Jebel Ali Free Zone, Dubai",
+      "city": "Dubai",
+      "legal_id": "665982",
+      "legal_id_type": "TL",
+      "legal_authority": "Jebel Ali Free Zone Authority"
+    },
+    "buyer": {
+      "name": "Gulf Horizon Contracting LLC",
+      "trn": "100156029230903",
+      "address": "Business Bay, Dubai",
+      "city": "Dubai"
+    },
+    "lines": [
+      {
+        "description": "Cement bag 50kg",
+        "quantity": "8",
+        "unit_price": "18.50",
+        "vat_rate": "5",
+        "line_total": "158.00"
+      },
+      {
+        "description": "Delivery charge",
+        "quantity": "20",
+        "unit_price": "75.00",
+        "vat_rate": "5",
+        "line_total": "1500.00"
+      }
+    ],
+    "net_total": "1648.00",
+    "vat_total": "87.40",
+    "gross_total": "1730.40",
+    "_expected": [
+      "LINE_MATH_MISMATCH",
+      "MISSING_DUE_DATE",
+      "VAT_TOTAL_MISMATCH"
+    ],
+    "source_file": "synthetic_0029.json"
+  },
+  {
+    "invoice_number": "INV-2026-0030",
+    "issue_date": "2026-09-15",
+    "due_date": "2026-10-15",
+    "payment_means": "30",
+    "currency": "AED",
+    "seller": {
+      "name": "Falcon Tech Repairs",
+      "trn": "100056798497203",
+      "address": "Al Nahda, Sharjah",
+      "city": "Sharjah",
+      "legal_id": "056798",
+      "legal_id_type": "TL",
+      "legal_authority": "Sharjah Economic Development Department"
+    },
+    "buyer": {
+      "name": "Gulf Horizon Contracting LLC",
+      "trn": "100156029230903",
+      "address": null,
+      "city": "Dubai"
+    },
+    "lines": [
+      {
+        "description": "Delivery charge",
+        "quantity": "4",
+        "unit_price": "75.00",
+        "vat_rate": "5",
+        "line_total": "300.00"
+      },
+      {
+        "description": "Cement bag 50kg",
+        "quantity": "8",
+        "unit_price": "18.50",
+        "vat_rate": "5",
+        "line_total": "148.00"
+      }
+    ],
+    "net_total": "448.00",
+    "vat_total": "22.40",
+    "gross_total": "470.40",
+    "_expected": [
+      "MISSING_BUYER_ADDRESS"
+    ],
+    "source_file": "synthetic_0030.json"
+  },
+  {
+    "invoice_number": "INV-2026-0031",
+    "issue_date": "2026-04-27",
+    "due_date": "2026-05-27",
+    "payment_means": "54",
+    "currency": "AED",
+    "seller": {
+      "name": "Blue Dhow Marine Supplies FZE",
+      "trn": "100665982977503",
+      "address": "Jebel Ali Free Zone, Dubai",
+      "city": "Dubai",
+      "legal_id": "665982",
+      "legal_id_type": "TL",
+      "legal_authority": "Jebel Ali Free Zone Authority"
+    },
+    "buyer": {
+      "name": "Palm Fresh Restaurants LLC",
+      "trn": "100056702932203",
+      "address": "Al Khalidiyah, Abu Dhabi",
+      "city": "Abu Dhabi"
+    },
+    "lines": [
+      {
+        "description": "Saffron 100g",
+        "quantity": "18",
+        "unit_price": "420.00",
+        "vat_rate": "5",
+        "line_total": "7560.00"
+      },
+      {
+        "description": "Laptop screen replacement",
+        "quantity": "6",
+        "unit_price": "380.00",
+        "vat_rate": "5",
+        "line_total": "2280.00"
+      },
+      {
+        "description": "Delivery charge",
+        "quantity": "16",
+        "unit_price": "75.00",
+        "vat_rate": "5",
+        "line_total": "1200.00"
+      }
+    ],
+    "net_total": "11040.00",
+    "vat_total": "552.00",
+    "gross_total": "11592.00",
+    "_expected": [],
+    "source_file": "synthetic_0031.json"
+  },
+  {
+    "invoice_number": "INV-2026-0032",
+    "issue_date": "2026-06-18",
+    "due_date": "2026-07-18",
+    "payment_means": "30",
+    "currency": "AED",
+    "seller": {
+      "name": "Falcon Tech Repairs",
+      "trn": "100056798497203",
+      "address": "Al Nahda, Sharjah",
+      "city": "Sharjah",
+      "legal_id": "056798",
+      "legal_id_type": "TL",
+      "legal_authority": "Sharjah Economic Development Department"
+    },
+    "buyer": {
+      "name": "Emirates Cold Chain Logistics",
+      "trn": "100973254937903",
+      "address": "Industrial Area 4, Sharjah",
+      "city": "Sharjah"
     },
     "lines": [
       {
@@ -639,150 +1595,32 @@
       },
       {
         "description": "Saffron 100g",
-        "quantity": "11",
-        "unit_price": "420.00",
-        "vat_rate": "5",
-        "line_total": "4620.00"
-      }
-    ],
-    "net_total": "5025.00",
-    "vat_total": "251.25",
-    "gross_total": "5276.25",
-    "_expected": [],
-    "source_file": "synthetic_0013.json"
-  },
-  {
-    "invoice_number": "INV-2026-0014",
-    "issue_date": "2026-04-26",
-    "due_date": null,
-    "payment_means": "30",
-    "currency": "AED",
-    "seller": {
-      "name": "Sahara Spice Trading LLC",
-      "trn": "100200379176903",
-      "address": "Al Ras, Dubai",
-      "city": "Dubai",
-      "legal_id": "303880",
-      "legal_id_type": "TL",
-      "legal_authority": "Dubai Department of Economy and Tourism"
-    },
-    "buyer": {
-      "name": "Palm Fresh Restaurants LLC",
-      "trn": null,
-      "address": null,
-      "city": "Abu Dhabi"
-    },
-    "lines": [
-      {
-        "description": "Saffron 100g",
-        "quantity": "6",
-        "unit_price": "420.00",
-        "vat_rate": "5",
-        "line_total": "2520.00"
-      },
-      {
-        "description": "Steel rebar 12mm (ton)",
-        "quantity": "10",
-        "unit_price": "2450.00",
-        "vat_rate": "5",
-        "line_total": "24500.00"
-      },
-      {
-        "description": "Delivery charge",
-        "quantity": "20",
-        "unit_price": "75.00",
-        "vat_rate": "5",
-        "line_total": "1500.00"
-      },
-      {
-        "description": "Marine rope 20m",
         "quantity": "8",
-        "unit_price": "135.00",
+        "unit_price": "420.00",
         "vat_rate": "5",
-        "line_total": "1080.00"
+        "line_total": "3360.00"
       }
     ],
-    "net_total": "29600.00",
-    "vat_total": "1480.00",
-    "gross_total": "31080.00",
-    "_expected": [
-      "MISSING_BUYER_ADDRESS",
-      "MISSING_BUYER_TRN",
-      "MISSING_DUE_DATE"
-    ],
-    "source_file": "synthetic_0014.json"
+    "net_total": "3765.00",
+    "vat_total": "188.25",
+    "gross_total": "3953.25",
+    "_expected": [],
+    "source_file": "synthetic_0032.json"
   },
   {
-    "invoice_number": "INV-2026-0015",
-    "issue_date": "2026-08-15",
-    "due_date": "2026-09-15",
+    "invoice_number": "INV-2026-0033",
+    "issue_date": "2026-07-02",
+    "due_date": "2026-08-02",
     "payment_means": "30",
     "currency": "AED",
     "seller": {
       "name": "Blue Dhow Marine Supplies FZE",
-      "trn": "100348734714303",
+      "trn": "100665982977503",
       "address": "Jebel Ali Free Zone, Dubai",
       "city": "Dubai",
-      "legal_id": "384913",
+      "legal_id": "665982",
       "legal_id_type": "TL",
       "legal_authority": "Jebel Ali Free Zone Authority"
-    },
-    "buyer": {
-      "name": "Gulf Horizon Contracting LLC",
-      "trn": "100558122362303",
-      "address": "Business Bay, Dubai",
-      "city": "Dubai"
-    },
-    "lines": [
-      {
-        "description": "Steel rebar 12mm (ton)",
-        "quantity": "20",
-        "unit_price": "2450.00",
-        "vat_rate": "5",
-        "line_total": "49000.00"
-      },
-      {
-        "description": "Saffron 100g",
-        "quantity": "17",
-        "unit_price": "420.00",
-        "vat_rate": "5",
-        "line_total": "7140.00"
-      },
-      {
-        "description": "Marine rope 20m",
-        "quantity": "18",
-        "unit_price": "135.00",
-        "vat_rate": "5",
-        "line_total": "2430.00"
-      },
-      {
-        "description": "Delivery charge",
-        "quantity": "6",
-        "unit_price": "75.00",
-        "vat_rate": "5",
-        "line_total": "450.00"
-      }
-    ],
-    "net_total": "59020.00",
-    "vat_total": "2951.00",
-    "gross_total": "61971.00",
-    "_expected": [],
-    "source_file": "synthetic_0015.json"
-  },
-  {
-    "invoice_number": "INV-2026-0016",
-    "issue_date": "31/02/2026",
-    "due_date": "2026-02-12",
-    "payment_means": "30",
-    "currency": "AED",
-    "seller": {
-      "name": "Falcon Tech Repairs",
-      "trn": "100668893734",
-      "address": "Al Nahda, Sharjah",
-      "city": "Sharjah",
-      "legal_id": "609232",
-      "legal_id_type": "TL",
-      "legal_authority": "Sharjah Economic Development Department"
     },
     "buyer": {
       "name": "Palm Fresh Restaurants LLC",
@@ -792,179 +1630,164 @@
     },
     "lines": [
       {
-        "description": "Saffron 100g",
-        "quantity": "13",
-        "unit_price": "420.00",
-        "vat_rate": "5",
-        "line_total": "5460.00"
-      },
-      {
-        "description": "Cement bag 50kg",
-        "quantity": "19",
-        "unit_price": "18.50",
-        "vat_rate": "5",
-        "line_total": "351.50"
-      },
-      {
-        "description": "Steel rebar 12mm (ton)",
-        "quantity": "1",
-        "unit_price": "2450.00",
-        "vat_rate": "5",
-        "line_total": "2450.00"
-      },
-      {
         "description": "Delivery charge",
-        "quantity": "19",
+        "quantity": "3",
         "unit_price": "75.00",
         "vat_rate": "5",
-        "line_total": "1425.00"
-      }
-    ],
-    "net_total": "9686.50",
-    "vat_total": "484.33",
-    "gross_total": "10170.83",
-    "_expected": [
-      "BAD_ISSUE_DATE",
-      "BAD_SELLER_TRN",
-      "MISSING_BUYER_TRN"
-    ],
-    "source_file": "synthetic_0016.json"
-  },
-  {
-    "invoice_number": "INV-2026-0017",
-    "issue_date": "2026-02-16",
-    "due_date": "2026-03-16",
-    "payment_means": "30",
-    "currency": "AED",
-    "seller": {
-      "name": "Falcon Tech Repairs",
-      "trn": "100805310033003",
-      "address": "Al Nahda, Sharjah",
-      "city": "Sharjah",
-      "legal_id": "751517",
-      "legal_id_type": "TL",
-      "legal_authority": "Sharjah Economic Development Department"
-    },
-    "buyer": {
-      "name": "Gulf Horizon Contracting LLC",
-      "trn": "100232719374503",
-      "address": "Business Bay, Dubai",
-      "city": "Dubai"
-    },
-    "lines": [
+        "line_total": "225.00"
+      },
       {
         "description": "Steel rebar 12mm (ton)",
         "quantity": "11",
         "unit_price": "2450.00",
         "vat_rate": "5",
         "line_total": "26950.00"
-      },
-      {
-        "description": "Cement bag 50kg",
-        "quantity": "11",
-        "unit_price": "18.50",
-        "vat_rate": "5",
-        "line_total": "203.50"
-      },
-      {
-        "description": "Marine rope 20m",
-        "quantity": "13",
-        "unit_price": "135.00",
-        "vat_rate": "5",
-        "line_total": "1755.00"
-      },
-      {
-        "description": "Delivery charge",
-        "quantity": "14",
-        "unit_price": "75.00",
-        "vat_rate": "5",
-        "line_total": "1050.00"
       }
     ],
-    "net_total": "29958.50",
-    "vat_total": "1497.93",
-    "gross_total": "31456.43",
-    "_expected": [],
-    "source_file": "synthetic_0017.json"
+    "net_total": "27175.00",
+    "vat_total": "1363.75",
+    "gross_total": "28533.75",
+    "_expected": [
+      "MISSING_BUYER_TRN",
+      "VAT_TOTAL_MISMATCH"
+    ],
+    "source_file": "synthetic_0033.json"
   },
   {
-    "invoice_number": "INV-2026-0018",
-    "issue_date": "2026-04-04",
-    "due_date": "2026-05-04",
-    "payment_means": "54",
+    "invoice_number": "INV-2026-0034",
+    "issue_date": "2026-05-14",
+    "due_date": "2026-06-14",
+    "payment_means": "20",
     "currency": "AED",
     "seller": {
-      "name": "Al Noor Building Materials LLC",
-      "trn": "100491905865103",
-      "address": "Deira, Dubai",
-      "city": "Dubai",
-      "legal_id": "630538",
+      "name": "Falcon Tech Repairs",
+      "trn": "100056798497203",
+      "address": "Al Nahda, Sharjah",
+      "city": "Sharjah",
+      "legal_id": "056798",
       "legal_id_type": "TL",
-      "legal_authority": "Dubai Department of Economy and Tourism"
+      "legal_authority": "Sharjah Economic Development Department"
     },
     "buyer": {
       "name": "Gulf Horizon Contracting LLC",
-      "trn": "100506716572603",
+      "trn": "100156029230903",
       "address": "Business Bay, Dubai",
       "city": "Dubai"
     },
     "lines": [
       {
-        "description": "Cement bag 50kg",
-        "quantity": "10",
-        "unit_price": "18.50",
+        "description": "Marine rope 20m",
+        "quantity": "18",
+        "unit_price": "135.00",
         "vat_rate": "5",
-        "line_total": "185.00"
+        "line_total": "2430.00"
+      },
+      {
+        "description": "Saffron 100g",
+        "quantity": "18",
+        "unit_price": "420.00",
+        "vat_rate": "5",
+        "line_total": "7560.00"
       },
       {
         "description": "Laptop screen replacement",
-        "quantity": "13",
+        "quantity": "8",
         "unit_price": "380.00",
         "vat_rate": "5",
-        "line_total": "4940.00"
-      },
-      {
-        "description": "Delivery charge",
-        "quantity": "7",
-        "unit_price": "75.00",
-        "vat_rate": "0",
-        "line_total": "525.00"
+        "line_total": "3040.00"
       }
     ],
-    "net_total": "5650.00",
-    "vat_total": "256.25",
-    "gross_total": "5906.25",
+    "net_total": "13030.00",
+    "vat_total": "651.50",
+    "gross_total": "13681.50",
     "_expected": [],
-    "source_file": "synthetic_0018.json"
+    "source_file": "synthetic_0034.json"
   },
   {
-    "invoice_number": "INV-2026-0019",
-    "issue_date": "2026-07-11",
-    "due_date": null,
+    "invoice_number": "INV-2026-0035",
+    "issue_date": "2026-08-06",
+    "due_date": "2026-09-06",
     "payment_means": "30",
     "currency": "AED",
     "seller": {
       "name": "Sahara Spice Trading LLC",
-      "trn": "100752735454903",
+      "trn": "100352525303703",
       "address": "Al Ras, Dubai",
       "city": "Dubai",
-      "legal_id": "835244",
+      "legal_id": "352525",
       "legal_id_type": "TL",
       "legal_authority": "Dubai Department of Economy and Tourism"
     },
     "buyer": {
       "name": "Emirates Cold Chain Logistics",
-      "trn": "100480831367803",
-      "address": null,
+      "trn": "100973254937903",
+      "address": "Industrial Area 4, Sharjah",
       "city": "Sharjah"
     },
     "lines": [
       {
-        "description": "Saffron 100g",
-        "quantity": "8",
-        "unit_price": "420.00",
+        "description": "Delivery charge",
+        "quantity": "20",
+        "unit_price": "75.00",
         "vat_rate": "5",
-        "line_total": "3370.00"
+        "line_total": "1500.00"
+      },
+      {
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "13",
+        "unit_price": "2450.00",
+        "vat_rate": "5",
+        "line_total": "31850.00"
+      },
+      {
+        "description": "Saffron 100g",
+        "quantity": "1",
+        "unit_price": "420.00",
+        "vat_rate": "0",
+        "line_total": "420.00"
+      },
+      {
+        "description": "Cement bag 50kg",
+        "quantity": "14",
+        "unit_price": "18.50",
+        "vat_rate": "5",
+        "line_total": "259.00"
+      }
+    ],
+    "net_total": "34029.00",
+    "vat_total": "1680.45",
+    "gross_total": "35709.45",
+    "_expected": [],
+    "source_file": "synthetic_0035.json"
+  },
+  {
+    "invoice_number": "INV-2026-0036",
+    "issue_date": "2026-02-25",
+    "due_date": "2026-03-25",
+    "payment_means": "54",
+    "currency": "AED",
+    "seller": {
+      "name": "Sahara Spice Trading LLC",
+      "trn": "100352525303703",
+      "address": "Al Ras, Dubai",
+      "city": "Dubai",
+      "legal_id": "352525",
+      "legal_id_type": "TL",
+      "legal_authority": "Dubai Department of Economy and Tourism"
+    },
+    "buyer": {
+      "name": "Gulf Horizon Contracting LLC",
+      "trn": "100156029230903",
+      "address": "Business Bay, Dubai",
+      "city": "Dubai"
+    },
+    "lines": [
+      {
+        "description": "Marine rope 20m",
+        "quantity": "14",
+        "unit_price": "135.00",
+        "vat_rate": "5",
+        "line_total": "1890.00"
       },
       {
         "description": "Delivery charge",
@@ -974,250 +1797,508 @@
         "line_total": "225.00"
       },
       {
-        "description": "Marine rope 20m",
-        "quantity": "15",
-        "unit_price": "135.00",
-        "vat_rate": "5",
-        "line_total": "2025.00"
+        "description": "Saffron 100g",
+        "quantity": "18",
+        "unit_price": "420.00",
+        "vat_rate": "0",
+        "line_total": "7560.00"
       },
       {
         "description": "Steel rebar 12mm (ton)",
-        "quantity": "15",
+        "quantity": "12",
         "unit_price": "2450.00",
         "vat_rate": "5",
-        "line_total": "36750.00"
+        "line_total": "29400.00"
       }
     ],
-    "net_total": "42360.00",
-    "vat_total": "2118.00",
-    "gross_total": "44478.00",
-    "_expected": [
-      "LINE_MATH_MISMATCH",
-      "MISSING_BUYER_ADDRESS",
-      "MISSING_DUE_DATE"
-    ],
-    "source_file": "synthetic_0019.json"
+    "net_total": "39075.00",
+    "vat_total": "1575.75",
+    "gross_total": "40650.75",
+    "_expected": [],
+    "source_file": "synthetic_0036.json"
   },
   {
-    "invoice_number": "INV-2026-0020",
-    "issue_date": "31/02/2026",
-    "due_date": "2026-10-11",
-    "payment_means": "30",
+    "invoice_number": "INV-2026-0037",
+    "issue_date": "2026-10-07",
+    "due_date": "2026-11-07",
+    "payment_means": "20",
     "currency": "AED",
     "seller": {
       "name": "Al Noor Building Materials LLC",
-      "trn": "100744431351803",
+      "trn": "100568992653",
       "address": "Deira, Dubai",
       "city": "Dubai",
-      "legal_id": "899213",
+      "legal_id": "568992",
       "legal_id_type": "TL",
       "legal_authority": "Dubai Department of Economy and Tourism"
     },
     "buyer": {
       "name": "Gulf Horizon Contracting LLC",
-      "trn": "100233749894103",
+      "trn": "100156029230903",
       "address": "Business Bay, Dubai",
       "city": "Dubai"
     },
     "lines": [
       {
-        "description": "Steel rebar 12mm (ton)",
-        "quantity": "10",
-        "unit_price": "2450.00",
-        "vat_rate": "5",
-        "line_total": "24510.00"
+        "description": "Cement bag 50kg",
+        "quantity": "5",
+        "unit_price": "18.50",
+        "vat_rate": "10",
+        "line_total": "92.50"
       },
       {
-        "description": "Saffron 100g",
-        "quantity": "12",
-        "unit_price": "420.00",
+        "description": "Laptop screen replacement",
+        "quantity": "16",
+        "unit_price": "380.00",
         "vat_rate": "5",
-        "line_total": "5040.00"
+        "line_total": "6080.00"
+      }
+    ],
+    "net_total": "6172.50",
+    "vat_total": "308.63",
+    "gross_total": "6481.13",
+    "_expected": [
+      "BAD_SELLER_TRN",
+      "BAD_VAT_RATE"
+    ],
+    "source_file": "synthetic_0037.json"
+  },
+  {
+    "invoice_number": null,
+    "issue_date": "2026-10-22",
+    "due_date": "2026-11-22",
+    "payment_means": "20",
+    "currency": "AED",
+    "seller": {
+      "name": "Blue Dhow Marine Supplies FZE",
+      "trn": "100665982977",
+      "address": "Jebel Ali Free Zone, Dubai",
+      "city": "Dubai",
+      "legal_id": "665982",
+      "legal_id_type": "TL",
+      "legal_authority": "Jebel Ali Free Zone Authority"
+    },
+    "buyer": {
+      "name": "Palm Fresh Restaurants LLC",
+      "trn": "100056702932203",
+      "address": "Al Khalidiyah, Abu Dhabi",
+      "city": "Abu Dhabi"
+    },
+    "lines": [
+      {
+        "description": "Laptop screen replacement",
+        "quantity": "1",
+        "unit_price": "380.00",
+        "vat_rate": "5",
+        "line_total": "390.00"
+      }
+    ],
+    "net_total": "380.00",
+    "vat_total": "19.00",
+    "gross_total": "399.00",
+    "_expected": [
+      "BAD_SELLER_TRN",
+      "LINE_MATH_MISMATCH",
+      "MISSING_INVOICE_NUMBER"
+    ],
+    "source_file": "synthetic_0038.json"
+  },
+  {
+    "invoice_number": "INV-2026-0039",
+    "issue_date": "2026-06-01",
+    "due_date": "2026-07-01",
+    "payment_means": "20",
+    "currency": "AED",
+    "seller": {
+      "name": "Blue Dhow Marine Supplies FZE",
+      "trn": "100665982977503",
+      "address": "Jebel Ali Free Zone, Dubai",
+      "city": "Dubai",
+      "legal_id": "665982",
+      "legal_id_type": "TL",
+      "legal_authority": "Jebel Ali Free Zone Authority"
+    },
+    "buyer": {
+      "name": "Gulf Horizon Contracting LLC",
+      "trn": "100156029230903",
+      "address": "Business Bay, Dubai",
+      "city": "Dubai"
+    },
+    "lines": [
+      {
+        "description": "Delivery charge",
+        "quantity": "19",
+        "unit_price": "75.00",
+        "vat_rate": "5",
+        "line_total": "1425.00"
       },
+      {
+        "description": "Laptop screen replacement",
+        "quantity": "12",
+        "unit_price": "380.00",
+        "vat_rate": "5",
+        "line_total": "4560.00"
+      },
+      {
+        "description": "Cement bag 50kg",
+        "quantity": "12",
+        "unit_price": "18.50",
+        "vat_rate": "0",
+        "line_total": "222.00"
+      }
+    ],
+    "net_total": "6207.00",
+    "vat_total": "304.25",
+    "gross_total": "6506.25",
+    "_expected": [
+      "VAT_TOTAL_MISMATCH"
+    ],
+    "source_file": "synthetic_0039.json"
+  },
+  {
+    "invoice_number": null,
+    "issue_date": "2026-10-09",
+    "due_date": "2026-11-09",
+    "payment_means": "30",
+    "currency": "AED",
+    "seller": {
+      "name": "Sahara Spice Trading LLC",
+      "trn": "100352525303703",
+      "address": "Al Ras, Dubai",
+      "city": "Dubai",
+      "legal_id": "352525",
+      "legal_id_type": "TL",
+      "legal_authority": "Dubai Department of Economy and Tourism"
+    },
+    "buyer": {
+      "name": "Emirates Cold Chain Logistics",
+      "trn": "100973254937903",
+      "address": "Industrial Area 4, Sharjah",
+      "city": "Sharjah"
+    },
+    "lines": [
       {
         "description": "Delivery charge",
         "quantity": "17",
         "unit_price": "75.00",
         "vat_rate": "5",
         "line_total": "1275.00"
+      },
+      {
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "9",
+        "unit_price": "2450.00",
+        "vat_rate": "5",
+        "line_total": "22050.00"
+      },
+      {
+        "description": "Saffron 100g",
+        "quantity": "18",
+        "unit_price": "420.00",
+        "vat_rate": "5",
+        "line_total": "7560.00"
+      },
+      {
+        "description": "Cement bag 50kg",
+        "quantity": "15",
+        "unit_price": "18.50",
+        "vat_rate": "5",
+        "line_total": "277.50"
       }
     ],
-    "net_total": "30815.00",
-    "vat_total": "1540.75",
-    "gross_total": "32355.75",
+    "net_total": "31162.50",
+    "vat_total": "1558.13",
+    "gross_total": "32720.63",
     "_expected": [
-      "BAD_ISSUE_DATE",
-      "LINE_MATH_MISMATCH"
+      "MISSING_INVOICE_NUMBER"
     ],
-    "source_file": "synthetic_0020.json"
+    "source_file": "synthetic_0040.json"
   },
   {
-    "invoice_number": "INV-2026-0021",
-    "issue_date": "2026-01-02",
-    "due_date": "2026-02-02",
-    "payment_means": "10",
+    "invoice_number": "INV-2026-0041",
+    "issue_date": "2026-10-23",
+    "due_date": "2026-11-23",
+    "payment_means": "30",
     "currency": "AED",
     "seller": {
-      "name": "Blue Dhow Marine Supplies FZE",
-      "trn": "100427109477703",
-      "address": "Jebel Ali Free Zone, Dubai",
-      "city": "Dubai",
-      "legal_id": "457256",
+      "name": "Falcon Tech Repairs",
+      "trn": "100056798497",
+      "address": "Al Nahda, Sharjah",
+      "city": "Sharjah",
+      "legal_id": "056798",
       "legal_id_type": "TL",
-      "legal_authority": "Jebel Ali Free Zone Authority"
+      "legal_authority": "Sharjah Economic Development Department"
+    },
+    "buyer": {
+      "name": "Gulf Horizon Contracting LLC",
+      "trn": "100156029230903",
+      "address": null,
+      "city": "Dubai"
+    },
+    "lines": [
+      {
+        "description": "Laptop screen replacement",
+        "quantity": "1",
+        "unit_price": "380.00",
+        "vat_rate": "5",
+        "line_total": "390.00"
+      },
+      {
+        "description": "Delivery charge",
+        "quantity": "11",
+        "unit_price": "75.00",
+        "vat_rate": "5",
+        "line_total": "825.00"
+      },
+      {
+        "description": "Saffron 100g",
+        "quantity": "7",
+        "unit_price": "420.00",
+        "vat_rate": "5",
+        "line_total": "2940.00"
+      },
+      {
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "9",
+        "unit_price": "2450.00",
+        "vat_rate": "5",
+        "line_total": "22050.00"
+      }
+    ],
+    "net_total": "26195.00",
+    "vat_total": "1309.75",
+    "gross_total": "27504.75",
+    "_expected": [
+      "BAD_SELLER_TRN",
+      "LINE_MATH_MISMATCH",
+      "MISSING_BUYER_ADDRESS"
+    ],
+    "source_file": "synthetic_0041.json"
+  },
+  {
+    "invoice_number": "INV-2026-0042",
+    "issue_date": "2026-04-13",
+    "due_date": "2026-05-13",
+    "payment_means": "54",
+    "currency": "AED",
+    "seller": {
+      "name": "Falcon Tech Repairs",
+      "trn": "100056798497203",
+      "address": "Al Nahda, Sharjah",
+      "city": "Sharjah",
+      "legal_id": "056798",
+      "legal_id_type": "TL",
+      "legal_authority": "Sharjah Economic Development Department"
     },
     "buyer": {
       "name": "Palm Fresh Restaurants LLC",
-      "trn": "100204711671903",
+      "trn": "100056702932203",
       "address": "Al Khalidiyah, Abu Dhabi",
       "city": "Abu Dhabi"
     },
     "lines": [
       {
         "description": "Delivery charge",
-        "quantity": "18",
+        "quantity": "16",
         "unit_price": "75.00",
-        "vat_rate": "10",
-        "line_total": "1350.00"
+        "vat_rate": "5",
+        "line_total": "1200.00"
+      },
+      {
+        "description": "Saffron 100g",
+        "quantity": "1",
+        "unit_price": "420.00",
+        "vat_rate": "0",
+        "line_total": "420.00"
       }
     ],
-    "net_total": "1350.00",
-    "vat_total": "67.50",
-    "gross_total": "1417.50",
-    "_expected": [
-      "BAD_VAT_RATE"
-    ],
-    "source_file": "synthetic_0021.json"
+    "net_total": "1620.00",
+    "vat_total": "60.00",
+    "gross_total": "1680.00",
+    "_expected": [],
+    "source_file": "synthetic_0042.json"
   },
   {
-    "invoice_number": "INV-2026-0022",
-    "issue_date": "2026-09-13",
-    "due_date": "2026-10-13",
+    "invoice_number": "INV-2026-0043",
+    "issue_date": "2026-04-11",
+    "due_date": "2026-05-11",
+    "payment_means": "30",
+    "currency": "AED",
+    "seller": {
+      "name": "Sahara Spice Trading LLC",
+      "trn": "100352525303",
+      "address": "Al Ras, Dubai",
+      "city": "Dubai",
+      "legal_id": "352525",
+      "legal_id_type": "TL",
+      "legal_authority": "Dubai Department of Economy and Tourism"
+    },
+    "buyer": {
+      "name": "Palm Fresh Restaurants LLC",
+      "trn": "100056702932203",
+      "address": "Al Khalidiyah, Abu Dhabi",
+      "city": "Abu Dhabi"
+    },
+    "lines": [
+      {
+        "description": "Saffron 100g",
+        "quantity": "12",
+        "unit_price": "420.00",
+        "vat_rate": "10",
+        "line_total": "5050.00"
+      },
+      {
+        "description": "Laptop screen replacement",
+        "quantity": "9",
+        "unit_price": "380.00",
+        "vat_rate": "5",
+        "line_total": "3420.00"
+      },
+      {
+        "description": "Marine rope 20m",
+        "quantity": "8",
+        "unit_price": "135.00",
+        "vat_rate": "5",
+        "line_total": "1080.00"
+      }
+    ],
+    "net_total": "9540.00",
+    "vat_total": "477.00",
+    "gross_total": "10017.00",
+    "_expected": [
+      "BAD_SELLER_TRN",
+      "BAD_VAT_RATE",
+      "LINE_MATH_MISMATCH"
+    ],
+    "source_file": "synthetic_0043.json"
+  },
+  {
+    "invoice_number": "INV-2026-0044",
+    "issue_date": "2026-01-02",
+    "due_date": "2026-02-02",
+    "payment_means": "10",
+    "currency": "AED",
+    "seller": {
+      "name": "Falcon Tech Repairs",
+      "trn": "100056798497203",
+      "address": "Al Nahda, Sharjah",
+      "city": "Sharjah",
+      "legal_id": "056798",
+      "legal_id_type": "TL",
+      "legal_authority": "Sharjah Economic Development Department"
+    },
+    "buyer": {
+      "name": "Palm Fresh Restaurants LLC",
+      "trn": "100056702932203",
+      "address": "Al Khalidiyah, Abu Dhabi",
+      "city": "Abu Dhabi"
+    },
+    "lines": [
+      {
+        "description": "Cement bag 50kg",
+        "quantity": "8",
+        "unit_price": "18.50",
+        "vat_rate": "5",
+        "line_total": "148.00"
+      },
+      {
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "10",
+        "unit_price": "2450.00",
+        "vat_rate": "0",
+        "line_total": "24500.00"
+      },
+      {
+        "description": "Marine rope 20m",
+        "quantity": "18",
+        "unit_price": "135.00",
+        "vat_rate": "5",
+        "line_total": "2430.00"
+      }
+    ],
+    "net_total": "27078.00",
+    "vat_total": "128.90",
+    "gross_total": "27206.90",
+    "_expected": [],
+    "source_file": "synthetic_0044.json"
+  },
+  {
+    "invoice_number": "INV-2026-0045",
+    "issue_date": "2026-02-13",
+    "due_date": "2026-03-13",
     "payment_means": "20",
     "currency": "AED",
     "seller": {
       "name": "Blue Dhow Marine Supplies FZE",
-      "trn": "100749649909103",
+      "trn": "100665982977503",
       "address": "Jebel Ali Free Zone, Dubai",
       "city": "Dubai",
-      "legal_id": "899787",
+      "legal_id": "665982",
       "legal_id_type": "TL",
       "legal_authority": "Jebel Ali Free Zone Authority"
     },
     "buyer": {
       "name": "Emirates Cold Chain Logistics",
-      "trn": "100334123281203",
+      "trn": "100973254937903",
       "address": "Industrial Area 4, Sharjah",
       "city": "Sharjah"
     },
     "lines": [
       {
         "description": "Cement bag 50kg",
-        "quantity": "18",
+        "quantity": "16",
         "unit_price": "18.50",
         "vat_rate": "5",
-        "line_total": "333.00"
-      },
-      {
-        "description": "Steel rebar 12mm (ton)",
-        "quantity": "20",
-        "unit_price": "2450.00",
-        "vat_rate": "5",
-        "line_total": "49000.00"
+        "line_total": "296.00"
       },
       {
         "description": "Delivery charge",
-        "quantity": "20",
+        "quantity": "6",
         "unit_price": "75.00",
         "vat_rate": "5",
-        "line_total": "1500.00"
-      }
-    ],
-    "net_total": "50833.00",
-    "vat_total": "2541.65",
-    "gross_total": "53374.65",
-    "_expected": [],
-    "source_file": "synthetic_0022.json"
-  },
-  {
-    "invoice_number": "INV-2026-0023",
-    "issue_date": "2026-04-14",
-    "due_date": "2026-05-14",
-    "payment_means": "30",
-    "currency": "AED",
-    "seller": {
-      "name": "Falcon Tech Repairs",
-      "trn": "100832421024903",
-      "address": "Al Nahda, Sharjah",
-      "city": "Sharjah",
-      "legal_id": "885339",
-      "legal_id_type": "TL",
-      "legal_authority": "Sharjah Economic Development Department"
-    },
-    "buyer": {
-      "name": "Emirates Cold Chain Logistics",
-      "trn": null,
-      "address": "Industrial Area 4, Sharjah",
-      "city": "Sharjah"
-    },
-    "lines": [
-      {
-        "description": "Marine rope 20m",
-        "quantity": "10",
-        "unit_price": "135.00",
-        "vat_rate": "5",
-        "line_total": "1350.00"
+        "line_total": "450.00"
       },
       {
-        "description": "Cement bag 50kg",
-        "quantity": "15",
-        "unit_price": "18.50",
-        "vat_rate": "0",
-        "line_total": "277.50"
+        "description": "Marine rope 20m",
+        "quantity": "9",
+        "unit_price": "135.00",
+        "vat_rate": "5",
+        "line_total": "1215.00"
       },
       {
         "description": "Steel rebar 12mm (ton)",
-        "quantity": "8",
+        "quantity": "16",
         "unit_price": "2450.00",
         "vat_rate": "5",
-        "line_total": "19600.00"
-      },
-      {
-        "description": "Saffron 100g",
-        "quantity": "19",
-        "unit_price": "420.00",
-        "vat_rate": "5",
-        "line_total": "7980.00"
+        "line_total": "39200.00"
       }
     ],
-    "net_total": "29207.50",
-    "vat_total": "1446.50",
-    "gross_total": "30654.00",
-    "_expected": [
-      "MISSING_BUYER_TRN"
-    ],
-    "source_file": "synthetic_0023.json"
+    "net_total": "41161.00",
+    "vat_total": "2058.05",
+    "gross_total": "43219.05",
+    "_expected": [],
+    "source_file": "synthetic_0045.json"
   },
   {
-    "invoice_number": "INV-2026-0024",
-    "issue_date": "2026-05-19",
+    "invoice_number": "INV-2026-0046",
+    "issue_date": "2026-07-20",
     "due_date": null,
-    "payment_means": "30",
+    "payment_means": "10",
     "currency": "AED",
     "seller": {
-      "name": "Falcon Tech Repairs",
-      "trn": "100278742967103",
-      "address": "Al Nahda, Sharjah",
-      "city": "Sharjah",
-      "legal_id": "592841",
+      "name": "Al Noor Building Materials LLC",
+      "trn": "100568992653603",
+      "address": "Deira, Dubai",
+      "city": "Dubai",
+      "legal_id": "568992",
       "legal_id_type": "TL",
-      "legal_authority": "Sharjah Economic Development Department"
+      "legal_authority": "Dubai Department of Economy and Tourism"
     },
     "buyer": {
-      "name": "Emirates Cold Chain Logistics",
-      "trn": null,
-      "address": "Industrial Area 4, Sharjah",
-      "city": "Sharjah"
+      "name": "Gulf Horizon Contracting LLC",
+      "trn": "100156029230903",
+      "address": "Business Bay, Dubai",
+      "city": "Dubai"
     },
     "lines": [
       {
@@ -1229,214 +2310,55 @@
       },
       {
         "description": "Marine rope 20m",
+        "quantity": "4",
+        "unit_price": "135.00",
+        "vat_rate": "5",
+        "line_total": "540.00"
+      }
+    ],
+    "net_total": "1680.00",
+    "vat_total": "84.00",
+    "gross_total": "1764.00",
+    "_expected": [
+      "MISSING_DUE_DATE"
+    ],
+    "source_file": "synthetic_0046.json"
+  },
+  {
+    "invoice_number": "INV-2026-0047",
+    "issue_date": "2026-05-22",
+    "due_date": "2026-06-22",
+    "payment_means": "30",
+    "currency": "AED",
+    "seller": {
+      "name": "Falcon Tech Repairs",
+      "trn": "100056798497203",
+      "address": "Al Nahda, Sharjah",
+      "city": "Sharjah",
+      "legal_id": "056798",
+      "legal_id_type": "TL",
+      "legal_authority": "Sharjah Economic Development Department"
+    },
+    "buyer": {
+      "name": "Palm Fresh Restaurants LLC",
+      "trn": "100056702932203",
+      "address": "Al Khalidiyah, Abu Dhabi",
+      "city": "Abu Dhabi"
+    },
+    "lines": [
+      {
+        "description": "Marine rope 20m",
         "quantity": "19",
         "unit_price": "135.00",
         "vat_rate": "5",
         "line_total": "2565.00"
       },
       {
-        "description": "Cement bag 50kg",
-        "quantity": "1",
-        "unit_price": "18.50",
-        "vat_rate": "5",
-        "line_total": "18.50"
-      }
-    ],
-    "net_total": "3723.50",
-    "vat_total": "186.18",
-    "gross_total": "3909.68",
-    "_expected": [
-      "MISSING_BUYER_TRN",
-      "MISSING_DUE_DATE"
-    ],
-    "source_file": "synthetic_0024.json"
-  },
-  {
-    "invoice_number": "INV-2026-0025",
-    "issue_date": "2026-01-07",
-    "due_date": "2026-02-07",
-    "payment_means": "10",
-    "currency": "AED",
-    "seller": {
-      "name": "Falcon Tech Repairs",
-      "trn": "100597703482",
-      "address": "Al Nahda, Sharjah",
-      "city": "Sharjah",
-      "legal_id": "559398",
-      "legal_id_type": "TL",
-      "legal_authority": "Sharjah Economic Development Department"
-    },
-    "buyer": {
-      "name": "Gulf Horizon Contracting LLC",
-      "trn": "100710932480803",
-      "address": "Business Bay, Dubai",
-      "city": "Dubai"
-    },
-    "lines": [
-      {
-        "description": "Marine rope 20m",
-        "quantity": "13",
-        "unit_price": "135.00",
-        "vat_rate": "5",
-        "line_total": "1755.00"
-      },
-      {
-        "description": "Delivery charge",
-        "quantity": "1",
-        "unit_price": "75.00",
-        "vat_rate": "5",
-        "line_total": "75.00"
-      },
-      {
-        "description": "Cement bag 50kg",
-        "quantity": "18",
-        "unit_price": "18.50",
-        "vat_rate": "5",
-        "line_total": "333.00"
-      }
-    ],
-    "net_total": "2163.00",
-    "vat_total": "108.15",
-    "gross_total": "2271.15",
-    "_expected": [
-      "BAD_SELLER_TRN"
-    ],
-    "source_file": "synthetic_0025.json"
-  },
-  {
-    "invoice_number": "INV-2026-0026",
-    "issue_date": "31/02/2026",
-    "due_date": "2026-09-08",
-    "payment_means": "20",
-    "currency": "AED",
-    "seller": {
-      "name": "Falcon Tech Repairs",
-      "trn": "100826398214603",
-      "address": "Al Nahda, Sharjah",
-      "city": "Sharjah",
-      "legal_id": "456385",
-      "legal_id_type": "TL",
-      "legal_authority": "Sharjah Economic Development Department"
-    },
-    "buyer": {
-      "name": "Gulf Horizon Contracting LLC",
-      "trn": "100840449972703",
-      "address": "Business Bay, Dubai",
-      "city": "Dubai"
-    },
-    "lines": [
-      {
-        "description": "Saffron 100g",
-        "quantity": "17",
-        "unit_price": "420.00",
-        "vat_rate": "5",
-        "line_total": "7140.00"
-      },
-      {
-        "description": "Marine rope 20m",
-        "quantity": "14",
-        "unit_price": "135.00",
-        "vat_rate": "5",
-        "line_total": "1890.00"
-      }
-    ],
-    "net_total": "9030.00",
-    "vat_total": "456.50",
-    "gross_total": "9481.50",
-    "_expected": [
-      "BAD_ISSUE_DATE",
-      "VAT_TOTAL_MISMATCH"
-    ],
-    "source_file": "synthetic_0026.json"
-  },
-  {
-    "invoice_number": "INV-2026-0027",
-    "issue_date": "31/02/2026",
-    "due_date": "2026-09-23",
-    "payment_means": "20",
-    "currency": "AED",
-    "seller": {
-      "name": "Falcon Tech Repairs",
-      "trn": "100627028951",
-      "address": "Al Nahda, Sharjah",
-      "city": "Sharjah",
-      "legal_id": "204555",
-      "legal_id_type": "TL",
-      "legal_authority": "Sharjah Economic Development Department"
-    },
-    "buyer": {
-      "name": "Palm Fresh Restaurants LLC",
-      "trn": "100870262174503",
-      "address": "Al Khalidiyah, Abu Dhabi",
-      "city": "Abu Dhabi"
-    },
-    "lines": [
-      {
-        "description": "Delivery charge",
-        "quantity": "19",
-        "unit_price": "75.00",
-        "vat_rate": "5",
-        "line_total": "1425.00"
-      },
-      {
-        "description": "Steel rebar 12mm (ton)",
-        "quantity": "14",
-        "unit_price": "2450.00",
-        "vat_rate": "0",
-        "line_total": "34300.00"
-      }
-    ],
-    "net_total": "35725.00",
-    "vat_total": "71.25",
-    "gross_total": "35796.25",
-    "_expected": [
-      "BAD_ISSUE_DATE",
-      "BAD_SELLER_TRN"
-    ],
-    "source_file": "synthetic_0027.json"
-  },
-  {
-    "invoice_number": "INV-2026-0028",
-    "issue_date": "2026-05-01",
-    "due_date": "2026-06-01",
-    "payment_means": "30",
-    "currency": "AED",
-    "seller": {
-      "name": "Falcon Tech Repairs",
-      "trn": "100504556238603",
-      "address": "Al Nahda, Sharjah",
-      "city": "Sharjah",
-      "legal_id": "693418",
-      "legal_id_type": "TL",
-      "legal_authority": "Sharjah Economic Development Department"
-    },
-    "buyer": {
-      "name": "Palm Fresh Restaurants LLC",
-      "trn": "100222196937903",
-      "address": "Al Khalidiyah, Abu Dhabi",
-      "city": "Abu Dhabi"
-    },
-    "lines": [
-      {
         "description": "Laptop screen replacement",
-        "quantity": "10",
+        "quantity": "20",
         "unit_price": "380.00",
         "vat_rate": "5",
-        "line_total": "3800.00"
-      },
-      {
-        "description": "Cement bag 50kg",
-        "quantity": "3",
-        "unit_price": "18.50",
-        "vat_rate": "5",
-        "line_total": "55.50"
-      },
-      {
-        "description": "Delivery charge",
-        "quantity": "4",
-        "unit_price": "75.00",
-        "vat_rate": "5",
-        "line_total": "300.00"
+        "line_total": "7600.00"
       },
       {
         "description": "Saffron 100g",
@@ -1444,870 +2366,79 @@
         "unit_price": "420.00",
         "vat_rate": "5",
         "line_total": "1680.00"
+      },
+      {
+        "description": "Steel rebar 12mm (ton)",
+        "quantity": "7",
+        "unit_price": "2450.00",
+        "vat_rate": "5",
+        "line_total": "17150.00"
       }
     ],
-    "net_total": "5835.50",
-    "vat_total": "291.78",
-    "gross_total": "6127.28",
+    "net_total": "28995.00",
+    "vat_total": "1449.75",
+    "gross_total": "30444.75",
     "_expected": [],
-    "source_file": "synthetic_0028.json"
+    "source_file": "synthetic_0047.json"
   },
   {
-    "invoice_number": null,
-    "issue_date": "2026-10-10",
-    "due_date": "2026-11-10",
-    "payment_means": "54",
-    "currency": "AED",
-    "seller": {
-      "name": "Falcon Tech Repairs",
-      "trn": "100647436713603",
-      "address": "Al Nahda, Sharjah",
-      "city": "Sharjah",
-      "legal_id": "699704",
-      "legal_id_type": "TL",
-      "legal_authority": "Sharjah Economic Development Department"
-    },
-    "buyer": {
-      "name": "Emirates Cold Chain Logistics",
-      "trn": "100594406409003",
-      "address": null,
-      "city": "Sharjah"
-    },
-    "lines": [
-      {
-        "description": "Saffron 100g",
-        "quantity": "15",
-        "unit_price": "420.00",
-        "vat_rate": "5",
-        "line_total": "6300.00"
-      },
-      {
-        "description": "Marine rope 20m",
-        "quantity": "18",
-        "unit_price": "135.00",
-        "vat_rate": "5",
-        "line_total": "2430.00"
-      },
-      {
-        "description": "Cement bag 50kg",
-        "quantity": "15",
-        "unit_price": "18.50",
-        "vat_rate": "5",
-        "line_total": "277.50"
-      }
-    ],
-    "net_total": "9007.50",
-    "vat_total": "455.38",
-    "gross_total": "9457.88",
-    "_expected": [
-      "MISSING_BUYER_ADDRESS",
-      "MISSING_INVOICE_NUMBER",
-      "VAT_TOTAL_MISMATCH"
-    ],
-    "source_file": "synthetic_0029.json"
-  },
-  {
-    "invoice_number": "INV-2026-0030",
-    "issue_date": "2026-06-24",
-    "due_date": "2026-07-24",
+    "invoice_number": "INV-2026-0048",
+    "issue_date": "2026-10-16",
+    "due_date": "2026-11-16",
     "payment_means": "30",
     "currency": "AED",
     "seller": {
       "name": "Blue Dhow Marine Supplies FZE",
-      "trn": "100145623285803",
+      "trn": "100665982977503",
       "address": "Jebel Ali Free Zone, Dubai",
       "city": "Dubai",
-      "legal_id": "626169",
+      "legal_id": "665982",
       "legal_id_type": "TL",
       "legal_authority": "Jebel Ali Free Zone Authority"
     },
     "buyer": {
       "name": "Emirates Cold Chain Logistics",
-      "trn": "100424745171203",
+      "trn": "100973254937903",
       "address": "Industrial Area 4, Sharjah",
       "city": "Sharjah"
     },
     "lines": [
-      {
-        "description": "Steel rebar 12mm (ton)",
-        "quantity": "5",
-        "unit_price": "2450.00",
-        "vat_rate": "5",
-        "line_total": "12250.00"
-      },
-      {
-        "description": "Delivery charge",
-        "quantity": "2",
-        "unit_price": "75.00",
-        "vat_rate": "5",
-        "line_total": "150.00"
-      },
-      {
-        "description": "Marine rope 20m",
-        "quantity": "15",
-        "unit_price": "135.00",
-        "vat_rate": "0",
-        "line_total": "2025.00"
-      }
-    ],
-    "net_total": "14425.00",
-    "vat_total": "625.00",
-    "gross_total": "15045.00",
-    "_expected": [
-      "VAT_TOTAL_MISMATCH"
-    ],
-    "source_file": "synthetic_0030.json"
-  },
-  {
-    "invoice_number": "INV-2026-0031",
-    "issue_date": "31/02/2026",
-    "due_date": "2026-11-18",
-    "payment_means": "30",
-    "currency": "AED",
-    "seller": {
-      "name": "Sahara Spice Trading LLC",
-      "trn": "100931746120003",
-      "address": "Al Ras, Dubai",
-      "city": "Dubai",
-      "legal_id": "419149",
-      "legal_id_type": "TL",
-      "legal_authority": "Dubai Department of Economy and Tourism"
-    },
-    "buyer": {
-      "name": "Gulf Horizon Contracting LLC",
-      "trn": "100711382675803",
-      "address": "Business Bay, Dubai",
-      "city": "Dubai"
-    },
-    "lines": [
-      {
-        "description": "Cement bag 50kg",
-        "quantity": "12",
-        "unit_price": "18.50",
-        "vat_rate": "10",
-        "line_total": "222.00"
-      },
-      {
-        "description": "Marine rope 20m",
-        "quantity": "9",
-        "unit_price": "135.00",
-        "vat_rate": "5",
-        "line_total": "1215.00"
-      },
-      {
-        "description": "Delivery charge",
-        "quantity": "12",
-        "unit_price": "75.00",
-        "vat_rate": "5",
-        "line_total": "900.00"
-      },
-      {
-        "description": "Steel rebar 12mm (ton)",
-        "quantity": "8",
-        "unit_price": "2450.00",
-        "vat_rate": "5",
-        "line_total": "19600.00"
-      }
-    ],
-    "net_total": "21937.00",
-    "vat_total": "1101.85",
-    "gross_total": "23033.85",
-    "_expected": [
-      "BAD_ISSUE_DATE",
-      "BAD_VAT_RATE",
-      "VAT_TOTAL_MISMATCH"
-    ],
-    "source_file": "synthetic_0031.json"
-  },
-  {
-    "invoice_number": null,
-    "issue_date": "2026-06-02",
-    "due_date": "2026-07-02",
-    "payment_means": "20",
-    "currency": "AED",
-    "seller": {
-      "name": "Al Noor Building Materials LLC",
-      "trn": "100431713900503",
-      "address": "Deira, Dubai",
-      "city": "Dubai",
-      "legal_id": "355400",
-      "legal_id_type": "TL",
-      "legal_authority": "Dubai Department of Economy and Tourism"
-    },
-    "buyer": {
-      "name": "Palm Fresh Restaurants LLC",
-      "trn": null,
-      "address": "Al Khalidiyah, Abu Dhabi",
-      "city": "Abu Dhabi"
-    },
-    "lines": [
-      {
-        "description": "Marine rope 20m",
-        "quantity": "15",
-        "unit_price": "135.00",
-        "vat_rate": "5",
-        "line_total": "2025.00"
-      },
-      {
-        "description": "Cement bag 50kg",
-        "quantity": "8",
-        "unit_price": "18.50",
-        "vat_rate": "5",
-        "line_total": "148.00"
-      },
-      {
-        "description": "Delivery charge",
-        "quantity": "4",
-        "unit_price": "75.00",
-        "vat_rate": "5",
-        "line_total": "300.00"
-      },
-      {
-        "description": "Laptop screen replacement",
-        "quantity": "12",
-        "unit_price": "380.00",
-        "vat_rate": "5",
-        "line_total": "4560.00"
-      }
-    ],
-    "net_total": "7033.00",
-    "vat_total": "356.65",
-    "gross_total": "7384.65",
-    "_expected": [
-      "MISSING_BUYER_TRN",
-      "MISSING_INVOICE_NUMBER",
-      "VAT_TOTAL_MISMATCH"
-    ],
-    "source_file": "synthetic_0032.json"
-  },
-  {
-    "invoice_number": "INV-2026-0033",
-    "issue_date": "2026-01-05",
-    "due_date": "2026-02-05",
-    "payment_means": "54",
-    "currency": "AED",
-    "seller": {
-      "name": "Blue Dhow Marine Supplies FZE",
-      "trn": "100681177589",
-      "address": "Jebel Ali Free Zone, Dubai",
-      "city": "Dubai",
-      "legal_id": "573962",
-      "legal_id_type": "TL",
-      "legal_authority": "Jebel Ali Free Zone Authority"
-    },
-    "buyer": {
-      "name": "Gulf Horizon Contracting LLC",
-      "trn": "100839084700703",
-      "address": null,
-      "city": "Dubai"
-    },
-    "lines": [
-      {
-        "description": "Steel rebar 12mm (ton)",
-        "quantity": "5",
-        "unit_price": "2450.00",
-        "vat_rate": "0",
-        "line_total": "12250.00"
-      },
-      {
-        "description": "Cement bag 50kg",
-        "quantity": "8",
-        "unit_price": "18.50",
-        "vat_rate": "5",
-        "line_total": "148.00"
-      },
-      {
-        "description": "Laptop screen replacement",
-        "quantity": "1",
-        "unit_price": "380.00",
-        "vat_rate": "5",
-        "line_total": "380.00"
-      }
-    ],
-    "net_total": "12778.00",
-    "vat_total": "26.40",
-    "gross_total": "12804.40",
-    "_expected": [
-      "BAD_SELLER_TRN",
-      "MISSING_BUYER_ADDRESS"
-    ],
-    "source_file": "synthetic_0033.json"
-  },
-  {
-    "invoice_number": "INV-2026-0034",
-    "issue_date": "31/02/2026",
-    "due_date": "2026-04-09",
-    "payment_means": "10",
-    "currency": "AED",
-    "seller": {
-      "name": "Falcon Tech Repairs",
-      "trn": "100985698478",
-      "address": "Al Nahda, Sharjah",
-      "city": "Sharjah",
-      "legal_id": "551096",
-      "legal_id_type": "TL",
-      "legal_authority": "Sharjah Economic Development Department"
-    },
-    "buyer": {
-      "name": "Gulf Horizon Contracting LLC",
-      "trn": "100118367365703",
-      "address": "Business Bay, Dubai",
-      "city": "Dubai"
-    },
-    "lines": [
-      {
-        "description": "Marine rope 20m",
-        "quantity": "20",
-        "unit_price": "135.00",
-        "vat_rate": "5",
-        "line_total": "2710.00"
-      }
-    ],
-    "net_total": "2700.00",
-    "vat_total": "135.00",
-    "gross_total": "2835.00",
-    "_expected": [
-      "BAD_ISSUE_DATE",
-      "BAD_SELLER_TRN",
-      "LINE_MATH_MISMATCH"
-    ],
-    "source_file": "synthetic_0034.json"
-  },
-  {
-    "invoice_number": "INV-2026-0035",
-    "issue_date": "2026-06-26",
-    "due_date": "2026-07-26",
-    "payment_means": "30",
-    "currency": "AED",
-    "seller": {
-      "name": "Sahara Spice Trading LLC",
-      "trn": "100809885165",
-      "address": "Al Ras, Dubai",
-      "city": "Dubai",
-      "legal_id": "856086",
-      "legal_id_type": "TL",
-      "legal_authority": "Dubai Department of Economy and Tourism"
-    },
-    "buyer": {
-      "name": "Emirates Cold Chain Logistics",
-      "trn": "100049451983203",
-      "address": "Industrial Area 4, Sharjah",
-      "city": "Sharjah"
-    },
-    "lines": [
-      {
-        "description": "Marine rope 20m",
-        "quantity": "3",
-        "unit_price": "135.00",
-        "vat_rate": "0",
-        "line_total": "405.00"
-      },
-      {
-        "description": "Steel rebar 12mm (ton)",
-        "quantity": "3",
-        "unit_price": "2450.00",
-        "vat_rate": "0",
-        "line_total": "7350.00"
-      },
-      {
-        "description": "Saffron 100g",
-        "quantity": "4",
-        "unit_price": "420.00",
-        "vat_rate": "5",
-        "line_total": "1680.00"
-      }
-    ],
-    "net_total": "9435.00",
-    "vat_total": "84.00",
-    "gross_total": "9519.00",
-    "_expected": [
-      "BAD_SELLER_TRN"
-    ],
-    "source_file": "synthetic_0035.json"
-  },
-  {
-    "invoice_number": "INV-2026-0036",
-    "issue_date": "2026-05-01",
-    "due_date": "2026-06-01",
-    "payment_means": "30",
-    "currency": "AED",
-    "seller": {
-      "name": "Sahara Spice Trading LLC",
-      "trn": "100445502296",
-      "address": "Al Ras, Dubai",
-      "city": "Dubai",
-      "legal_id": "248766",
-      "legal_id_type": "TL",
-      "legal_authority": "Dubai Department of Economy and Tourism"
-    },
-    "buyer": {
-      "name": "Emirates Cold Chain Logistics",
-      "trn": null,
-      "address": "Industrial Area 4, Sharjah",
-      "city": "Sharjah"
-    },
-    "lines": [
-      {
-        "description": "Cement bag 50kg",
-        "quantity": "14",
-        "unit_price": "18.50",
-        "vat_rate": "5",
-        "line_total": "259.00"
-      },
-      {
-        "description": "Marine rope 20m",
-        "quantity": "20",
-        "unit_price": "135.00",
-        "vat_rate": "5",
-        "line_total": "2700.00"
-      },
-      {
-        "description": "Steel rebar 12mm (ton)",
-        "quantity": "18",
-        "unit_price": "2450.00",
-        "vat_rate": "0",
-        "line_total": "44100.00"
-      }
-    ],
-    "net_total": "47059.00",
-    "vat_total": "147.95",
-    "gross_total": "47206.95",
-    "_expected": [
-      "BAD_SELLER_TRN",
-      "MISSING_BUYER_TRN"
-    ],
-    "source_file": "synthetic_0036.json"
-  },
-  {
-    "invoice_number": "INV-2026-0037",
-    "issue_date": "2026-07-16",
-    "due_date": "2026-08-16",
-    "payment_means": "10",
-    "currency": "AED",
-    "seller": {
-      "name": "Blue Dhow Marine Supplies FZE",
-      "trn": "100764381561403",
-      "address": "Jebel Ali Free Zone, Dubai",
-      "city": "Dubai",
-      "legal_id": "811163",
-      "legal_id_type": "TL",
-      "legal_authority": "Jebel Ali Free Zone Authority"
-    },
-    "buyer": {
-      "name": "Gulf Horizon Contracting LLC",
-      "trn": "100978403690003",
-      "address": "Business Bay, Dubai",
-      "city": "Dubai"
-    },
-    "lines": [
-      {
-        "description": "Delivery charge",
-        "quantity": "3",
-        "unit_price": "75.00",
-        "vat_rate": "5",
-        "line_total": "225.00"
-      }
-    ],
-    "net_total": "225.00",
-    "vat_total": "11.25",
-    "gross_total": "236.25",
-    "_expected": [],
-    "source_file": "synthetic_0037.json"
-  },
-  {
-    "invoice_number": "INV-2026-0038",
-    "issue_date": "31/02/2026",
-    "due_date": "2026-05-17",
-    "payment_means": "10",
-    "currency": "AED",
-    "seller": {
-      "name": "Blue Dhow Marine Supplies FZE",
-      "trn": "100516060715",
-      "address": "Jebel Ali Free Zone, Dubai",
-      "city": "Dubai",
-      "legal_id": "550137",
-      "legal_id_type": "TL",
-      "legal_authority": "Jebel Ali Free Zone Authority"
-    },
-    "buyer": {
-      "name": "Gulf Horizon Contracting LLC",
-      "trn": "100966416052903",
-      "address": "Business Bay, Dubai",
-      "city": "Dubai"
-    },
-    "lines": [
-      {
-        "description": "Marine rope 20m",
-        "quantity": "1",
-        "unit_price": "135.00",
-        "vat_rate": "5",
-        "line_total": "145.00"
-      },
-      {
-        "description": "Delivery charge",
-        "quantity": "14",
-        "unit_price": "75.00",
-        "vat_rate": "5",
-        "line_total": "1050.00"
-      },
-      {
-        "description": "Cement bag 50kg",
-        "quantity": "13",
-        "unit_price": "18.50",
-        "vat_rate": "5",
-        "line_total": "240.50"
-      }
-    ],
-    "net_total": "1425.50",
-    "vat_total": "71.28",
-    "gross_total": "1496.78",
-    "_expected": [
-      "BAD_ISSUE_DATE",
-      "BAD_SELLER_TRN",
-      "LINE_MATH_MISMATCH"
-    ],
-    "source_file": "synthetic_0038.json"
-  },
-  {
-    "invoice_number": "INV-2026-0039",
-    "issue_date": "31/02/2026",
-    "due_date": "2026-05-25",
-    "payment_means": "30",
-    "currency": "AED",
-    "seller": {
-      "name": "Al Noor Building Materials LLC",
-      "trn": "100523124329203",
-      "address": "Deira, Dubai",
-      "city": "Dubai",
-      "legal_id": "897143",
-      "legal_id_type": "TL",
-      "legal_authority": "Dubai Department of Economy and Tourism"
-    },
-    "buyer": {
-      "name": "Gulf Horizon Contracting LLC",
-      "trn": "100127799799503",
-      "address": "Business Bay, Dubai",
-      "city": "Dubai"
-    },
-    "lines": [
-      {
-        "description": "Laptop screen replacement",
-        "quantity": "10",
-        "unit_price": "380.00",
-        "vat_rate": "10",
-        "line_total": "3810.00"
-      },
-      {
-        "description": "Saffron 100g",
-        "quantity": "8",
-        "unit_price": "420.00",
-        "vat_rate": "5",
-        "line_total": "3360.00"
-      },
-      {
-        "description": "Cement bag 50kg",
-        "quantity": "6",
-        "unit_price": "18.50",
-        "vat_rate": "0",
-        "line_total": "111.00"
-      },
-      {
-        "description": "Steel rebar 12mm (ton)",
-        "quantity": "4",
-        "unit_price": "2450.00",
-        "vat_rate": "5",
-        "line_total": "9800.00"
-      }
-    ],
-    "net_total": "17071.00",
-    "vat_total": "848.00",
-    "gross_total": "17919.00",
-    "_expected": [
-      "BAD_ISSUE_DATE",
-      "BAD_VAT_RATE",
-      "LINE_MATH_MISMATCH"
-    ],
-    "source_file": "synthetic_0039.json"
-  },
-  {
-    "invoice_number": "INV-2026-0040",
-    "issue_date": "2026-02-21",
-    "due_date": null,
-    "payment_means": "30",
-    "currency": "AED",
-    "seller": {
-      "name": "Al Noor Building Materials LLC",
-      "trn": "100998679807903",
-      "address": "Deira, Dubai",
-      "city": "Dubai",
-      "legal_id": "783501",
-      "legal_id_type": "TL",
-      "legal_authority": "Dubai Department of Economy and Tourism"
-    },
-    "buyer": {
-      "name": "Palm Fresh Restaurants LLC",
-      "trn": "100359782071503",
-      "address": "Al Khalidiyah, Abu Dhabi",
-      "city": "Abu Dhabi"
-    },
-    "lines": [
-      {
-        "description": "Delivery charge",
-        "quantity": "2",
-        "unit_price": "75.00",
-        "vat_rate": "5",
-        "line_total": "150.00"
-      },
-      {
-        "description": "Marine rope 20m",
-        "quantity": "3",
-        "unit_price": "135.00",
-        "vat_rate": "5",
-        "line_total": "405.00"
-      },
-      {
-        "description": "Laptop screen replacement",
-        "quantity": "15",
-        "unit_price": "380.00",
-        "vat_rate": "0",
-        "line_total": "5700.00"
-      },
-      {
-        "description": "Saffron 100g",
-        "quantity": "12",
-        "unit_price": "420.00",
-        "vat_rate": "5",
-        "line_total": "5040.00"
-      }
-    ],
-    "net_total": "11295.00",
-    "vat_total": "279.75",
-    "gross_total": "11574.75",
-    "_expected": [
-      "MISSING_DUE_DATE"
-    ],
-    "source_file": "synthetic_0040.json"
-  },
-  {
-    "invoice_number": "INV-2026-0041",
-    "issue_date": "2026-06-10",
-    "due_date": "2026-07-10",
-    "payment_means": "20",
-    "currency": "AED",
-    "seller": {
-      "name": "Blue Dhow Marine Supplies FZE",
-      "trn": "100659051518603",
-      "address": "Jebel Ali Free Zone, Dubai",
-      "city": "Dubai",
-      "legal_id": "397949",
-      "legal_id_type": "TL",
-      "legal_authority": "Jebel Ali Free Zone Authority"
-    },
-    "buyer": {
-      "name": "Gulf Horizon Contracting LLC",
-      "trn": "100492519254603",
-      "address": "Business Bay, Dubai",
-      "city": "Dubai"
-    },
-    "lines": [
-      {
-        "description": "Delivery charge",
-        "quantity": "15",
-        "unit_price": "75.00",
-        "vat_rate": "5",
-        "line_total": "1125.00"
-      },
-      {
-        "description": "Saffron 100g",
-        "quantity": "20",
-        "unit_price": "420.00",
-        "vat_rate": "5",
-        "line_total": "8400.00"
-      }
-    ],
-    "net_total": "9525.00",
-    "vat_total": "476.25",
-    "gross_total": "10001.25",
-    "_expected": [],
-    "source_file": "synthetic_0041.json"
-  },
-  {
-    "invoice_number": "INV-2026-0042",
-    "issue_date": "2026-06-25",
-    "due_date": "2026-07-25",
-    "payment_means": "20",
-    "currency": "AED",
-    "seller": {
-      "name": "Al Noor Building Materials LLC",
-      "trn": "100332214188803",
-      "address": "Deira, Dubai",
-      "city": "Dubai",
-      "legal_id": "139581",
-      "legal_id_type": "TL",
-      "legal_authority": "Dubai Department of Economy and Tourism"
-    },
-    "buyer": {
-      "name": "Palm Fresh Restaurants LLC",
-      "trn": "100592962229203",
-      "address": "Al Khalidiyah, Abu Dhabi",
-      "city": "Abu Dhabi"
-    },
-    "lines": [
-      {
-        "description": "Delivery charge",
-        "quantity": "17",
-        "unit_price": "75.00",
-        "vat_rate": "0",
-        "line_total": "1275.00"
-      },
-      {
-        "description": "Marine rope 20m",
-        "quantity": "14",
-        "unit_price": "135.00",
-        "vat_rate": "5",
-        "line_total": "1890.00"
-      },
       {
         "description": "Steel rebar 12mm (ton)",
         "quantity": "1",
         "unit_price": "2450.00",
         "vat_rate": "5",
         "line_total": "2450.00"
-      },
-      {
-        "description": "Laptop screen replacement",
-        "quantity": "6",
-        "unit_price": "380.00",
-        "vat_rate": "5",
-        "line_total": "2280.00"
       }
     ],
-    "net_total": "7895.00",
-    "vat_total": "336.00",
-    "gross_total": "8226.00",
-    "_expected": [
-      "VAT_TOTAL_MISMATCH"
-    ],
-    "source_file": "synthetic_0042.json"
+    "net_total": "2450.00",
+    "vat_total": "122.50",
+    "gross_total": "2572.50",
+    "_expected": [],
+    "source_file": "synthetic_0048.json"
   },
   {
-    "invoice_number": "INV-2026-0043",
-    "issue_date": "2026-04-10",
-    "due_date": "2026-05-10",
-    "payment_means": "20",
+    "invoice_number": "INV-2026-0049",
+    "issue_date": "2026-09-08",
+    "due_date": "2026-10-08",
+    "payment_means": "54",
     "currency": "AED",
     "seller": {
       "name": "Sahara Spice Trading LLC",
-      "trn": "100359774688",
+      "trn": "100352525303703",
       "address": "Al Ras, Dubai",
       "city": "Dubai",
-      "legal_id": "269930",
+      "legal_id": "352525",
       "legal_id_type": "TL",
       "legal_authority": "Dubai Department of Economy and Tourism"
     },
     "buyer": {
       "name": "Emirates Cold Chain Logistics",
-      "trn": "100392407581803",
+      "trn": "100973254937903",
       "address": "Industrial Area 4, Sharjah",
       "city": "Sharjah"
     },
     "lines": [
-      {
-        "description": "Saffron 100g",
-        "quantity": "10",
-        "unit_price": "420.00",
-        "vat_rate": "10",
-        "line_total": "4200.00"
-      },
-      {
-        "description": "Laptop screen replacement",
-        "quantity": "15",
-        "unit_price": "380.00",
-        "vat_rate": "5",
-        "line_total": "5700.00"
-      }
-    ],
-    "net_total": "9900.00",
-    "vat_total": "495.00",
-    "gross_total": "10395.00",
-    "_expected": [
-      "BAD_SELLER_TRN",
-      "BAD_VAT_RATE"
-    ],
-    "source_file": "synthetic_0043.json"
-  },
-  {
-    "invoice_number": "INV-2026-0044",
-    "issue_date": "2026-07-02",
-    "due_date": "2026-08-02",
-    "payment_means": "20",
-    "currency": "AED",
-    "seller": {
-      "name": "Sahara Spice Trading LLC",
-      "trn": "100853615305103",
-      "address": "Al Ras, Dubai",
-      "city": "Dubai",
-      "legal_id": "979940",
-      "legal_id_type": "TL",
-      "legal_authority": "Dubai Department of Economy and Tourism"
-    },
-    "buyer": {
-      "name": "Palm Fresh Restaurants LLC",
-      "trn": "100522047277903",
-      "address": "Al Khalidiyah, Abu Dhabi",
-      "city": "Abu Dhabi"
-    },
-    "lines": [
-      {
-        "description": "Saffron 100g",
-        "quantity": "8",
-        "unit_price": "420.00",
-        "vat_rate": "5",
-        "line_total": "3360.00"
-      },
-      {
-        "description": "Cement bag 50kg",
-        "quantity": "12",
-        "unit_price": "18.50",
-        "vat_rate": "5",
-        "line_total": "222.00"
-      }
-    ],
-    "net_total": "3582.00",
-    "vat_total": "179.10",
-    "gross_total": "3761.10",
-    "_expected": [],
-    "source_file": "synthetic_0044.json"
-  },
-  {
-    "invoice_number": "INV-2026-0045",
-    "issue_date": "2026-10-15",
-    "due_date": "2026-11-15",
-    "payment_means": "30",
-    "currency": "AED",
-    "seller": {
-      "name": "Al Noor Building Materials LLC",
-      "trn": "100179808932403",
-      "address": "Deira, Dubai",
-      "city": "Dubai",
-      "legal_id": "550089",
-      "legal_id_type": "TL",
-      "legal_authority": "Dubai Department of Economy and Tourism"
-    },
-    "buyer": {
-      "name": "Gulf Horizon Contracting LLC",
-      "trn": "100095396218503",
-      "address": "Business Bay, Dubai",
-      "city": "Dubai"
-    },
-    "lines": [
-      {
-        "description": "Steel rebar 12mm (ton)",
-        "quantity": "4",
-        "unit_price": "2450.00",
-        "vat_rate": "5",
-        "line_total": "9800.00"
-      },
       {
         "description": "Delivery charge",
         "quantity": "8",
@@ -2317,275 +2448,61 @@
       },
       {
         "description": "Saffron 100g",
-        "quantity": "2",
+        "quantity": "19",
         "unit_price": "420.00",
         "vat_rate": "5",
-        "line_total": "840.00"
-      }
-    ],
-    "net_total": "11240.00",
-    "vat_total": "562.00",
-    "gross_total": "11802.00",
-    "_expected": [],
-    "source_file": "synthetic_0045.json"
-  },
-  {
-    "invoice_number": null,
-    "issue_date": "2026-06-18",
-    "due_date": "2026-07-18",
-    "payment_means": "30",
-    "currency": "AED",
-    "seller": {
-      "name": "Al Noor Building Materials LLC",
-      "trn": "100277221704303",
-      "address": "Deira, Dubai",
-      "city": "Dubai",
-      "legal_id": "145934",
-      "legal_id_type": "TL",
-      "legal_authority": "Dubai Department of Economy and Tourism"
-    },
-    "buyer": {
-      "name": "Palm Fresh Restaurants LLC",
-      "trn": "100305486874003",
-      "address": "Al Khalidiyah, Abu Dhabi",
-      "city": "Abu Dhabi"
-    },
-    "lines": [
-      {
-        "description": "Cement bag 50kg",
-        "quantity": "1",
-        "unit_price": "18.50",
-        "vat_rate": "5",
-        "line_total": "18.50"
-      },
-      {
-        "description": "Saffron 100g",
-        "quantity": "3",
-        "unit_price": "420.00",
-        "vat_rate": "5",
-        "line_total": "1260.00"
-      },
-      {
-        "description": "Marine rope 20m",
-        "quantity": "4",
-        "unit_price": "135.00",
-        "vat_rate": "5",
-        "line_total": "540.00"
-      },
-      {
-        "description": "Steel rebar 12mm (ton)",
-        "quantity": "11",
-        "unit_price": "2450.00",
-        "vat_rate": "5",
-        "line_total": "26950.00"
-      }
-    ],
-    "net_total": "28768.50",
-    "vat_total": "1438.43",
-    "gross_total": "30206.93",
-    "_expected": [
-      "MISSING_INVOICE_NUMBER"
-    ],
-    "source_file": "synthetic_0046.json"
-  },
-  {
-    "invoice_number": "INV-2026-0047",
-    "issue_date": "2026-03-16",
-    "due_date": "2026-04-16",
-    "payment_means": "54",
-    "currency": "AED",
-    "seller": {
-      "name": "Sahara Spice Trading LLC",
-      "trn": "100758416169203",
-      "address": "Al Ras, Dubai",
-      "city": "Dubai",
-      "legal_id": "671971",
-      "legal_id_type": "TL",
-      "legal_authority": "Dubai Department of Economy and Tourism"
-    },
-    "buyer": {
-      "name": "Gulf Horizon Contracting LLC",
-      "trn": "100451154479603",
-      "address": "Business Bay, Dubai",
-      "city": "Dubai"
-    },
-    "lines": [
-      {
-        "description": "Marine rope 20m",
-        "quantity": "14",
-        "unit_price": "135.00",
-        "vat_rate": "5",
-        "line_total": "1890.00"
+        "line_total": "7980.00"
       },
       {
         "description": "Cement bag 50kg",
-        "quantity": "15",
+        "quantity": "7",
         "unit_price": "18.50",
         "vat_rate": "5",
-        "line_total": "277.50"
-      },
-      {
-        "description": "Delivery charge",
-        "quantity": "13",
-        "unit_price": "75.00",
-        "vat_rate": "5",
-        "line_total": "975.00"
+        "line_total": "129.50"
       }
     ],
-    "net_total": "3142.50",
-    "vat_total": "157.13",
-    "gross_total": "3299.63",
+    "net_total": "8709.50",
+    "vat_total": "435.48",
+    "gross_total": "9144.98",
     "_expected": [],
-    "source_file": "synthetic_0047.json"
-  },
-  {
-    "invoice_number": "INV-2026-0048",
-    "issue_date": "2026-08-02",
-    "due_date": "2026-09-02",
-    "payment_means": "30",
-    "currency": "AED",
-    "seller": {
-      "name": "Falcon Tech Repairs",
-      "trn": "100135569092703",
-      "address": "Al Nahda, Sharjah",
-      "city": "Sharjah",
-      "legal_id": "488984",
-      "legal_id_type": "TL",
-      "legal_authority": "Sharjah Economic Development Department"
-    },
-    "buyer": {
-      "name": "Palm Fresh Restaurants LLC",
-      "trn": "100571928565403",
-      "address": "Al Khalidiyah, Abu Dhabi",
-      "city": "Abu Dhabi"
-    },
-    "lines": [
-      {
-        "description": "Cement bag 50kg",
-        "quantity": "2",
-        "unit_price": "18.50",
-        "vat_rate": "0",
-        "line_total": "37.00"
-      },
-      {
-        "description": "Marine rope 20m",
-        "quantity": "13",
-        "unit_price": "135.00",
-        "vat_rate": "5",
-        "line_total": "1755.00"
-      },
-      {
-        "description": "Saffron 100g",
-        "quantity": "6",
-        "unit_price": "420.00",
-        "vat_rate": "5",
-        "line_total": "2520.00"
-      },
-      {
-        "description": "Steel rebar 12mm (ton)",
-        "quantity": "5",
-        "unit_price": "2450.00",
-        "vat_rate": "5",
-        "line_total": "12250.00"
-      }
-    ],
-    "net_total": "16562.00",
-    "vat_total": "826.25",
-    "gross_total": "17388.25",
-    "_expected": [],
-    "source_file": "synthetic_0048.json"
-  },
-  {
-    "invoice_number": null,
-    "issue_date": "31/02/2026",
-    "due_date": "2026-06-23",
-    "payment_means": "20",
-    "currency": "AED",
-    "seller": {
-      "name": "Al Noor Building Materials LLC",
-      "trn": "100394731217203",
-      "address": "Deira, Dubai",
-      "city": "Dubai",
-      "legal_id": "848022",
-      "legal_id_type": "TL",
-      "legal_authority": "Dubai Department of Economy and Tourism"
-    },
-    "buyer": {
-      "name": "Gulf Horizon Contracting LLC",
-      "trn": "100715518844203",
-      "address": "Business Bay, Dubai",
-      "city": "Dubai"
-    },
-    "lines": [
-      {
-        "description": "Saffron 100g",
-        "quantity": "13",
-        "unit_price": "420.00",
-        "vat_rate": "10",
-        "line_total": "5460.00"
-      },
-      {
-        "description": "Laptop screen replacement",
-        "quantity": "4",
-        "unit_price": "380.00",
-        "vat_rate": "5",
-        "line_total": "1520.00"
-      }
-    ],
-    "net_total": "6980.00",
-    "vat_total": "349.00",
-    "gross_total": "7329.00",
-    "_expected": [
-      "BAD_ISSUE_DATE",
-      "BAD_VAT_RATE",
-      "MISSING_INVOICE_NUMBER"
-    ],
     "source_file": "synthetic_0049.json"
   },
   {
     "invoice_number": "INV-2026-0050",
-    "issue_date": "2026-08-26",
-    "due_date": null,
+    "issue_date": "2026-10-24",
+    "due_date": "2026-11-24",
     "payment_means": "10",
     "currency": "AED",
     "seller": {
-      "name": "Blue Dhow Marine Supplies FZE",
-      "trn": "100291146786603",
-      "address": "Jebel Ali Free Zone, Dubai",
+      "name": "Sahara Spice Trading LLC",
+      "trn": "100352525303",
+      "address": "Al Ras, Dubai",
       "city": "Dubai",
-      "legal_id": "963333",
+      "legal_id": "352525",
       "legal_id_type": "TL",
-      "legal_authority": "Jebel Ali Free Zone Authority"
+      "legal_authority": "Dubai Department of Economy and Tourism"
     },
     "buyer": {
       "name": "Gulf Horizon Contracting LLC",
-      "trn": "100912517785203",
-      "address": "Business Bay, Dubai",
+      "trn": "100156029230903",
+      "address": null,
       "city": "Dubai"
     },
     "lines": [
       {
-        "description": "Steel rebar 12mm (ton)",
-        "quantity": "16",
-        "unit_price": "2450.00",
-        "vat_rate": "10",
-        "line_total": "39210.00"
-      },
-      {
-        "description": "Delivery charge",
-        "quantity": "18",
-        "unit_price": "75.00",
+        "description": "Cement bag 50kg",
+        "quantity": "6",
+        "unit_price": "18.50",
         "vat_rate": "5",
-        "line_total": "1350.00"
+        "line_total": "111.00"
       }
     ],
-    "net_total": "40550.00",
-    "vat_total": "67.50",
-    "gross_total": "40617.50",
+    "net_total": "111.00",
+    "vat_total": "5.55",
+    "gross_total": "116.55",
     "_expected": [
-      "BAD_VAT_RATE",
-      "LINE_MATH_MISMATCH",
-      "MISSING_DUE_DATE"
+      "BAD_SELLER_TRN",
+      "MISSING_BUYER_ADDRESS"
     ],
     "source_file": "synthetic_0050.json"
   }

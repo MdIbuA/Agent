@@ -16,7 +16,7 @@ class TestAPI(unittest.TestCase):
         self.c = TestClient(app)
 
     def test_sample_and_summary(self):
-        r = self.c.post("/api/invoices/sample?count=10").json()
+        r = self.c.post("/api/invoices/sample?count=10&kind=random").json()
         self.assertEqual(r["summary"]["invoices"], 10)
         self.assertEqual(len(r["items"]), 10)
         s = r["summary"]
@@ -44,7 +44,7 @@ class TestAPI(unittest.TestCase):
                         files=[("files", ("notes.txt", b"hello", "text/plain")),
                                ("files", ("bad.json", b"{not json", "application/json"))]).json()
         self.assertEqual(len(r["errors"]), 2)
-        self.c.post("/api/invoices/sample?count=1")
+        self.c.post("/api/invoices/sample?count=1&kind=random")
         rid = self.c.get("/api/invoices").json()["items"][0]["id"]
         self.assertEqual(self.c.post(f"/api/invoices/{rid}/answer",
                                      json={"field": "lines[1].vat_rate", "value": "5"}).status_code, 422)
@@ -63,9 +63,21 @@ class TestAPI(unittest.TestCase):
         self.assertEqual((item["source"], item["status"]), ("xml", "ready"))
         self.assertEqual(self.c.get(f"/api/invoices/{item['id']}/xml").text, xml)
 
+    def test_demo_story_memory_requests_report(self):
+        items = self.c.post("/api/invoices/sample").json()["items"]
+        self.assertEqual(len(items), 12)
+        r = self.c.post(f"/api/invoices/{items[0]['id']}/answer",
+                        json={"field": "seller.legal_id", "value": "784512"}).json()
+        self.assertEqual(len(r["item"]["appliedTo"]), 11)
+        reqs = self.c.get("/api/outreach").json()["requests"]
+        self.assertEqual([len(x["invoices"]) for x in reqs], [4])
+        rep = self.c.get("/api/report").json()
+        self.assertGreater(rep["exposureAed"], 0)
+        self.assertEqual(rep["answersReusedByAgent"], 11)
+
     def test_export_zip(self):
         self.assertEqual(self.c.get("/api/export.zip").status_code, 409)
-        self.c.post("/api/invoices/sample?count=20")
+        self.c.post("/api/invoices/sample?count=20&kind=random")
         r = self.c.get("/api/export.zip")
         self.assertEqual(r.status_code, 200)
         self.assertEqual(r.headers["content-type"], "application/zip")

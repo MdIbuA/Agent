@@ -1,7 +1,8 @@
-import { Check, Download, Info, PartyPopper, Pencil, Trash2, X } from "lucide-react";
+import { Check, Download, Info, PartyPopper, Pencil, Sparkles, Trash2, X } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { api, ApiError, fieldHint, fmtDate, fmtMoney, type Invoice, type Issue } from "../lib/api";
 import { ScoreRing, StatusChip } from "./ui";
+import { hintText, messageText, questionText, useI18n } from "../lib/i18n";
 
 // Client-side checks mirror the server rules so the owner gets instant feedback.
 function check(field: string, v: string): string | null {
@@ -16,6 +17,7 @@ function check(field: string, v: string): string | null {
 function Question({ issue, invoiceId, onUpdated }: {
   issue: Issue; invoiceId: string; onUpdated: (inv: Invoice, msg: string) => void;
 }) {
+  const { t, lang } = useI18n();
   const unconfirmed = issue.code.startsWith("UNCONFIRMED");
   const [editing, setEditing] = useState(!unconfirmed);
   const [value, setValue] = useState("");
@@ -30,7 +32,7 @@ function Question({ issue, invoiceId, onUpdated }: {
     setBusy(true);
     try {
       const { item } = await api.answer(invoiceId, issue.field, issue.field === "gross_total" ? value.replace(/,/g, "") : value);
-      onUpdated(item, "Answer saved");
+      onUpdated(item, t("toastSaved"));
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Something went wrong.");
     } finally {
@@ -42,7 +44,7 @@ function Question({ issue, invoiceId, onUpdated }: {
     setBusy(true);
     try {
       const { item } = await api.confirm(invoiceId, issue.field);
-      onUpdated(item, "Confirmed");
+      onUpdated(item, t("yesCorrect"));
     } finally {
       setBusy(false);
     }
@@ -51,8 +53,8 @@ function Question({ issue, invoiceId, onUpdated }: {
   const id = `q-${invoiceId}-${issue.code}`;
   return (
     <div className="question" data-severity={issue.severity}>
-      <label htmlFor={id} className="question-text">{issue.question}</label>
-      {hint.hint && editing && <div className="question-hint">{hint.hint}</div>}
+      <label htmlFor={id} className="question-text">{questionText(issue, lang)}</label>
+      {hint.hint && editing && <div className="question-hint">{hintText(issue.field, hint.hint, lang)}</div>}
       {editing ? (
         <form className="answer-row" onSubmit={submit} noValidate>
           {hint.options ? (
@@ -67,12 +69,12 @@ function Question({ issue, invoiceId, onUpdated }: {
               autoComplete="off" aria-invalid={!!error} aria-describedby={error ? `${id}-err` : undefined}
               onChange={(e) => { setValue(e.target.value); setError(null); }} />
           )}
-          <button className="btn btn-primary" disabled={busy}>{busy ? <span className="spinner" /> : "Save"}</button>
+          <button className="btn btn-primary" disabled={busy}>{busy ? <span className="spinner" /> : t("save")}</button>
         </form>
       ) : (
         <div className="answer-row">
-          <button className="btn btn-primary btn-sm" onClick={confirm} disabled={busy}><Check size={14} />Yes, correct</button>
-          <button className="btn btn-sm" onClick={() => setEditing(true)} disabled={busy}><Pencil size={14} />Correct it</button>
+          <button className="btn btn-primary btn-sm" onClick={confirm} disabled={busy}><Check size={14} />{t("yesCorrect")}</button>
+          <button className="btn btn-sm" onClick={() => setEditing(true)} disabled={busy}><Pencil size={14} />{t("correctIt")}</button>
         </div>
       )}
       {error && <div id={`${id}-err`} className="field-error" role="alert">{error}</div>}
@@ -83,29 +85,34 @@ function Question({ issue, invoiceId, onUpdated }: {
 function ConfirmAll({ invoiceId, fields, onUpdated }: {
   invoiceId: string; fields: string[]; onUpdated: (inv: Invoice, msg: string) => void;
 }) {
+  const { t } = useI18n();
   const [busy, setBusy] = useState(false);
   const run = async () => {
     setBusy(true);
     try {
       let last: Invoice | null = null;
       for (const f of fields) last = (await api.confirm(invoiceId, f)).item;
-      if (last) onUpdated(last, `${fields.length} values confirmed`);
+      if (last) onUpdated(last, `${t("allCorrect")} (${fields.length})`);
     } finally {
       setBusy(false);
     }
   };
   return (
     <button className="btn btn-sm" onClick={run} disabled={busy}>
-      {busy ? <span className="spinner" /> : <Check size={14} />}All correct ({fields.length})
+      {busy ? <span className="spinner" /> : <Check size={14} />}{t("allCorrect")} ({fields.length})
     </button>
   );
 }
 
-const Val = ({ v }: { v: string | null | undefined }) => (v ? <>{v}</> : <span className="missing">Missing</span>);
+function Val({ v }: { v: string | null | undefined }) {
+  const { t } = useI18n();
+  return v ? <>{v}</> : <span className="missing">{t("missing")}</span>;
+}
 
 export function InvoiceDrawer({ invoice, onClose, onUpdated, onDelete }: {
   invoice: Invoice; onClose: () => void; onUpdated: (inv: Invoice, msg: string) => void; onDelete: (id: string) => void;
 }) {
+  const { t, lang } = useI18n();
   const closeBtn = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -121,8 +128,8 @@ export function InvoiceDrawer({ invoice, onClose, onUpdated, onDelete }: {
   const OCR_CODES = ["UNCONFIRMED_", "MISSING_DATE", "MISSING_TOTAL", "MISSING_COMPANY"];
   const isOcr = (q: Issue) => OCR_CODES.some((c) => q.code.startsWith(c));
   const groups = [
-    { title: "Check what we read", items: questions.filter(isOcr) },
-    { title: questions.some(isOcr) ? "Add missing details" : "", items: questions.filter((q) => !isOcr(q)) },
+    { title: t("checkRead"), items: questions.filter(isOcr) },
+    { title: questions.some(isOcr) ? t("addMissing") : "", items: questions.filter((q) => !isOcr(q)) },
   ].filter((g) => g.items.length);
   const other = invoice.issues.filter((i) => !i.answerable);
   const { seller, buyer } = invoice;
@@ -142,10 +149,10 @@ export function InvoiceDrawer({ invoice, onClose, onUpdated, onDelete }: {
 
         <div className="drawer-body">
           <section aria-labelledby="sec-q">
-            <h3 className="section-title" id="sec-q">Questions for you <span className="count">{questions.length}</span></h3>
+            <h3 className="section-title" id="sec-q">{t("questionsForYou")} <span className="count">{questions.length}</span></h3>
             {questions.length === 0 ? (
               <div className="done-state"><PartyPopper size={18} aria-hidden />
-                {invoice.status === "ready" ? "All set. This invoice is ready for your ASP." : "Nothing to answer here."}
+                {invoice.status === "ready" ? t("allSet") : t("nothingToAnswer")}
               </div>
             ) : groups.map((g) => (
               <div key={g.title} style={{ marginBottom: 14 }}>
@@ -164,12 +171,12 @@ export function InvoiceDrawer({ invoice, onClose, onUpdated, onDelete }: {
 
           {other.length > 0 && (
             <section aria-labelledby="sec-o">
-              <h3 className="section-title" id="sec-o">Fix in the source document <span className="count">{other.length}</span></h3>
+              <h3 className="section-title" id="sec-o">{t("fixInSource")} <span className="count">{other.length}</span></h3>
               <div className="card" style={{ padding: "4px 14px", boxShadow: "none" }}>
                 {other.map((o) => (
                   <div className="info-item" key={o.code + o.field}>
                     <Info size={15} color={o.severity === "error" ? "var(--err)" : "var(--warn)"} style={{ flex: "none", marginTop: 2 }} aria-hidden />
-                    <span>{o.message}</span>
+                    <span>{messageText(o, lang)}</span>
                   </div>
                 ))}
               </div>
@@ -177,22 +184,25 @@ export function InvoiceDrawer({ invoice, onClose, onUpdated, onDelete }: {
           )}
 
           <section aria-labelledby="sec-p">
-            <h3 className="section-title" id="sec-p">Parties</h3>
+            <h3 className="section-title" id="sec-p">{t("parties")}</h3>
+            {invoice.learned.length > 0 && (
+              <div className="learned"><Sparkles size={14} aria-hidden />{t("learnedNote")}</div>
+            )}
             <dl className="kv">
-              <div><dt>Seller</dt><dd><Val v={seller.name} /></dd></div>
-              <div><dt>Buyer</dt><dd><Val v={buyer.name} /></dd></div>
-              <div><dt>Seller TRN</dt><dd className="mono"><Val v={seller.trn} /></dd></div>
-              <div><dt>Buyer TRN</dt><dd className="mono"><Val v={buyer.trn} /></dd></div>
-              <div><dt>Issue date</dt><dd><Val v={fmtDate(invoice.issueDate)} /></dd></div>
-              <div><dt>Source</dt><dd>{{ scan: "Scanned document (OCR)", pdf: "PDF (text layer)", json: "Uploaded data", xml: "E-invoice XML", sample: "Sample data" }[invoice.source]}{invoice.extractor && <div className="cell-sub">Read by {invoice.extractor.replace("AI", "AI (Gemini)")}</div>}</dd></div>
+              <div><dt>{t("seller")}</dt><dd><Val v={seller.name} /></dd></div>
+              <div><dt>{t("buyer")}</dt><dd><Val v={buyer.name} /></dd></div>
+              <div><dt>{t("sellerTrn")}</dt><dd className="mono"><Val v={seller.trn} /></dd></div>
+              <div><dt>{t("buyerTrn")}</dt><dd className="mono"><Val v={buyer.trn} /></dd></div>
+              <div><dt>{t("issueDate")}</dt><dd><bdi><Val v={fmtDate(invoice.issueDate)} /></bdi></dd></div>
+              <div><dt>{t("source")}</dt><dd>{t(`src_${invoice.source}`)}{invoice.extractor && <div className="cell-sub">{t("readBy")} {invoice.extractor.replace("AI", "AI (Gemini)")}</div>}</dd></div>
             </dl>
           </section>
 
           <section aria-labelledby="sec-l">
-            <h3 className="section-title" id="sec-l">Line items <span className="count">{invoice.lines.length}</span></h3>
-            {invoice.lines.length === 0 ? <p className="cell-sub" style={{ margin: 0 }}>No line items were found on this document.</p> : (
+            <h3 className="section-title" id="sec-l">{t("lineItems")} <span className="count">{invoice.lines.length}</span></h3>
+            {invoice.lines.length === 0 ? <p className="cell-sub" style={{ margin: 0 }}>{t("noLines")}</p> : (
               <table className="lines">
-                <thead><tr><th>Description</th><th className="right">Qty</th><th className="right">Price</th><th className="right">VAT</th></tr></thead>
+                <thead><tr><th>{t("description")}</th><th className="right">{t("qty")}</th><th className="right">{t("price")}</th><th className="right">{t("vat")}</th></tr></thead>
                 <tbody>
                   {invoice.lines.map((l, n) => (
                     <tr key={n}>
@@ -206,19 +216,19 @@ export function InvoiceDrawer({ invoice, onClose, onUpdated, onDelete }: {
               </table>
             )}
             <div className="totals num">
-              <div><span>Net</span><span>{fmtMoney(invoice.totals.net, invoice.currency) ?? "—"}</span></div>
-              <div><span>VAT</span><span>{fmtMoney(invoice.totals.vat, invoice.currency) ?? "—"}</span></div>
-              <div><span>Total</span><span>{fmtMoney(invoice.totals.gross, invoice.currency) ?? "—"}</span></div>
+              <div><span>{t("net")}</span><span>{fmtMoney(invoice.totals.net, invoice.currency) ?? "—"}</span></div>
+              <div><span>{t("vat")}</span><span>{fmtMoney(invoice.totals.vat, invoice.currency) ?? "—"}</span></div>
+              <div><span>{t("total")}</span><span>{fmtMoney(invoice.totals.gross, invoice.currency) ?? "—"}</span></div>
             </div>
           </section>
         </div>
 
         <footer className="drawer-foot">
-          <button className="btn btn-ghost btn-danger btn-sm" onClick={() => onDelete(invoice.id)}><Trash2 size={14} />Remove</button>
+          <button className="btn btn-ghost btn-danger btn-sm" onClick={() => onDelete(invoice.id)}><Trash2 size={14} />{t("remove")}</button>
           {invoice.readyForAsp && invoice.lines.length > 0 ? (
-            <a className="btn btn-primary" href={api.xmlUrl(invoice.id)} download><Download size={16} />Download UBL XML</a>
+            <a className="btn btn-primary" href={api.xmlUrl(invoice.id)} download><Download size={16} />{t("downloadXml")}</a>
           ) : (
-            <button className="btn btn-primary" disabled title="Answer the blocking questions first"><Download size={16} />Download UBL XML</button>
+            <button className="btn btn-primary" disabled title="Answer the blocking questions first"><Download size={16} />{t("downloadXml")}</button>
           )}
         </footer>
       </aside>

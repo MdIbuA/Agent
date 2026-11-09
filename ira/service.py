@@ -47,6 +47,7 @@ class Record:
     unconfirmed: set[str] = field(default_factory=set)  # OCR fields awaiting owner confirmation
     answered: dict[str, str] = field(default_factory=dict)
     extractor: str | None = None     # "rules", "rules + AI", "rules (AI unavailable)"
+    learned: dict[str, str] = field(default_factory=dict)  # field -> invoice id the answer came from
 
     def issues(self) -> list[Issue]:
         issues = validate(self.invoice)
@@ -91,6 +92,7 @@ def serialize(rec: Record) -> dict:
         "id": rec.id,
         "source": rec.source,
         "extractor": rec.extractor,
+        "learned": sorted(rec.learned),
         "file": inv.source_file,
         "invoiceNumber": inv.invoice_number,
         "issueDate": inv.issue_date,
@@ -111,6 +113,16 @@ def serialize(rec: Record) -> dict:
     }
 
 
+def party_key(p) -> str | None:
+    """Identity of a business across invoices: its TRN when valid, else its normalised name."""
+    import re as _re
+    trn = _re.sub(r"\D", "", p.trn or "")
+    if len(trn) == 15:
+        return "T" + trn
+    name = _re.sub(r"[^A-Z0-9]", "", (p.name or "").upper())
+    return "N" + name if len(name) >= 4 else None
+
+
 class Workspace:
     """Thread-safe store. In memory by default; pass db_path to persist to SQLite so work
     survives restarts. Each invoice is one row of JSON (invoice + confirmation state)."""
@@ -127,13 +139,13 @@ class Workspace:
                 d = json.loads(body)
                 self._records[rid] = Record(id=rid, invoice=invoice_from_dict(d["invoice"]), source=d["source"],
                                             unconfirmed=set(d["unconfirmed"]), answered=d["answered"],
-                                            extractor=d.get("extractor"))
+                                            extractor=d.get("extractor"), learned=d.get("learned", {}))
 
     def _save(self, rec: Record) -> None:  # call with the lock held
         if self._db is None:
             return
         body = json.dumps({"invoice": invoice_to_dict(rec.invoice), "source": rec.source, "extractor": rec.extractor,
-                           "unconfirmed": sorted(rec.unconfirmed), "answered": rec.answered})
+                           "unconfirmed": sorted(rec.unconfirmed), "answered": rec.answered, "learned": rec.learned})
         self._db.execute("INSERT INTO invoices (id, seq, body) VALUES (?, (SELECT COALESCE(MAX(seq), 0) + 1 "
                          "FROM invoices), ?) ON CONFLICT(id) DO UPDATE SET body = excluded.body", (rec.id, body))
         self._db.commit()
@@ -216,7 +228,34 @@ class Workspace:
                 if fld == field_name:
                     rec.unconfirmed.discard(short)
             self._save(rec)
-            return serialize(rec)
+            applied = self._propagate(rec, field_name, value, setter)
+            return {**serialize(rec), "appliedTo": applied}
+
+    # Party facts that are the same on every invoice with that party. Payment terms, dates and
+    # amounts are per-invoice and are never copied.
+    _PARTY_FIELDS = {"seller.legal_id", "seller.legal_authority", "seller.emirate", "seller.address",
+                     "seller.trn", "buyer.trn", "buyer.emirate", "buyer.address"}
+
+    def _propagate(self, src: Record, field_name: str, value: str, setter) -> list[str]:
+        """Agent memory: apply a party fact to the other invoices with the same party, only where
+        that field is still empty (never overwrites). Call with the lock held."""
+        if field_name not in self._PARTY_FIELDS:
+            return []
+        role = field_name.split(".")[0]
+        key = party_key(getattr(src.invoice, role))
+        if not key:
+            return []
+        attr = field_name.split(".")[1]
+        applied = []
+        for rec in self._records.values():
+            party = getattr(rec.invoice, role)
+            if rec.id == src.id or party_key(party) != key or getattr(party, attr) not in (None, ""):
+                continue
+            setter(rec.invoice, value)
+            rec.learned[field_name] = src.id
+            self._save(rec)
+            applied.append(rec.id)
+        return applied
 
     def confirm(self, rid: str, field_name: str) -> dict:
         """Owner says the OCR value is correct as read."""
@@ -247,3 +286,92 @@ class Workspace:
         if not rec.invoice.lines:
             raise ValueError("Invoice has no line items to export.")
         return to_ubl_xml(rec.invoice)
+
+
+# ---- Agent actions: customer requests and the readiness report -------------------------
+
+_BUYER_NEEDS = {  # buyer fields the owner usually has to ask the customer for
+    "buyer.trn": ("your 15-digit Tax Registration Number (TRN)", "رقم التسجيل الضريبي المكوّن من 15 رقماً"),
+    "buyer.address": ("your full address", "العنوان الكامل"),
+    "buyer.emirate": ("the emirate of your address", "الإمارة التي يقع فيها عنوانكم"),
+    "buyer.name": ("your registered legal name", "الاسم القانوني المسجّل"),
+}
+
+
+def outreach(ws: "Workspace") -> list[dict]:
+    """One draft message per customer, covering every invoice that needs their details."""
+    groups: dict[str, dict] = {}
+    with ws._lock:
+        records = list(ws._records.values())
+    for rec in records:
+        issues = rec.issues()
+        needs = [i.field for i in issues if i.field in _BUYER_NEEDS and i.severity == "error"]
+        if not needs:
+            continue
+        b = rec.invoice.buyer
+        key = party_key(b) or f"R{rec.id}"
+        g = groups.setdefault(key, {"buyer": b.name, "buyerTrn": b.trn, "invoices": [], "needs": [],
+                                    "seller": rec.invoice.seller.name})
+        g["invoices"].append(rec.invoice.invoice_number or rec.invoice.source_file or rec.id)
+        g["needs"] += [n for n in needs if n not in g["needs"]]
+    out = []
+    for g in groups.values():
+        name = g["buyer"] or "Customer"
+        invs = ", ".join(g["invoices"])
+        en_items = "\n".join(f"  • {_BUYER_NEEDS[n][0]}" for n in g["needs"])
+        ar_items = "\n".join(f"  • {_BUYER_NEEDS[n][1]}" for n in g["needs"])
+        sign = g["seller"] or ""
+        g["messageEn"] = (f"Dear {name} team,\n\nThe UAE is moving to mandatory e-invoicing (PINT AE). To issue "
+                          f"invoice{'s' if len(g['invoices']) > 1 else ''} {invs} correctly, please send us:\n"
+                          f"{en_items}\n\nThank you,\n{sign}").strip()
+        # \u2066…\u2069 isolate Latin names and invoice numbers so they don't scramble inside Arabic text.
+        g["messageAr"] = (f"السادة \u2068{name}\u2069 المحترمين،\n\nتنتقل دولة الإمارات إلى الفوترة الإلكترونية الإلزامية. "
+                          f"لإصدار الفواتير التالية بشكل صحيح:\n\u2066{invs}\u2069\n\nيرجى تزويدنا بما يلي:\n{ar_items}\n\n"
+                          f"مع الشكر،\n\u2068{sign}\u2069").strip()
+        out.append(g)
+    return sorted(out, key=lambda g: -len(g["invoices"]))
+
+
+# Published penalty amounts (Ministerial Decisions on e-invoicing, as reported in 2026):
+# AED 100 per invoice not issued/transmitted electronically on time, capped at AED 5,000 per
+# month. Indicative only -- the agent states this and links the source in BENCHMARK/README.
+PENALTY_PER_INVOICE = 100
+PENALTY_MONTHLY_CAP = 5000
+
+_ISSUE_LABELS = {
+    "MISSING_BUYER_TRN": "Buyer TRN missing", "BAD_BUYER_TRN": "Buyer TRN invalid",
+    "BAD_SELLER_TRN": "Seller TRN invalid", "MISSING_SELLER_TRN": "Seller TRN missing",
+    "MISSING_DUE_DATE": "Due date missing", "MISSING_PAYMENT_MEANS": "Payment method missing",
+    "MISSING_SELLER_LICENSE": "Trade licence missing", "MISSING_SELLER_LICENSE_AUTHORITY": "Licence authority missing",
+    "MISSING_BUYER_EMIRATE": "Buyer emirate missing", "MISSING_SELLER_EMIRATE": "Seller emirate missing",
+    "MISSING_BUYER_ADDRESS": "Buyer address missing", "BAD_VAT_RATE": "Wrong VAT rate",
+    "VAT_TOTAL_MISMATCH": "VAT total doesn't add up", "GROSS_TOTAL_MISMATCH": "Total doesn't add up",
+    "LINE_MATH_MISMATCH": "Line amount doesn't add up", "MISSING_INVOICE_NUMBER": "Invoice number missing",
+    "BAD_ISSUE_DATE": "Invalid issue date", "NO_LINES": "No line items",
+}
+
+
+def report(ws: "Workspace") -> dict:
+    from collections import Counter
+    items = ws.list()
+    with ws._lock:
+        recs = {r.id: r for r in ws._records.values()}
+    blocked = [i for i in items if not i["readyForAsp"]]
+    by_month = Counter((i["issueDate"] or "unknown")[:7] for i in blocked)
+    exposure = sum(min(PENALTY_PER_INVOICE * n, PENALTY_MONTHLY_CAP) for n in by_month.values())
+    issue_counts = Counter()
+    for i in blocked:
+        for code in {q["code"] for q in i["issues"] if q["severity"] == "error"}:
+            issue_counts[code] += 1
+    learned = sum(len(r.learned) for r in recs.values())
+    return {
+        "summary": ws.summary(),
+        "notReady": len(blocked),
+        "exposureAed": exposure,
+        "exposureByMonth": dict(sorted(by_month.items())),
+        "penaltyBasis": {"perInvoice": PENALTY_PER_INVOICE, "monthlyCap": PENALTY_MONTHLY_CAP},
+        "topIssues": [{"code": c, "label": _ISSUE_LABELS.get(c, c.replace("_", " ").title()), "invoices": n}
+                      for c, n in issue_counts.most_common(8)],
+        "answersReusedByAgent": learned,
+        "customerRequests": len(outreach(ws)),
+    }

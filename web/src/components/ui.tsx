@@ -1,6 +1,7 @@
 import { CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
 import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from "react";
-import { scoreColor, statusColor, statusLabel, type Status } from "../lib/api";
+import { scoreColor, statusColor, type Status } from "../lib/api";
+import { useI18n } from "../lib/i18n";
 
 export function ScoreRing({ value, size = 64, stroke = 6, label }: { value: number; size?: number; stroke?: number; label?: string }) {
   const r = (size - stroke) / 2;
@@ -21,7 +22,8 @@ const STATUS_ICON = { ready: CheckCircle2, review: AlertTriangle, blocked: XCirc
 
 export function StatusChip({ status }: { status: Status }) {
   const Icon = STATUS_ICON[status];
-  return <span className={`chip chip-${status}`}><Icon size={13} aria-hidden />{statusLabel[status]}</span>;
+  const { t } = useI18n();
+  return <span className={`chip chip-${status}`}><Icon size={13} aria-hidden />{t(`st_${status}`)}</span>;
 }
 
 // Colour follows status, not the number: an 85 that is still blocked must not look healthy.

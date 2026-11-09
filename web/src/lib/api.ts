@@ -25,6 +25,8 @@ export interface Invoice {
   id: string;
   source: "sample" | "json" | "xml" | "pdf" | "scan";
   extractor: string | null;
+  learned: string[];
+  appliedTo?: string[];
   file: string | null;
   invoiceNumber: string | null;
   issueDate: string | null;
@@ -50,6 +52,18 @@ export interface Summary {
 }
 
 export interface State { summary: Summary; items: Invoice[] }
+
+export interface CustomerRequest {
+  buyer: string | null; buyerTrn: string | null; seller: string | null;
+  invoices: string[]; needs: string[]; messageEn: string; messageAr: string;
+}
+
+export interface Report {
+  summary: Summary; notReady: number; exposureAed: number; exposureByMonth: Record<string, number>;
+  penaltyBasis: { perInvoice: number; monthlyCap: number };
+  topIssues: { code: string; label: string; invoices: number }[];
+  answersReusedByAgent: number; customerRequests: number;
+}
 export interface UploadResult extends State { errors: { file: string; error: string }[] }
 
 export class ApiError extends Error {
@@ -96,6 +110,8 @@ export const api = {
   remove: (id: string) => request<State>(`/api/invoices/${id}`, { method: "DELETE" }),
   clear: () => request<State>("/api/invoices", { method: "DELETE" }),
   xmlUrl: (id: string) => `/api/invoices/${id}/xml`,
+  outreach: () => request<{ requests: CustomerRequest[] }>("/api/outreach"),
+  report: () => request<Report>("/api/report"),
   exportUrl: "/api/export.zip",
 };
 

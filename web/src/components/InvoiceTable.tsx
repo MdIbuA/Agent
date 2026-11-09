@@ -2,6 +2,7 @@ import { ArrowDown, ArrowUp, FileText, ScanLine, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { fmtDate, fmtMoney, isValidIsoDate, type Invoice, type Status } from "../lib/api";
 import { ScoreBar, StatusChip } from "./ui";
+import { useI18n, type Key } from "../lib/i18n";
 
 type Filter = "all" | Status;
 type SortKey = "score" | "issueDate" | "gross";
@@ -9,6 +10,7 @@ type SortKey = "score" | "issueDate" | "gross";
 export function InvoiceTable({ items, query, selectedId, onOpen }: {
   items: Invoice[]; query: string; selectedId: string | null; onOpen: (id: string) => void;
 }) {
+  const { t } = useI18n();
   const [filter, setFilter] = useState<Filter>("all");
   const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: "score", dir: 1 });
 
@@ -42,33 +44,33 @@ export function InvoiceTable({ items, query, selectedId, onOpen }: {
     );
   };
 
-  const tabs: { key: Filter; label: string }[] = [
-    { key: "all", label: "All" }, { key: "blocked", label: "Blocked" },
-    { key: "review", label: "Needs review" }, { key: "ready", label: "Ready" },
+  const tabs: { key: Filter; label: Key }[] = [
+    { key: "all", label: "all" }, { key: "blocked", label: "kpiBlocked" },
+    { key: "review", label: "kpiReview" }, { key: "ready", label: "ready" },
   ];
 
   return (
     <section className="card" aria-label="Invoices">
       <div className="toolbar">
         <div className="segmented" role="group" aria-label="Filter by status">
-          {tabs.map((t) => (
-            <button key={t.key} aria-pressed={filter === t.key} onClick={() => setFilter(t.key)}>
-              {t.label}<span className="count num">{counts[t.key]}</span>
+          {tabs.map((tab) => (
+            <button key={tab.key} aria-pressed={filter === tab.key} onClick={() => setFilter(tab.key)}>
+              {t(tab.label)}<span className="count num">{counts[tab.key]}</span>
             </button>
           ))}
         </div>
-        <span className="cell-sub">{rows.length} shown · sorted by {sort.key === "gross" ? "total" : sort.key === "issueDate" ? "date" : "score"}</span>
+        <span className="cell-sub">{rows.length} {t("shown")}</span>
       </div>
       <div className="table-wrap">
         <table>
           <thead>
             <tr>
-              <th>Invoice</th>
-              <th className="hide-sm">Seller → Buyer</th>
-              {sortBtn("issueDate", "Date")}
-              {sortBtn("gross", "Total")}
-              {sortBtn("score", "Score")}
-              <th>Status</th>
+              <th>{t("colInvoice")}</th>
+              <th className="hide-sm">{t("colParties")}</th>
+              {sortBtn("issueDate", t("colDate"))}
+              {sortBtn("gross", t("colTotal"))}
+              {sortBtn("score", t("colScore"))}
+              <th>{t("colStatus")}</th>
             </tr>
           </thead>
           <tbody>
@@ -82,8 +84,8 @@ export function InvoiceTable({ items, query, selectedId, onOpen }: {
                     <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
                       <Icon size={16} color="var(--text-3)" aria-label={i.source === "scan" ? "Scanned" : "Digital"} />
                       <div>
-                        <div className="cell-primary">{i.invoiceNumber ?? <span className="missing">No number</span>}</div>
-                        <div className="cell-sub">{q ? `${q} question${q > 1 ? "s" : ""}` : i.file}</div>
+                        <div className="cell-primary">{i.invoiceNumber ?? <span className="missing">{t("noNumber")}</span>}</div>
+                        <div className="cell-sub">{q ? `${q} ${q > 1 ? t("questions") : t("question")}` : i.file}</div>
                       </div>
                     </div>
                   </td>
@@ -93,10 +95,10 @@ export function InvoiceTable({ items, query, selectedId, onOpen }: {
                   </td>
                   <td className="num">
                     {!i.issueDate ? <span className="missing">—</span>
-                      : isValidIsoDate(i.issueDate) ? fmtDate(i.issueDate)
+                      : isValidIsoDate(i.issueDate) ? <bdi>{fmtDate(i.issueDate)}</bdi>
                       : <span style={{ color: "var(--err)" }} title="Not a valid date">{i.issueDate}</span>}
                   </td>
-                  <td className="num right">{fmtMoney(i.totals.gross, i.currency) ?? <span className="missing">—</span>}</td>
+                  <td className="num right"><bdi>{fmtMoney(i.totals.gross, i.currency) ?? "—"}</bdi></td>
                   <td><ScoreBar value={i.score} status={i.status} /></td>
                   <td><StatusChip status={i.status} /></td>
                 </tr>
@@ -107,7 +109,7 @@ export function InvoiceTable({ items, query, selectedId, onOpen }: {
         {rows.length === 0 && (
           <div className="empty" style={{ padding: 40 }}>
             <Search size={20} color="var(--text-3)" aria-hidden />
-            <p>No invoices match{query ? ` “${query}”` : " this filter"}.</p>
+            <p>{t("noMatch")}{query ? ` “${query}”` : ""}.</p>
           </div>
         )}
       </div>

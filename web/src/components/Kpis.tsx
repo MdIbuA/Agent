@@ -1,22 +1,24 @@
 import { CheckCircle2, AlertTriangle, XCircle, MessageCircleQuestion } from "lucide-react";
 import type { Summary } from "../lib/api";
 import { ScoreRing } from "./ui";
+import { useI18n } from "../lib/i18n";
 
 export function Kpis({ s }: { s: Summary }) {
+  const { t } = useI18n();
   const cards = [
-    { label: "Ready for ASP", value: s.ready, icon: CheckCircle2, color: "var(--ok)", sub: "Valid UBL can be exported" },
-    { label: "Needs review", value: s.review, icon: AlertTriangle, color: "var(--warn)", sub: "Only confirmations left" },
-    { label: "Blocked", value: s.blocked, icon: XCircle, color: "var(--err)", sub: "Missing or invalid data" },
-    { label: "Open questions", value: s.openQuestions, icon: MessageCircleQuestion, color: "var(--accent)", sub: "Answer to unblock" },
+    { label: t("kpiReady"), value: s.ready, icon: CheckCircle2, color: "var(--ok)", sub: t("kpiReadySub") },
+    { label: t("kpiReview"), value: s.review, icon: AlertTriangle, color: "var(--warn)", sub: t("kpiReviewSub") },
+    { label: t("kpiBlocked"), value: s.blocked, icon: XCircle, color: "var(--err)", sub: t("kpiBlockedSub") },
+    { label: t("kpiQuestions"), value: s.openQuestions, icon: MessageCircleQuestion, color: "var(--accent)", sub: t("kpiQuestionsSub") },
   ];
   return (
     <section className="kpis" aria-label="Readiness summary">
       <div className="card kpi kpi-hero">
         <ScoreRing value={s.readinessPct} size={84} stroke={8} label={`${s.readinessPct}% of invoices ready`} />
         <div>
-          <div className="kpi-label">Workspace readiness</div>
+          <div className="kpi-label">{t("kpiReadiness")}</div>
           <div className="kpi-value num">{s.readinessPct}%</div>
-          <div className="kpi-sub">{s.ready} of {s.invoices} invoices · avg score {s.avgScore}</div>
+          <div className="kpi-sub">{s.ready} {t("kpiOf")} {s.invoices} {t("kpiInvoices")} · {t("kpiAvg")} {s.avgScore}</div>
         </div>
       </div>
       {cards.map(({ label, value, icon: Icon, color, sub }) => (

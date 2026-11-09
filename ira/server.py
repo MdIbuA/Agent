@@ -21,8 +21,8 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from .agent import IMAGE_SUFFIXES
-from .service import Workspace
-from .synth import generate
+from .service import Workspace, outreach, report
+from .synth import demo_batch, generate
 from .ubl_import import parse_ubl
 
 MAX_FILES = 25
@@ -73,8 +73,11 @@ def list_invoices():
 
 
 @app.post("/api/invoices/sample")
-def load_sample(count: int = Query(12, ge=1, le=100), seed: int = Query(42)):
-    ws.add_dicts(generate(count=count, seed=seed), source="sample")
+def load_sample(count: int = Query(12, ge=1, le=100), seed: int = Query(42),
+                kind: str = Query("demo", pattern="^(demo|random)$")):
+    """kind=demo: one SME's realistic batch (shows agent memory and customer requests)."""
+    docs = demo_batch() if kind == "demo" else generate(count=count, seed=seed)
+    ws.add_dicts(docs, source="sample")
     return _state()
 
 
@@ -132,6 +135,16 @@ def answer(rid: str, body: Answer):
     except ValueError as e:
         raise HTTPException(422, str(e))
     return {"item": item, "summary": ws.summary()}
+
+
+@app.get("/api/outreach")
+def get_outreach():
+    return {"requests": outreach(ws)}
+
+
+@app.get("/api/report")
+def get_report():
+    return report(ws)
 
 
 @app.post("/api/invoices/{rid}/confirm")
